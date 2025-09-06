@@ -80,6 +80,15 @@ zoo-bin/zoo-node/lance_db_tests
 storage_debug_serve_mode
 zoo-tools-runner-resources
 zoo-tools-runner-execution-storage
+# Binary files and build artifacts
+zoo-bin/zoo-node/shinkai-tools-runner-resources/
+zoo-bin/zoo-node/zoo-tools-runner-resources/
+*.dylib
+*.so
+*.dll
+# Large binary resources
+deno
+uv
 zoo-bin/zoo-node/zoo_db_tests
 zoo-tools-runner-resources
 storage_debug_agent_provider
@@ -99,6 +108,11 @@ ocrs
 .nx/installation
 .nx/cache
 .nx/workspace-data
+
+# LLM instruction files (keep LLM.md)
+CLAUDE.md
+GEMINI.md
+AGENTS.md
 storage_testing_debug_my_local_ai
 zoo-bin/zoo-node/files/zeko_mini.vrkai
 zoo-bin/zoo-node/files/short_story.md
