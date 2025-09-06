@@ -1,0 +1,26 @@
+[Unit]
+Description=Zoo Node Docker Service
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+TimeoutStopSec=60
+WorkingDirectory=/opt/zoo-node
+EnvironmentFile=/opt/zoo-node/env.conf
+ExecStartPre=/bin/mkdir -p /opt/zoo-node/zoo-storage
+ExecStart=/usr/bin/docker run --rm \
+    --name=zoo-node \
+    -p 9550:9550 \
+    -p 9551:9551 \
+    -p 9552:9552 \
+    -p 9553:9553 \
+    -v /opt/zoo-node/zoo-storage:/app/zoo-storage \
+    --env-file /opt/zoo-node/env.conf \
+    zoo/zoo-node:latest
+ExecStop=/usr/bin/docker stop --time=30 zoo-node
+
+[Install]
+WantedBy=multi-user.target 
