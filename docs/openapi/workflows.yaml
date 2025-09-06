@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: zoo_node
+  description: ''
+  contact:
+    name: Nico Arqueros
+    email: nico@zoo.ai
+  license:
+    name: ''
+  version: 0.8.4
+paths:
+  /v2/add_zoo_tool:
+    post:
+      tags:
+      - crate
+      operationId: add_zoo_tool_handler
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZooTool'
+        required: true
+      responses:
+        '200':
+          description: Successfully added Zoo tool
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+  /v2/get_zoo_tool:
+    get:
+      tags:
+      - crate
+      operationId: get_zoo_tool_handler
+      parameters:
+      - name: tool_name
+        in: query
+        description: Name of the Zoo tool
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved Zoo tool
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+  /v2/list_all_zoo_tools:
+    get:
+      tags:
+      - crate
+      operationId: list_all_zoo_tools_handler
+      responses:
+        '200':
+          description: Successfully listed all Zoo tools
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+  /v2/search_zoo_tool:
+    get:
+      tags:
+      - crate
+      operationId: search_zoo_tool_handler
+      parameters:
+      - name: query
+        in: query
+        description: Search query for Zoo tools
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully searched Zoo tools
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+
+  /v2/set_zoo_tool:
+    post:
+      tags:
+      - crate
+      operationId: set_zoo_tool_handler
+      parameters:
+      - name: tool_name
+        in: query
+        description: Key name of the Zoo tool
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        required: true
+      responses:
+        '200':
+          description: Successfully set Zoo tool
+          content:
+            text/plain:
+              schema:
+                type: boolean
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+
+components:
+  schemas:
+    APIError:
+      type: object
+      required:
+      - code
+      - error
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          minimum: 0
+        error:
+          type: string
+        message:
+          type: string
+    
+tags:
+- name: workflows
+  description: Workflow API endpoints

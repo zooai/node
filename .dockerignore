@@ -1,0 +1,8 @@
+.cargo
+.vscode
+target
+storage_debug_my_local_ai
+zoo-tools-runner-execution-storage
+zoo-bin/zoo-node/internal_tools_storage
+zoo-bin/zoo-node/zoo-tools-runner-resources
+zoo-bin/zoo-node/storage

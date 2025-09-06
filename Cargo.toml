@@ -1,0 +1,105 @@
+[workspace]
+members = [
+  "zoo-libs/zoo-crypto-identities",
+  "zoo-libs/zoo-message-primitives",
+  "zoo-libs/zoo-libp2p-relayer",
+  "zoo-libs/zoo-job-queue-manager",
+  # "zoo-libs/zoo-baml",
+  "zoo-libs/zoo-fs",
+  "zoo-libs/zoo-embedding",
+  "zoo-libs/zoo-http-api",
+  "zoo-libs/zoo-tools-primitives",
+  "zoo-libs/zoo-sqlite",
+  "zoo-libs/zoo-non-rust-code",
+  "zoo-libs/zoo-mcp",
+  "zoo-test-framework",
+  "zoo-test-macro",
+  "zoo-bin/*",
+]
+resolver = "2"
+
+[workspace.package]
+version = "1.1.8"
+edition = "2021"
+authors = ["Zoo Foundation <dev@zoo.ngo>"]
+
+[workspace.dependencies]
+zoo_message_primitives = { path = "./zoo-libs/zoo-message-primitives" }
+zoo_crypto_identities = { path = "./zoo-libs/zoo-crypto-identities" }
+zoo_libp2p_relayer = { path = "./zoo-libs/zoo-libp2p-relayer" }
+zoo_job_queue_manager = { path = "./zoo-libs/zoo-job-queue-manager" }
+# zoo_baml = { path = "./zoo-libs/zoo-baml" }
+zoo_http_api = { path = "./zoo-libs/zoo-http-api" }
+zoo_tools_primitives = { path = "./zoo-libs/zoo-tools-primitives" }
+zoo_sqlite = { path = "./zoo-libs/zoo-sqlite" }
+zoo_fs = { path = "./zoo-libs/zoo-fs" }
+zoo_embedding = { path = "./zoo-libs/zoo-embedding" }
+zoo_non_rust_code = { path = "./zoo-libs/zoo-non-rust-code" }
+zoo_mcp = { path = "./zoo-libs/zoo-mcp" }
+
+rmcp = { git = "https://github.com/zooai/rmcp", branch = "main" }
+futures = "0.3.30"
+keyphrases = "0.3.3"
+tokio = { version = "1.36", features = [
+  "rt",
+  "rt-multi-thread",
+  "macros",
+  "fs",
+  "io-util",
+  "net",
+  "sync",
+  "time",
+] }
+tokio-util = "0.7.13"
+bincode = "1.3.3"
+log = "0.4.20"
+chrono = "0.4"
+serde_json = "1.0.117"
+anyhow = "1.0.94"
+blake3 = "1.2.0"
+zoo_tools_runner = { git = "https://github.com/zooai/tools", branch = "main" }
+serde = "1.0.219"
+base64 = "0.22.0"
+reqwest = "0.11.27"
+regex = "1"
+uuid = { version = "1.6.1" }
+rand = "=0.8.5"
+hex = "=0.4.3"
+env_logger = "0.11.5"
+async-trait = "0.1.74"
+ed25519-dalek = { version = "2.1.1", features = ["rand_core"] }
+x25519-dalek = { version = "2.0.1", features = ["static_secrets"] }
+tempfile = "3.19"
+lazy_static = "1.5.0"
+async-channel = "1.6.1"
+csv = "1.1.6"
+thiserror = "2.0.3"
+dashmap = "5.5.3"
+clap = "3.0.0-beta.5"
+r2d2 = "0.8.10"
+r2d2_sqlite = "0.25"
+rusqlite = { version = "0.32.1", features = ["bundled"] }
+os_path = "0.8.0"
+utoipa = "4.2.3"
+warp = "0.3.7"
+once_cell = "1.21"
+home = "0.5"
+strip-ansi-escapes = "0.2"
+tracing = "0.1.40"
+serde_yaml = "0.9.34-deprecated"
+tokio-tungstenite = "0.26.2"
+rustls = "0.23.27"
+libp2p = { version = "0.55.0", features = [
+  "noise",
+  "yamux",
+  "tcp",
+  "quic",
+  "dcutr",
+  "identify",
+  "ping",
+  "relay",
+  "request-response",
+  "json",
+  "tokio",
+  "macros",
+] }
