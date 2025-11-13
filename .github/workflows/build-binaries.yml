@@ -29,6 +29,10 @@ jobs:
           path: ../../../hanzo/node
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Download tools from store to pre-install folder
+        run: |
+          ./scripts/update_tools.sh
+
       - name: Configure rust-lld linker for Windows
         if: matrix.os == 'windows-2022'
         run: |
