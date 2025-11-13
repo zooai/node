@@ -36,17 +36,13 @@ jobs:
       - name: Add hanzo workspace dependencies for CI build
         shell: bash
         run: |
-          # Add hanzo workspace dependencies after zoo_mcp line using a simpler approach
-          cat >> Cargo.toml << 'DEPS_EOF'
-
-# Hanzo dependencies (added by CI for build)
-hanzo_non_rust_code = { path = "hanzo-node/crates/hanzo-non-rust-code" }
-hanzo_tools_primitives = { path = "hanzo-node/crates/hanzo-tools-primitives" }
-hanzo_mining = { path = "hanzo-node/crates/hanzo-mining" }
-hanzo_http_api = { path = "hanzo-node/crates/hanzo-http-api" }
-lux_consensus = { path = "hanzo-node/crates/lux-consensus" }
-DEPS_EOF
-
+          echo "" >> Cargo.toml
+          echo "# Hanzo dependencies (added by CI for build)" >> Cargo.toml
+          echo "hanzo_non_rust_code = { path = \"hanzo-node/crates/hanzo-non-rust-code\" }" >> Cargo.toml
+          echo "hanzo_tools_primitives = { path = \"hanzo-node/crates/hanzo-tools-primitives\" }" >> Cargo.toml
+          echo "hanzo_mining = { path = \"hanzo-node/crates/hanzo-mining\" }" >> Cargo.toml
+          echo "hanzo_http_api = { path = \"hanzo-node/crates/hanzo-http-api\" }" >> Cargo.toml
+          echo "lux_consensus = { path = \"hanzo-node/crates/lux-consensus\" }" >> Cargo.toml
           echo "Updated Cargo.toml with hanzo dependencies:"
           tail -10 Cargo.toml
 
@@ -126,17 +122,13 @@ DEPS_EOF
       - name: Add hanzo workspace dependencies for CI build
         shell: bash
         run: |
-          # Add hanzo workspace dependencies after zoo_mcp line using a simpler approach
-          cat >> Cargo.toml << 'DEPS_EOF'
-
-# Hanzo dependencies (added by CI for build)
-hanzo_non_rust_code = { path = "hanzo-node/crates/hanzo-non-rust-code" }
-hanzo_tools_primitives = { path = "hanzo-node/crates/hanzo-tools-primitives" }
-hanzo_mining = { path = "hanzo-node/crates/hanzo-mining" }
-hanzo_http_api = { path = "hanzo-node/crates/hanzo-http-api" }
-lux_consensus = { path = "hanzo-node/crates/lux-consensus" }
-DEPS_EOF
-
+          echo "" >> Cargo.toml
+          echo "# Hanzo dependencies (added by CI for build)" >> Cargo.toml
+          echo "hanzo_non_rust_code = { path = \"hanzo-node/crates/hanzo-non-rust-code\" }" >> Cargo.toml
+          echo "hanzo_tools_primitives = { path = \"hanzo-node/crates/hanzo-tools-primitives\" }" >> Cargo.toml
+          echo "hanzo_mining = { path = \"hanzo-node/crates/hanzo-mining\" }" >> Cargo.toml
+          echo "hanzo_http_api = { path = \"hanzo-node/crates/hanzo-http-api\" }" >> Cargo.toml
+          echo "lux_consensus = { path = \"hanzo-node/crates/lux-consensus\" }" >> Cargo.toml
           echo "Updated Cargo.toml with hanzo dependencies:"
           tail -10 Cargo.toml
 
