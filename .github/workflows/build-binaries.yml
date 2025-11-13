@@ -44,7 +44,7 @@ jobs:
           sed -i.bak 's|path = "../../lux/consensus"|path = "hanzo-node/crates/lux-consensus"|g' Cargo.toml || echo "lux_consensus path not found, skipping"
 
           echo "Updated Cargo.toml paths:"
-          grep "hanzo-node" Cargo.toml
+          grep "hanzo-node" Cargo.toml || echo "No hanzo-node paths found in Cargo.toml"
 
       - name: Configure rust-lld linker for Windows
         if: matrix.os == 'windows-2022'
