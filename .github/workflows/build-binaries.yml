@@ -36,19 +36,19 @@ jobs:
       - name: Add hanzo workspace dependencies for CI build
         shell: bash
         run: |
-          # Add hanzo workspace dependencies after zoo_mcp line
-          sed -i.bak '/^zoo_mcp = { path = "\.\/zoo-libs\/zoo-mcp" }$/a\
-\
-# Hanzo dependencies (added by CI for build)\
-hanzo_non_rust_code = { path = "hanzo-node/crates/hanzo-non-rust-code" }\
-hanzo_tools_primitives = { path = "hanzo-node/crates/hanzo-tools-primitives" }\
-hanzo_mining = { path = "hanzo-node/crates/hanzo-mining" }\
-hanzo_http_api = { path = "hanzo-node/crates/hanzo-http-api" }\
+          # Add hanzo workspace dependencies after zoo_mcp line using a simpler approach
+          cat >> Cargo.toml << 'DEPS_EOF'
+
+# Hanzo dependencies (added by CI for build)
+hanzo_non_rust_code = { path = "hanzo-node/crates/hanzo-non-rust-code" }
+hanzo_tools_primitives = { path = "hanzo-node/crates/hanzo-tools-primitives" }
+hanzo_mining = { path = "hanzo-node/crates/hanzo-mining" }
+hanzo_http_api = { path = "hanzo-node/crates/hanzo-http-api" }
 lux_consensus = { path = "hanzo-node/crates/lux-consensus" }
-' Cargo.toml
+DEPS_EOF
 
           echo "Updated Cargo.toml with hanzo dependencies:"
-          grep -A 6 "Hanzo dependencies" Cargo.toml
+          tail -10 Cargo.toml
 
       - name: Configure rust-lld linker for Windows
         if: matrix.os == 'windows-2022'
@@ -126,19 +126,19 @@ lux_consensus = { path = "hanzo-node/crates/lux-consensus" }
       - name: Add hanzo workspace dependencies for CI build
         shell: bash
         run: |
-          # Add hanzo workspace dependencies after zoo_mcp line
-          sed -i.bak '/^zoo_mcp = { path = "\.\/zoo-libs\/zoo-mcp" }$/a\
-\
-# Hanzo dependencies (added by CI for build)\
-hanzo_non_rust_code = { path = "hanzo-node/crates/hanzo-non-rust-code" }\
-hanzo_tools_primitives = { path = "hanzo-node/crates/hanzo-tools-primitives" }\
-hanzo_mining = { path = "hanzo-node/crates/hanzo-mining" }\
-hanzo_http_api = { path = "hanzo-node/crates/hanzo-http-api" }\
+          # Add hanzo workspace dependencies after zoo_mcp line using a simpler approach
+          cat >> Cargo.toml << 'DEPS_EOF'
+
+# Hanzo dependencies (added by CI for build)
+hanzo_non_rust_code = { path = "hanzo-node/crates/hanzo-non-rust-code" }
+hanzo_tools_primitives = { path = "hanzo-node/crates/hanzo-tools-primitives" }
+hanzo_mining = { path = "hanzo-node/crates/hanzo-mining" }
+hanzo_http_api = { path = "hanzo-node/crates/hanzo-http-api" }
 lux_consensus = { path = "hanzo-node/crates/lux-consensus" }
-' Cargo.toml
+DEPS_EOF
 
           echo "Updated Cargo.toml with hanzo dependencies:"
-          grep -A 6 "Hanzo dependencies" Cargo.toml
+          tail -10 Cargo.toml
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
