@@ -9,6 +9,7 @@ members = [
   "zoo-libs/zoo-embedding",
   "zoo-libs/zoo-http-api",
   "zoo-libs/zoo-tools-primitives",
+  "zoo-libs/zoo-tools-runner",  # Thin wrapper around hanzo_tools_runner (DRY)
   "zoo-libs/zoo-sqlite",
   "zoo-libs/zoo-non-rust-code",
   "zoo-libs/zoo-mcp",
@@ -19,7 +20,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "1.1.8"
+version = "1.1.27"
 edition = "2021"
 authors = ["Zoo Foundation <dev@zoo.ngo>"]
 
@@ -36,7 +37,9 @@ zoo_fs = { path = "./zoo-libs/zoo-fs" }
 zoo_embedding = { path = "./zoo-libs/zoo-embedding" }
 zoo_non_rust_code = { path = "./zoo-libs/zoo-non-rust-code" }
 zoo_mcp = { path = "./zoo-libs/zoo-mcp" }
+zoo_tools_runner = { path = "./zoo-libs/zoo-tools-runner" }
 
+# External dependencies
 rmcp = { version = "0.6" }
 futures = "0.3.30"
 keyphrases = "0.3.3"
@@ -57,7 +60,6 @@ chrono = "0.4"
 serde_json = "1.0.117"
 anyhow = "1.0.94"
 blake3 = "1.2.0"
-zoo_tools_runner = { git = "https://github.com/zooai/tools", branch = "main" }
 serde = "1.0.219"
 base64 = "0.22.0"
 reqwest = "0.11.27"
