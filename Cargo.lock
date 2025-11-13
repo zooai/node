@@ -2206,6 +2206,83 @@ dependencies = [
 ]
 
 [[package]]
+name = "hanzo_message_primitives"
+version = "1.1.10"
+dependencies = [
+ "aes-gcm",
+ "async-trait",
+ "base64 0.22.1",
+ "blake3",
+ "chacha20poly1305 0.7.1",
+ "chrono",
+ "ed25519-dalek",
+ "hex",
+ "os_path",
+ "rand 0.8.5",
+ "regex",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "serial_test",
+ "tempfile",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "utoipa",
+ "x25519-dalek",
+]
+
+[[package]]
+name = "hanzo_non_rust_code"
+version = "1.1.10"
+dependencies = [
+ "hanzo_message_primitives",
+ "log",
+ "serde",
+ "serde_json",
+ "shinkai_tools_runner",
+ "tempfile",
+ "tokio",
+]
+
+[[package]]
+name = "hanzo_tools_runner"
+version = "1.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b641d0862c6b93457d7c0b497e00f4f3ab6d4f11170a9a4de78bb7584f7f36c"
+dependencies = [
+ "anyhow",
+ "base64-simd",
+ "chrono",
+ "copy_to_output",
+ "derivative",
+ "derive_more",
+ "dispose",
+ "env_logger",
+ "flate2",
+ "futures",
+ "glob",
+ "hex-simd",
+ "lazy_static",
+ "log",
+ "nanoid",
+ "once_cell",
+ "patch",
+ "phf 0.11.3",
+ "regex",
+ "reqwest 0.11.27",
+ "serde",
+ "serde_json",
+ "tar",
+ "tempfile",
+ "tokio",
+ "tokio-util",
+ "toml_edit",
+ "zip 2.4.2",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5920,9 +5997,9 @@ checksum = "24188a676b6ae68c3b2cb3a01be17fbf7240ce009799bb56d5b1409051e78fde"
 
 [[package]]
 name = "shinkai_tools_runner"
-version = "0.9.15"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61e27280c491ba33fcfb3f9bc691be7be126a3c6b2929d6b3bd88d32f7ab3e2b"
+checksum = "09b4259bb146459a2632ad024ff1d86c899160503f4d5113710097887d3c5937"
 dependencies = [
  "anyhow",
  "base64-simd",
@@ -8191,7 +8268,7 @@ dependencies = [
 
 [[package]]
 name = "zoo_crypto_identities"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "chrono",
  "dashmap",
@@ -8208,7 +8285,7 @@ dependencies = [
 
 [[package]]
 name = "zoo_embedding"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "async-trait",
  "bincode",
@@ -8229,7 +8306,7 @@ dependencies = [
 
 [[package]]
 name = "zoo_fs"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "async-trait",
  "bincode",
@@ -8262,7 +8339,7 @@ dependencies = [
 
 [[package]]
 name = "zoo_http_api"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -8298,7 +8375,7 @@ dependencies = [
 
 [[package]]
 name = "zoo_job_queue_manager"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "chrono",
  "serde",
@@ -8312,7 +8389,7 @@ dependencies = [
 
 [[package]]
 name = "zoo_libp2p_relayer"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "chrono",
  "clap 3.2.25",
@@ -8337,7 +8414,7 @@ dependencies = [
 
 [[package]]
 name = "zoo_mcp"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "async-trait",
  "futures",
@@ -8358,7 +8435,7 @@ dependencies = [
 
 [[package]]
 name = "zoo_message_primitives"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "aes-gcm",
  "async-trait",
@@ -8386,7 +8463,7 @@ dependencies = [
 
 [[package]]
 name = "zoo_node"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "aes-gcm",
  "ai-model-catalog",
@@ -8433,7 +8510,6 @@ dependencies = [
  "serde_json",
  "serde_yaml",
  "sha2",
- "shinkai_tools_runner",
  "tempfile",
  "thiserror 2.0.12",
  "tokio",
@@ -8460,24 +8536,26 @@ dependencies = [
  "zoo_test_framework",
  "zoo_test_macro",
  "zoo_tools_primitives",
+ "zoo_tools_runner",
 ]
 
 [[package]]
 name = "zoo_non_rust_code"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
+ "hanzo_non_rust_code",
  "log",
  "serde",
  "serde_json",
- "shinkai_tools_runner",
  "tempfile",
  "tokio",
  "zoo_message_primitives",
+ "zoo_tools_runner",
 ]
 
 [[package]]
 name = "zoo_sqlite"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "bincode",
  "blake3",
@@ -8539,7 +8617,7 @@ dependencies = [
 
 [[package]]
 name = "zoo_tools_primitives"
-version = "1.1.8"
+version = "1.1.35"
 dependencies = [
  "base64 0.22.1",
  "log",
@@ -8549,10 +8627,18 @@ dependencies = [
  "rmcp",
  "serde",
  "serde_json",
- "shinkai_tools_runner",
  "tokio",
  "zoo_mcp",
  "zoo_message_primitives",
+ "zoo_tools_runner",
+]
+
+[[package]]
+name = "zoo_tools_runner"
+version = "1.1.35"
+dependencies = [
+ "hanzo_tools_runner",
+ "serde",
 ]
 
 [[package]]
