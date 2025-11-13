@@ -33,6 +33,19 @@ jobs:
         run: |
           ./scripts/update_tools.sh
 
+      - name: Update dependency paths for CI build
+        shell: bash
+        run: |
+          # Replace the relative paths in Cargo.toml to point to checked-out hanzo-node
+          sed -i.bak 's|path = "../../hanzo/node/crates/hanzo-non-rust-code"|path = "hanzo-node/crates/hanzo-non-rust-code"|g' Cargo.toml
+          sed -i.bak 's|path = "../../hanzo/node/crates/hanzo-tools-primitives"|path = "hanzo-node/crates/hanzo-tools-primitives"|g' Cargo.toml
+          sed -i.bak 's|path = "../../hanzo/node/crates/hanzo-mining"|path = "hanzo-node/crates/hanzo-mining"|g' Cargo.toml
+          sed -i.bak 's|path = "../../hanzo/node/crates/hanzo-http-api"|path = "hanzo-node/crates/hanzo-http-api"|g' Cargo.toml
+          sed -i.bak 's|path = "../../lux/consensus"|path = "hanzo-node/crates/lux-consensus"|g' Cargo.toml || echo "lux_consensus path not found, skipping"
+
+          echo "Updated Cargo.toml paths:"
+          grep "hanzo-node" Cargo.toml
+
       - name: Configure rust-lld linker for Windows
         if: matrix.os == 'windows-2022'
         run: |
