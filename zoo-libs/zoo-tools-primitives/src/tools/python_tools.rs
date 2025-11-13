@@ -332,7 +332,7 @@ impl PythonTool {
                     env::var("ZOO_TOOLS_RUNNER_UV_BINARY_PATH")
                         .unwrap_or_else(|_| "./zoo-tools-runner-resources/uv".to_string()),
                 ),
-                zoo_node_location: ZooNodeLocation {
+                hanzo_node_location: ZooNodeLocation {
                     protocol: String::from("http"),
                     host: api_ip,
                     port: api_port,
