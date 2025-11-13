@@ -21,22 +21,13 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
-        with:
-          path: node
 
       - name: Checkout hanzo-node dependency
         uses: actions/checkout@v4
         with:
           repository: hanzoai/node
-          path: hanzo/node
+          path: ../../../hanzo/node
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Move zoo-node to correct location
-        run: |
-          mv node/* .
-          mv node/.* . 2>/dev/null || true
-          rmdir node
-        shell: bash
 
       - name: Configure rust-lld linker for Windows
         if: matrix.os == 'windows-2022'
@@ -99,21 +90,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          path: node
 
       - name: Checkout hanzo-node dependency
         uses: actions/checkout@v4
         with:
           repository: hanzoai/node
-          path: hanzo/node
+          path: ../../../hanzo/node
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Move zoo-node to correct location
-        run: |
-          mv node/* .
-          mv node/.* . 2>/dev/null || true
-          rmdir node
 
       - name: Download tools from store to pre-install folder
         run: |
