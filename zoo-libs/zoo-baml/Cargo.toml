@@ -3,6 +3,10 @@ name = "zoo_baml"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
+description = "Model Context Protocol implementation"
+license = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
 
 [dependencies]
 baml-runtime = { git = "https://github.com/BoundaryML/baml.git", tag = "0.56.1", package = "baml-runtime", features = [

@@ -3,6 +3,9 @@ name = "zoo_mcp"
 version = { workspace = true }
 edition = { workspace = true }
 description = "Methods to interact with MCP servers"
+license = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]

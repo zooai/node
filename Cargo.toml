@@ -20,9 +20,14 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "1.1.33"
+version = "1.1.34"
 edition = "2021"
 authors = ["Zoo Foundation <dev@zoo.ngo>"]
+license = "MIT"
+repository = "https://github.com/zooai/node"
+homepage = "https://zoo.ai"
+keywords = ["ai", "blockchain", "decentralized", "llm"]
+categories = ["cryptography", "network-programming"]
 
 [workspace.dependencies]
 zoo_message_primitives = { path = "./zoo-libs/zoo-message-primitives" }

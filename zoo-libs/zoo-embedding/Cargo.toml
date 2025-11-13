@@ -3,6 +3,10 @@ name = "zoo_embedding"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
+description = "Model Context Protocol implementation"
+license = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
 
 [dependencies]
 bincode = { workspace = true }
