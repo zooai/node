@@ -38,11 +38,10 @@ jobs:
         run: |
           echo "" >> Cargo.toml
           echo "# Hanzo dependencies (added by CI for build)" >> Cargo.toml
-          echo "hanzo_non_rust_code = { path = \"hanzo-node/crates/hanzo-non-rust-code\" }" >> Cargo.toml
-          echo "hanzo_tools_primitives = { path = \"hanzo-node/crates/hanzo-tools-primitives\" }" >> Cargo.toml
-          echo "hanzo_mining = { path = \"hanzo-node/crates/hanzo-mining\" }" >> Cargo.toml
-          echo "hanzo_http_api = { path = \"hanzo-node/crates/hanzo-http-api\" }" >> Cargo.toml
-          echo "lux_consensus = { path = \"hanzo-node/crates/lux-consensus\" }" >> Cargo.toml
+          echo "hanzo_non_rust_code = { path = \"hanzo-node/hanzo-libs/hanzo-non-rust-code\" }" >> Cargo.toml
+          echo "hanzo_tools_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-tools-primitives\" }" >> Cargo.toml
+          echo "hanzo_mining = { path = \"hanzo-node/hanzo-libs/hanzo-mining\" }" >> Cargo.toml
+          echo "hanzo_http_api = { path = \"hanzo-node/hanzo-libs/hanzo-http-api\" }" >> Cargo.toml
           echo "Updated Cargo.toml with hanzo dependencies:"
           tail -10 Cargo.toml
 
@@ -124,11 +123,10 @@ jobs:
         run: |
           echo "" >> Cargo.toml
           echo "# Hanzo dependencies (added by CI for build)" >> Cargo.toml
-          echo "hanzo_non_rust_code = { path = \"hanzo-node/crates/hanzo-non-rust-code\" }" >> Cargo.toml
-          echo "hanzo_tools_primitives = { path = \"hanzo-node/crates/hanzo-tools-primitives\" }" >> Cargo.toml
-          echo "hanzo_mining = { path = \"hanzo-node/crates/hanzo-mining\" }" >> Cargo.toml
-          echo "hanzo_http_api = { path = \"hanzo-node/crates/hanzo-http-api\" }" >> Cargo.toml
-          echo "lux_consensus = { path = \"hanzo-node/crates/lux-consensus\" }" >> Cargo.toml
+          echo "hanzo_non_rust_code = { path = \"hanzo-node/hanzo-libs/hanzo-non-rust-code\" }" >> Cargo.toml
+          echo "hanzo_tools_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-tools-primitives\" }" >> Cargo.toml
+          echo "hanzo_mining = { path = \"hanzo-node/hanzo-libs/hanzo-mining\" }" >> Cargo.toml
+          echo "hanzo_http_api = { path = \"hanzo-node/hanzo-libs/hanzo-http-api\" }" >> Cargo.toml
           echo "Updated Cargo.toml with hanzo dependencies:"
           tail -10 Cargo.toml
 
