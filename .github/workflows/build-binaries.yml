@@ -38,12 +38,29 @@ jobs:
         run: |
           echo "" >> Cargo.toml
           echo "# Hanzo dependencies (added by CI for build)" >> Cargo.toml
-          echo "hanzo_non_rust_code = { path = \"hanzo-node/hanzo-libs/hanzo-non-rust-code\" }" >> Cargo.toml
-          echo "hanzo_tools_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-tools-primitives\" }" >> Cargo.toml
-          echo "hanzo_mining = { path = \"hanzo-node/hanzo-libs/hanzo-mining\" }" >> Cargo.toml
+          echo "hanzo_message_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-message-primitives\" }" >> Cargo.toml
+          echo "hanzo_crypto_identities = { path = \"hanzo-node/hanzo-libs/hanzo-crypto-identities\" }" >> Cargo.toml
+          echo "hanzo_libp2p_relayer = { path = \"hanzo-node/hanzo-libs/hanzo-libp2p-relayer\" }" >> Cargo.toml
+          echo "hanzo_job_queue_manager = { path = \"hanzo-node/hanzo-libs/hanzo-job-queue-manager\" }" >> Cargo.toml
           echo "hanzo_http_api = { path = \"hanzo-node/hanzo-libs/hanzo-http-api\" }" >> Cargo.toml
-          echo "Updated Cargo.toml with hanzo dependencies:"
-          tail -10 Cargo.toml
+          echo "hanzo_tools_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-tools-primitives\" }" >> Cargo.toml
+          echo "hanzo_tools_runner = { path = \"hanzo-node/hanzo-libs/hanzo-tools-runner\" }" >> Cargo.toml
+          echo "hanzo_sqlite = { path = \"hanzo-node/hanzo-libs/hanzo-sqlite\" }" >> Cargo.toml
+          echo "hanzo_db = { path = \"hanzo-node/hanzo-libs/hanzo-db\" }" >> Cargo.toml
+          echo "hanzo_hmm = { path = \"hanzo-node/hanzo-libs/hanzo-hmm\" }" >> Cargo.toml
+          echo "hanzo_fs = { path = \"hanzo-node/hanzo-libs/hanzo-fs\" }" >> Cargo.toml
+          echo "hanzo_embedding = { path = \"hanzo-node/hanzo-libs/hanzo-embedding\" }" >> Cargo.toml
+          echo "hanzo_non_rust_code = { path = \"hanzo-node/hanzo-libs/hanzo-non-rust-code\" }" >> Cargo.toml
+          echo "hanzo_mcp = { path = \"hanzo-node/hanzo-libs/hanzo-mcp\" }" >> Cargo.toml
+          echo "hanzo_pqc = { path = \"hanzo-node/hanzo-libs/hanzo-pqc\" }" >> Cargo.toml
+          echo "hanzo-kbs = { path = \"hanzo-node/hanzo-libs/hanzo-kbs\" }" >> Cargo.toml
+          echo "hanzo_did = { path = \"hanzo-node/hanzo-libs/hanzo-did\" }" >> Cargo.toml
+          echo "hanzo_config = { path = \"hanzo-node/hanzo-libs/hanzo-config\" }" >> Cargo.toml
+          echo "hanzo_mining = { path = \"hanzo-node/hanzo-libs/hanzo-mining\" }" >> Cargo.toml
+          echo "hanzo_wasm_runtime = { path = \"hanzo-node/hanzo-libs/hanzo-wasm-runtime\" }" >> Cargo.toml
+          echo "hanzo_llm = { path = \"hanzo-node/hanzo-libs/hanzo-llm\" }" >> Cargo.toml
+          echo "Updated Cargo.toml with ALL hanzo workspace dependencies:"
+          tail -25 Cargo.toml
 
       - name: Configure rust-lld linker for Windows
         if: matrix.os == 'windows-2022'
@@ -123,12 +140,29 @@ jobs:
         run: |
           echo "" >> Cargo.toml
           echo "# Hanzo dependencies (added by CI for build)" >> Cargo.toml
-          echo "hanzo_non_rust_code = { path = \"hanzo-node/hanzo-libs/hanzo-non-rust-code\" }" >> Cargo.toml
-          echo "hanzo_tools_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-tools-primitives\" }" >> Cargo.toml
-          echo "hanzo_mining = { path = \"hanzo-node/hanzo-libs/hanzo-mining\" }" >> Cargo.toml
+          echo "hanzo_message_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-message-primitives\" }" >> Cargo.toml
+          echo "hanzo_crypto_identities = { path = \"hanzo-node/hanzo-libs/hanzo-crypto-identities\" }" >> Cargo.toml
+          echo "hanzo_libp2p_relayer = { path = \"hanzo-node/hanzo-libs/hanzo-libp2p-relayer\" }" >> Cargo.toml
+          echo "hanzo_job_queue_manager = { path = \"hanzo-node/hanzo-libs/hanzo-job-queue-manager\" }" >> Cargo.toml
           echo "hanzo_http_api = { path = \"hanzo-node/hanzo-libs/hanzo-http-api\" }" >> Cargo.toml
-          echo "Updated Cargo.toml with hanzo dependencies:"
-          tail -10 Cargo.toml
+          echo "hanzo_tools_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-tools-primitives\" }" >> Cargo.toml
+          echo "hanzo_tools_runner = { path = \"hanzo-node/hanzo-libs/hanzo-tools-runner\" }" >> Cargo.toml
+          echo "hanzo_sqlite = { path = \"hanzo-node/hanzo-libs/hanzo-sqlite\" }" >> Cargo.toml
+          echo "hanzo_db = { path = \"hanzo-node/hanzo-libs/hanzo-db\" }" >> Cargo.toml
+          echo "hanzo_hmm = { path = \"hanzo-node/hanzo-libs/hanzo-hmm\" }" >> Cargo.toml
+          echo "hanzo_fs = { path = \"hanzo-node/hanzo-libs/hanzo-fs\" }" >> Cargo.toml
+          echo "hanzo_embedding = { path = \"hanzo-node/hanzo-libs/hanzo-embedding\" }" >> Cargo.toml
+          echo "hanzo_non_rust_code = { path = \"hanzo-node/hanzo-libs/hanzo-non-rust-code\" }" >> Cargo.toml
+          echo "hanzo_mcp = { path = \"hanzo-node/hanzo-libs/hanzo-mcp\" }" >> Cargo.toml
+          echo "hanzo_pqc = { path = \"hanzo-node/hanzo-libs/hanzo-pqc\" }" >> Cargo.toml
+          echo "hanzo-kbs = { path = \"hanzo-node/hanzo-libs/hanzo-kbs\" }" >> Cargo.toml
+          echo "hanzo_did = { path = \"hanzo-node/hanzo-libs/hanzo-did\" }" >> Cargo.toml
+          echo "hanzo_config = { path = \"hanzo-node/hanzo-libs/hanzo-config\" }" >> Cargo.toml
+          echo "hanzo_mining = { path = \"hanzo-node/hanzo-libs/hanzo-mining\" }" >> Cargo.toml
+          echo "hanzo_wasm_runtime = { path = \"hanzo-node/hanzo-libs/hanzo-wasm-runtime\" }" >> Cargo.toml
+          echo "hanzo_llm = { path = \"hanzo-node/hanzo-libs/hanzo-llm\" }" >> Cargo.toml
+          echo "Updated Cargo.toml with ALL hanzo workspace dependencies:"
+          tail -25 Cargo.toml
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
