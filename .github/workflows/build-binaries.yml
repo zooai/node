@@ -87,6 +87,8 @@ jobs:
 
 
       - name: Build
+        env:
+          GLOBAL_IDENTITY_NAME: "@@localhost.sep-zoo"
         run: cargo build --release
 
       - name: Prepare bundle files
