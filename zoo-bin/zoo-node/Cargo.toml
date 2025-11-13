@@ -8,7 +8,8 @@ authors = { workspace = true }
 default-run = "zoo_node"
 
 [build-dependencies]
-zoo_tools_runner = { workspace = true, features = ["built-in-tools"] }
+# Removed zoo_tools_runner - build script tries to copy binaries we don't need
+# Runtime dependency in [dependencies] section is sufficient
 
 # Features
 [features]
