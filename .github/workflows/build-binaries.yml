@@ -33,6 +33,10 @@ jobs:
         run: |
           ./scripts/update_tools.sh
 
+      - name: Configure git credentials for private dependencies
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
       - name: Add hanzo workspace dependencies for CI build
         shell: bash
         run: |
@@ -134,6 +138,10 @@ jobs:
       - name: Download tools from store to pre-install folder
         run: |
           ./scripts/update_tools.sh
+
+      - name: Configure git credentials for private dependencies
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
       - name: Add hanzo workspace dependencies for CI build
         shell: bash
