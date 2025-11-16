@@ -1,5 +1,5 @@
 [package]
-name = "hanzo_non_rust_code"
+name = "hanzo-non-rust-code"
 version = "1.1.10"
 edition = "2021"
 authors = ["Hanzo AI"]
@@ -10,5 +10,5 @@ serde_json = "1.0"
 tokio = { version = "1.36", features = ["rt", "macros", "fs"] }
 shinkai_tools_runner = "1.0.0"
 tempfile = "3.19"
-hanzo_message_primitives = { path = "../hanzo-message-primitives" }
+hanzo-message-primitives = { path = "../hanzo-message-primitives" }
 log = "0.4"

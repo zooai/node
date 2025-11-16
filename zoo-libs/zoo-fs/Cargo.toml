@@ -1,53 +1,65 @@
+[[test]]
+name = "zoo-fs"
+path = "tests/pdf_parsing_tests.rs"
+required-features = [ "static-pdf-parser",]
+
 [package]
-name = "zoo_fs"
-version = { workspace = true }
-edition = { workspace = true }
-authors = { workspace = true }
+name = "zoo-fs"
+version = "1.1.35"
+edition = "2021"
+authors = [ "Zoo Foundation <dev@zoo.ngo>",]
 description = "Model Context Protocol implementation"
-license = { workspace = true }
-repository = { workspace = true }
-homepage = { workspace = true }
+license = "MIT"
+repository = "https://github.com/zooai/node"
+homepage = "https://zoo.ai"
 
 [dependencies]
-zoo_message_primitives = { workspace = true }
-zoo_embedding = { workspace = true }
-zoo_sqlite = { workspace = true }
-bincode = { workspace = true }
-serde_json = { workspace = true }
-rand = { workspace = true }
-blake3 = { workspace = true }
-tokio = { workspace = true }
-chrono = { workspace = true }
-comrak = { version = "0.22.0", default-features = true }
-thiserror = { workspace = true }
-reqwest = { workspace = true }
-lazy_static = { workspace = true }
-async-trait = { workspace = true }
-keyphrases = { workspace = true }
-futures = { workspace = true }
+bincode = "1.3.3"
+serde_json = "1.0.117"
+rand = "0.8.5"
+blake3 = "1.2.0"
+chrono = "0.4"
+thiserror = "2.0.3"
+reqwest = "0.11.27"
+lazy_static = "1.5.0"
+async-trait = "0.1.74"
+keyphrases = "0.3.3"
+futures = "0.3.30"
 scraper = "0.19.0"
 urlencoding = "2.1.0"
 walkdir = "2.5.0"
-csv = { workspace = true }
-utoipa = { workspace = true }
-regex = { workspace = true }
-os_path = { workspace = true }
-tempfile = { workspace = true }
-zoo_non_rust_code = { workspace = true }
-
-[dependencies.serde]
-workspace = true
-features = ["derive"]
+csv = "1.1.6"
+utoipa = "4.2.3"
+regex = "1"
+os_path = "0.8.0"
+tempfile = "3.19"
 
 [dev-dependencies]
-tempfile = { workspace = true }
+tempfile = "3.19"
 serial_test = "0.5"
 
-[[test]]
-name = "pdf_parsing_tests"
-path = "tests/pdf_parsing_tests.rs"
-required-features = ["static-pdf-parser"]
+[workspace]
 
-# [[test]]
-# name = "vector_resource_tests"
-# path = "tests/vector_resource_tests.rs"
+[dependencies.zoo_message_primitives]
+version = "1.1.35"
+
+[dependencies.zoo_embedding]
+version = "1.1.35"
+
+[dependencies.zoo_sqlite]
+version = "1.1.35"
+
+[dependencies.tokio]
+version = "1.36"
+features = [ "rt", "rt-multi-thread", "macros", "fs", "io-util", "net", "sync", "time",]
+
+[dependencies.comrak]
+version = "0.22.0"
+default-features = true
+
+[dependencies.zoo_non_rust_code]
+version = "1.1.35"
+
+[dependencies.serde]
+version = "1.0.219"
+features = [ "derive",]

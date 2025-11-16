@@ -1,5 +1,5 @@
 [package]
-name = "hanzo_message_primitives"
+name = "hanzo-message-primitives"
 version = "1.1.10"
 edition = "2021"
 authors = ["Hanzo AI"]

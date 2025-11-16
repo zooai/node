@@ -1,5 +1,5 @@
 [package]
-name = "zoo_test_macro"
+name = "zoo-test-macro"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,4 +10,4 @@ proc-macro = true
 proc-macro2 = "1"
 quote = "1"
 syn = { version = "2", features = ["full"] }
-zoo_test_framework = { path = "../zoo-test-framework" }
+zoo-test-framework = { path = "../zoo-test-framework" }

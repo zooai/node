@@ -1,5 +1,5 @@
 [package]
-name = "zoo_baml"
+name = "zoo-baml"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }

@@ -1,5 +1,5 @@
 [package]
-name = "zoo_sheet"
+name = "zoo-sheet"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
@@ -14,7 +14,7 @@ tokio = { workspace = true }
 chrono = { workspace = true, features = ["serde"] }
 uuid = { workspace = true, features = ["v4"] }
 regex = { workspace = true }
-zoo_message_primitives = { workspace = true }
+zoo-message-primitives = { workspace = true }
 async-channel = { workspace = true }
 
 [dependencies.serde]

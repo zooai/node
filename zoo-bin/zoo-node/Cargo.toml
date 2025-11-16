@@ -1,11 +1,11 @@
 [package]
-name = "zoo_node"
+name = "zoo-node"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
 
 # this makes `cargo run` in the workspace root to run this package
-default-run = "zoo_node"
+default-run = "zoo-node"
 
 [build-dependencies]
 # Removed zoo_tools_runner - build script tries to copy binaries we don't need
@@ -60,18 +60,18 @@ reqwest = { workspace = true, features = [
     "stream",
 ] }
 keyphrases = { workspace = true }
-zoo_message_primitives = { workspace = true }
-zoo_crypto_identities = { workspace = true }
-zoo_job_queue_manager = { workspace = true }
-zoo_tools_primitives = { workspace = true }
-zoo_libp2p_relayer = { workspace = true }
-zoo_http_api = { workspace = true }
-zoo_sqlite = { workspace = true }
-zoo_embedding = { workspace = true }
-zoo_fs = { workspace = true }
-zoo_non_rust_code = { workspace = true }
-zoo_mcp = { workspace = true }
-# zoo_baml = { workspace = true }
+zoo-message-primitives = { workspace = true }
+zoo-crypto-identities = { workspace = true }
+zoo-job-queue-manager = { workspace = true }
+zoo-tools-primitives = { workspace = true }
+zoo-libp2p-relayer = { workspace = true }
+zoo-http-api = { workspace = true }
+zoo-sqlite = { workspace = true }
+zoo-embedding = { workspace = true }
+zoo-fs = { workspace = true }
+zoo-non-rust-code = { workspace = true }
+zoo-mcp = { workspace = true }
+# zoo-baml = { workspace = true }
 bincode = { workspace = true }
 urlencoding = "2.1.0"
 hex = { workspace = true }
@@ -81,7 +81,7 @@ cron-parser = "0.8.1"
 dashmap = { workspace = true }
 async-lock = "2.4.0"
 governor = "0.6.3"
-zoo_tools_runner = { workspace = true, features = ["built-in-tools"] }
+zoo-tools-runner = { workspace = true, features = ["built-in-tools"] }
 console-subscriber = { version = "0.1", optional = true }
 downcast-rs = "1.2.1"
 bigdecimal = "0.2.2"
@@ -109,5 +109,5 @@ tokio-tungstenite = { workspace = true }
 tempfile = { workspace = true }
 fs_extra = "1.2.0"
 utoipa = { workspace = true, features = ["yaml"] }
-zoo_test_framework = { path = "../../zoo-test-framework" }
-zoo_test_macro = { path = "../../zoo-test-macro" }
+zoo-test-framework = { path = "../../zoo-test-framework" }
+zoo-test-macro = { path = "../../zoo-test-macro" }

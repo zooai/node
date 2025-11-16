@@ -1,21 +1,21 @@
 [workspace]
 members = [
-  # "zoo-libs/zoo-crypto-identities",  # Temp removed - depends on zoo_non_rust_code
+  "zoo-libs/zoo-crypto-identities",
   "zoo-libs/zoo-message-primitives",
-  # "zoo-libs/zoo-libp2p-relayer",  # Temp removed - depends on other zoo crates
-  # "zoo-libs/zoo-job-queue-manager",  # Temp removed
+  "zoo-libs/zoo-libp2p-relayer",
+  "zoo-libs/zoo-job-queue-manager",
   # "zoo-libs/zoo-baml",
-  # "zoo-libs/zoo-fs",  # Temp removed - depends on zoo_non_rust_code
-  # "zoo-libs/zoo-embedding",  # Temp removed
-  # "zoo-libs/zoo-http-api",  # Temp removed
-  # "zoo-libs/zoo-tools-primitives",  # Temp removed - depends on zoo_mcp
-  "zoo-libs/zoo-tools-runner",
-  # "zoo-libs/zoo-sqlite",  # Temp removed - depends on zoo_embedding
+  "zoo-libs/zoo-fs",
+  "zoo-libs/zoo-embedding",
+  "zoo-libs/zoo-http-api",
+  "zoo-libs/zoo-tools-primitives",
+  "zoo-libs/zoo-tools-runner",  # Thin wrapper around hanzo_tools_runner (DRY)
+  "zoo-libs/zoo-sqlite",
   "zoo-libs/zoo-non-rust-code",
-  # "zoo-libs/zoo-mcp",  # Temp removed
-  # "zoo-test-framework",
-  # "zoo-test-macro",
-  # "zoo-bin/*",  # Temp removed - depends on other crates
+  "zoo-libs/zoo-mcp",
+  "zoo-test-framework",
+  "zoo-test-macro",
+  "zoo-bin/*",
 ]
 resolver = "2"
 
@@ -30,19 +30,19 @@ keywords = ["ai", "blockchain", "decentralized", "llm"]
 categories = ["cryptography", "network-programming"]
 
 [workspace.dependencies]
-zoo-message-primitives = { path = "./zoo-libs/zoo-message-primitives" }
-zoo-crypto-identities = { path = "./zoo-libs/zoo-crypto-identities" }
-zoo-libp2p-relayer = { path = "./zoo-libs/zoo-libp2p-relayer" }
-zoo-job-queue-manager = { path = "./zoo-libs/zoo-job-queue-manager" }
-# zoo-baml = { path = "./zoo-libs/zoo-baml" }
-zoo-http-api = { path = "./zoo-libs/zoo-http-api" }
-zoo-tools-primitives = { path = "./zoo-libs/zoo-tools-primitives" }
-zoo-sqlite = { path = "./zoo-libs/zoo-sqlite" }
-zoo-fs = { path = "./zoo-libs/zoo-fs" }
-zoo-embedding = { path = "./zoo-libs/zoo-embedding" }
-zoo-non-rust-code = { path = "./zoo-libs/zoo-non-rust-code" }
-zoo-mcp = { path = "./zoo-libs/zoo-mcp" }
-zoo-tools-runner = { path = "./zoo-libs/zoo-tools-runner" }
+zoo_message_primitives = { path = "./zoo-libs/zoo-message-primitives" }
+zoo_crypto_identities = { path = "./zoo-libs/zoo-crypto-identities" }
+zoo_libp2p_relayer = { path = "./zoo-libs/zoo-libp2p-relayer" }
+zoo_job_queue_manager = { path = "./zoo-libs/zoo-job-queue-manager" }
+# zoo_baml = { path = "./zoo-libs/zoo-baml" }
+zoo_http_api = { path = "./zoo-libs/zoo-http-api" }
+zoo_tools_primitives = { path = "./zoo-libs/zoo-tools-primitives" }
+zoo_sqlite = { path = "./zoo-libs/zoo-sqlite" }
+zoo_fs = { path = "./zoo-libs/zoo-fs" }
+zoo_embedding = { path = "./zoo-libs/zoo-embedding" }
+zoo_non_rust_code = { path = "./zoo-libs/zoo-non-rust-code" }
+zoo_mcp = { path = "./zoo-libs/zoo-mcp" }
+zoo_tools_runner = { path = "./zoo-libs/zoo-tools-runner" }
 
 # External dependencies
 rmcp = { version = "0.6" }
@@ -112,7 +112,7 @@ libp2p = { version = "0.55.0", features = [
 ] }
 
 # Hanzo dependencies (for zoo-libs that depend on hanzo crates)
-hanzo_tools_runner = "1.0.3"  # Published on crates.io (currently with underscores)
+hanzo_tools_runner = "1.0.3"  # Published on crates.io
 # Vendored dependencies for CI compatibility (until published to crates.io)
-hanzo-non-rust-code = { path = "./vendor/hanzo-non-rust-code" }
-hanzo-message-primitives = { path = "./vendor/hanzo-message-primitives" }
+hanzo_non_rust_code = { path = "./vendor/hanzo-non-rust-code" }
+hanzo_message_primitives = { path = "./vendor/hanzo-message-primitives" }
