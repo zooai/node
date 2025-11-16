@@ -3408,7 +3408,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "zoo-message-primitives"
+name = "zoo_message_primitives"
 version = "1.1.35"
 dependencies = [
  "aes-gcm",
@@ -3436,7 +3436,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "zoo-non-rust-code"
+name = "zoo_non_rust_code"
 version = "1.1.35"
 dependencies = [
  "log",
@@ -3444,12 +3444,12 @@ dependencies = [
  "serde_json",
  "tempfile",
  "tokio",
- "zoo-message-primitives",
- "zoo-tools-runner",
+ "zoo_message_primitives",
+ "zoo_tools_runner",
 ]
 
 [[package]]
-name = "zoo-tools-runner"
+name = "zoo_tools_runner"
 version = "1.1.35"
 dependencies = [
  "hanzo_tools_runner",

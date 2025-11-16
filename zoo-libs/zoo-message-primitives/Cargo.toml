@@ -1,5 +1,5 @@
 [package]
-name = "zoo-message-primitives"
+name = "zoo_message_primitives"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }

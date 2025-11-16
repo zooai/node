@@ -27,7 +27,7 @@ regex = "1"
 
 [dependencies.reqwest]
 version = "0.11.27"
-features = [ "json",]
+features = [ "json", "blocking",]
 
 [dependencies.serde]
 version = "1.0.219"
