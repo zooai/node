@@ -139,3 +139,5 @@ storage_debug_relay
 
 # Publishing scripts with API tokens
 publish*.sh
+fix-and-publish*.sh
+*-publish*.sh
