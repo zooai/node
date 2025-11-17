@@ -22,49 +22,9 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-      - name: Checkout hanzo-node dependency
-        uses: actions/checkout@v4
-        with:
-          repository: hanzoai/node
-          path: hanzo-node
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Download tools from store to pre-install folder
         run: |
           ./scripts/update_tools.sh
-
-      - name: Configure git credentials for private dependencies
-        run: |
-          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
-
-      - name: Add hanzo workspace dependencies for CI build
-        shell: bash
-        run: |
-          echo "" >> Cargo.toml
-          echo "# Hanzo dependencies (added by CI for build)" >> Cargo.toml
-          echo "hanzo_message_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-message-primitives\" }" >> Cargo.toml
-          echo "hanzo_crypto_identities = { path = \"hanzo-node/hanzo-libs/hanzo-crypto-identities\" }" >> Cargo.toml
-          echo "hanzo_libp2p_relayer = { path = \"hanzo-node/hanzo-libs/hanzo-libp2p-relayer\" }" >> Cargo.toml
-          echo "hanzo_job_queue_manager = { path = \"hanzo-node/hanzo-libs/hanzo-job-queue-manager\" }" >> Cargo.toml
-          echo "hanzo_http_api = { path = \"hanzo-node/hanzo-libs/hanzo-http-api\" }" >> Cargo.toml
-          echo "hanzo_tools_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-tools-primitives\" }" >> Cargo.toml
-          echo "hanzo_tools_runner = { path = \"hanzo-node/hanzo-libs/hanzo-tools-runner\" }" >> Cargo.toml
-          echo "hanzo_sqlite = { path = \"hanzo-node/hanzo-libs/hanzo-sqlite\" }" >> Cargo.toml
-          echo "hanzo_db = { path = \"hanzo-node/hanzo-libs/hanzo-db\" }" >> Cargo.toml
-          echo "hanzo_hmm = { path = \"hanzo-node/hanzo-libs/hanzo-hmm\" }" >> Cargo.toml
-          echo "hanzo_fs = { path = \"hanzo-node/hanzo-libs/hanzo-fs\" }" >> Cargo.toml
-          echo "hanzo_embedding = { path = \"hanzo-node/hanzo-libs/hanzo-embedding\" }" >> Cargo.toml
-          echo "hanzo_non_rust_code = { path = \"hanzo-node/hanzo-libs/hanzo-non-rust-code\" }" >> Cargo.toml
-          echo "hanzo_mcp = { path = \"hanzo-node/hanzo-libs/hanzo-mcp\" }" >> Cargo.toml
-          echo "hanzo_pqc = { path = \"hanzo-node/hanzo-libs/hanzo-pqc\" }" >> Cargo.toml
-          echo "hanzo-kbs = { path = \"hanzo-node/hanzo-libs/hanzo-kbs\" }" >> Cargo.toml
-          echo "hanzo_did = { path = \"hanzo-node/hanzo-libs/hanzo-did\" }" >> Cargo.toml
-          echo "hanzo_config = { path = \"hanzo-node/hanzo-libs/hanzo-config\" }" >> Cargo.toml
-          echo "hanzo_mining = { path = \"hanzo-node/hanzo-libs/hanzo-mining\" }" >> Cargo.toml
-          echo "hanzo_wasm_runtime = { path = \"hanzo-node/hanzo-libs/hanzo-wasm-runtime\" }" >> Cargo.toml
-          echo "hanzo_llm = { path = \"hanzo-node/hanzo-libs/hanzo-llm\" }" >> Cargo.toml
-          echo "Updated Cargo.toml with ALL hanzo workspace dependencies:"
-          tail -25 Cargo.toml
 
       - name: Configure rust-lld linker for Windows
         if: matrix.os == 'windows-2022'
@@ -84,7 +44,6 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ matrix.arch }}-build-cargo-${{ hashFiles('**/Cargo.lock') }}
-
 
       - name: Build
         env:
@@ -123,6 +82,7 @@ jobs:
           asset_name: zoo-node-${{ matrix.arch }}.zip
           tag: ${{ github.ref }}
           overwrite: true
+
   build-docker-image:
     name: Build and push Docker image to Docker Hub
     runs-on: ubuntu-latest
@@ -130,67 +90,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Checkout hanzo-node dependency
-        uses: actions/checkout@v4
-        with:
-          repository: hanzoai/node
-          path: hanzo-node
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Download tools from store to pre-install folder
         run: |
           ./scripts/update_tools.sh
 
-      - name: Configure git credentials for private dependencies
-        run: |
-          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
-
-      - name: Add hanzo workspace dependencies for CI build
-        shell: bash
-        run: |
-          echo "" >> Cargo.toml
-          echo "# Hanzo dependencies (added by CI for build)" >> Cargo.toml
-          echo "hanzo_message_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-message-primitives\" }" >> Cargo.toml
-          echo "hanzo_crypto_identities = { path = \"hanzo-node/hanzo-libs/hanzo-crypto-identities\" }" >> Cargo.toml
-          echo "hanzo_libp2p_relayer = { path = \"hanzo-node/hanzo-libs/hanzo-libp2p-relayer\" }" >> Cargo.toml
-          echo "hanzo_job_queue_manager = { path = \"hanzo-node/hanzo-libs/hanzo-job-queue-manager\" }" >> Cargo.toml
-          echo "hanzo_http_api = { path = \"hanzo-node/hanzo-libs/hanzo-http-api\" }" >> Cargo.toml
-          echo "hanzo_tools_primitives = { path = \"hanzo-node/hanzo-libs/hanzo-tools-primitives\" }" >> Cargo.toml
-          echo "hanzo_tools_runner = { path = \"hanzo-node/hanzo-libs/hanzo-tools-runner\" }" >> Cargo.toml
-          echo "hanzo_sqlite = { path = \"hanzo-node/hanzo-libs/hanzo-sqlite\" }" >> Cargo.toml
-          echo "hanzo_db = { path = \"hanzo-node/hanzo-libs/hanzo-db\" }" >> Cargo.toml
-          echo "hanzo_hmm = { path = \"hanzo-node/hanzo-libs/hanzo-hmm\" }" >> Cargo.toml
-          echo "hanzo_fs = { path = \"hanzo-node/hanzo-libs/hanzo-fs\" }" >> Cargo.toml
-          echo "hanzo_embedding = { path = \"hanzo-node/hanzo-libs/hanzo-embedding\" }" >> Cargo.toml
-          echo "hanzo_non_rust_code = { path = \"hanzo-node/hanzo-libs/hanzo-non-rust-code\" }" >> Cargo.toml
-          echo "hanzo_mcp = { path = \"hanzo-node/hanzo-libs/hanzo-mcp\" }" >> Cargo.toml
-          echo "hanzo_pqc = { path = \"hanzo-node/hanzo-libs/hanzo-pqc\" }" >> Cargo.toml
-          echo "hanzo-kbs = { path = \"hanzo-node/hanzo-libs/hanzo-kbs\" }" >> Cargo.toml
-          echo "hanzo_did = { path = \"hanzo-node/hanzo-libs/hanzo-did\" }" >> Cargo.toml
-          echo "hanzo_config = { path = \"hanzo-node/hanzo-libs/hanzo-config\" }" >> Cargo.toml
-          echo "hanzo_mining = { path = \"hanzo-node/hanzo-libs/hanzo-mining\" }" >> Cargo.toml
-          echo "hanzo_wasm_runtime = { path = \"hanzo-node/hanzo-libs/hanzo-wasm-runtime\" }" >> Cargo.toml
-          echo "hanzo_llm = { path = \"hanzo-node/hanzo-libs/hanzo-llm\" }" >> Cargo.toml
-          echo "Updated Cargo.toml with ALL hanzo workspace dependencies:"
-          tail -25 Cargo.toml
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: zooai/zoo-node
+          tags: |
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./cloud-node/Dockerfile
+          file: ./docker-build/Dockerfile
           push: true
-          build-args: |
-            BUILD_TYPE=release
-          tags: |
-            zooai/zoo-node:${{ github.ref_name }}
-            zooai/zoo-node:release-latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
