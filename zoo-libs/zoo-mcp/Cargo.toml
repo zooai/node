@@ -24,8 +24,6 @@ strip-ansi-escapes = "0.2"
 tokio-test = "0.4"
 mockall = "0.11"
 
-[workspace]
-
 [dependencies.serde]
 version = "1.0.219"
 features = [ "derive",]

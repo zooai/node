@@ -5,7 +5,7 @@ edition = "2021"
 
 
 [lib]
-name = "zoo-test-framework"
+name = "zoo_test_framework"
 
 [dependencies]
 tokio = { workspace = true }

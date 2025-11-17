@@ -38,16 +38,14 @@ tempfile = "3.19"
 tempfile = "3.19"
 serial_test = "0.5"
 
-[workspace]
-
 [dependencies.zoo_message_primitives]
 version = "1.1.35"
 
-[dependencies.zoo_embedding]
-version = "1.1.35"
+[dependencies.zoo-embedding]
+workspace = true
 
-[dependencies.zoo_sqlite]
-version = "1.1.35"
+[dependencies.zoo-sqlite]
+workspace = true
 
 [dependencies.tokio]
 version = "1.36"

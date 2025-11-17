@@ -20,7 +20,7 @@ debug = []
 # Enable ngrok support when the `ngrok` feature is selected
 ngrok = ["dep:ngrok"]
 # Enable swagger-ui when this feature is selected
-swagger-ui = ["zoo_http_api/swagger-ui"]
+swagger-ui = ["zoo-http-api/swagger-ui"]
 # static-pdf-parser = ["zoo_vector_resources/static-pdf-parser"]
 
 [lib]

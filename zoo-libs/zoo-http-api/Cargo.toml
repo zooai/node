@@ -33,8 +33,6 @@ anyhow = "1.0.94"
 default = []
 swagger-ui = [ "utoipa-swagger-ui",]
 
-[workspace]
-
 [dependencies.utoipa-swagger-ui]
 version = "7.1.0"
 optional = true
@@ -51,8 +49,8 @@ features = [ "rand_core",]
 [dependencies.zoo_message_primitives]
 version = "1.1.35"
 
-[dependencies.zoo_tools_primitives]
-version = "1.1.35"
+[dependencies.zoo-tools-primitives]
+workspace = true
 
 [dependencies.tokio]
 version = "1.36"
