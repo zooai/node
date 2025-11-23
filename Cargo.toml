@@ -112,8 +112,7 @@ libp2p = { version = "0.55.0", features = [
   "macros",
 ] }
 
-# Hanzo dependencies (for zoo-libs that depend on hanzo crates)
-hanzo_tools_runner = "1.0.3"  # Published on crates.io (currently with underscores)
-# Vendored dependencies for CI compatibility (until published to crates.io)
+# Hanzo dependencies (published on crates.io with underscores)
+hanzo_tools_runner = "1.0.3"
 hanzo_non_rust_code = "1.1.10"
-hanzo_message_primitives = "0.0.0"
+hanzo_message_primitives = "0.0.0"  # Local/vendored dependency

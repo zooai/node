@@ -12,5 +12,5 @@ homepage = { workspace = true }
 built-in-tools = ["hanzo_tools_runner/built-in-tools"]
 
 [dependencies]
-hanzo_tools_runner = { version = "1.0.3" }
+hanzo_tools_runner = "1.0.3"
 serde = { workspace = true, features = ["derive"] }

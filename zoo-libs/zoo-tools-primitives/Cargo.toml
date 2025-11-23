@@ -23,11 +23,9 @@ features = [ "rt", "rt-multi-thread", "macros", "fs", "io-util", "net", "sync", 
 [dependencies.zoo_message_primitives]
 version = "1.1.35"
 
-# Use hanzo_tools_runner from crates.io (if published) or local path
+# Use hanzo_tools_runner from crates.io
 [dependencies.hanzo_tools_runner]
 version = "1.0.3"
-# Or use local path until published:
-# path = "../../../hanzo/node/crates/hanzo-tools-runner"
 features = [ "built-in-tools",]
 
 [dependencies.serde]
