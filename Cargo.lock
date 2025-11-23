@@ -8369,6 +8369,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "zoo_message_primitives 1.1.35 (registry+https://github.com/rust-lang/crates.io-index)",
+ "zoo_tools_runner 1.1.35",
 ]
 
 [[package]]

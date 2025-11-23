@@ -47,7 +47,7 @@ pub async fn list_tools_via_command(cmd_str: &str, config: Option<HashMap<String
 pub async fn list_tools_via_sse(sse_url: &str, _config: Option<HashMap<String, String>>) -> Result<Vec<Tool>> {
     // TODO: The config parameter is not currently used by SseTransport or ClientInfo setup in the example.
     // It might be used in the future for authentication headers or other SSE-specific configurations.
-    let transport = SseClientTransport::start(sse_url).await.map_err(|e| McpError {
+    let transport = SseClientTransport::new(sse_url).await.map_err(|e| McpError {
         message: format!("{}", e),
     })?;
     let client_info = ClientInfo {
@@ -56,6 +56,9 @@ pub async fn list_tools_via_sse(sse_url: &str, _config: Option<HashMap<String, S
         client_info: Implementation {
             name: "zoo_node_sse_client".to_string(),
             version: env!("CARGO_PKG_VERSION").to_string(),
+            icons: None,
+            title: None,
+            website_url: None,
         },
     };
     let client = client_info.serve(transport).await.map_err(|e| McpError {
