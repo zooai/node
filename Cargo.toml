@@ -45,7 +45,7 @@ zoo-non-rust-code = { path = "./zoo-libs/zoo-non-rust-code" }
 zoo-tools-runner = { path = "./zoo-libs/zoo-tools-runner" }
 
 # External dependencies
-rmcp = { version = "0.6" }
+rmcp = { version = "0.8" }
 futures = "0.3.30"
 keyphrases = "0.3.3"
 tokio = { version = "1.36", features = [

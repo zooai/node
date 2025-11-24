@@ -1,12 +1,13 @@
-use rmcp::client::McpClient;
-use rmcp::model::{CallToolRequest, CallToolResult};
-use rmcp::transport::{ChildProcessTransport, SseClientTransport};
+use rmcp::{
+    model::{CallToolRequestParam, CallToolResult, ClientCapabilities, ClientInfo, Implementation},
+    transport::{SseClientTransport, StreamableHttpClientTransport, TokioChildProcess},
+    ServiceExt,
+};
 use serde_json::Value;
 use std::collections::HashMap;
-use std::time::Duration;
-use tokio::time::timeout;
+use tokio::process::Command;
 
-const MCP_TIMEOUT: Duration = Duration::from_secs(30);
+type Result<T> = std::result::Result<T, String>;
 
 /// Run MCP tool via child process (command)
 pub async fn run_tool_via_command(
@@ -14,7 +15,7 @@ pub async fn run_tool_via_command(
     tool: String,
     env: HashMap<String, String>,
     parameters: serde_json::Map<String, Value>,
-) -> Result<CallToolResult, String> {
+) -> Result<CallToolResult> {
     // Parse command into parts
     let parts: Vec<&str> = command.split_whitespace().collect();
     if parts.is_empty() {
@@ -24,29 +25,36 @@ pub async fn run_tool_via_command(
     let program = parts[0].to_string();
     let args: Vec<String> = parts[1..].iter().map(|s| s.to_string()).collect();
 
-    // Create child process transport
-    let transport = ChildProcessTransport::new(program, args, env)
-        .map_err(|e| format!("Failed to create child process transport: {:?}", e))?;
+    // Create tokio command
+    let mut cmd = Command::new(program);
+    cmd.kill_on_drop(true);
+    cmd.envs(env);
+    cmd.args(args);
 
-    // Create MCP client
-    let client = McpClient::new(transport);
-
-    // Initialize the client
-    timeout(MCP_TIMEOUT, client.initialize("zoo-node".to_string(), "1.0.0".to_string()))
+    // Create child process transport and service
+    let service = ()
+        .serve(TokioChildProcess::new(cmd).map_err(|e| format!("Failed to create child process: {:?}", e))?)
         .await
-        .map_err(|_| "Client initialization timed out".to_string())?
-        .map_err(|e| format!("Failed to initialize client: {:?}", e))?;
+        .map_err(|e| format!("Failed to create service: {:?}", e))?;
+
+    // Initialize
+    service.peer_info();
 
     // Call the tool
-    let request = CallToolRequest {
-        name: tool,
-        arguments: Some(Value::Object(parameters)),
-    };
+    let call_tool_result = service
+        .call_tool(CallToolRequestParam {
+            name: tool.into(),
+            arguments: Some(parameters),
+        })
+        .await;
 
-    timeout(MCP_TIMEOUT, client.call_tool(request))
+    // Gracefully shut down
+    let _ = service
+        .cancel()
         .await
-        .map_err(|_| "Tool call timed out".to_string())?
-        .map_err(|e| format!("Tool call failed: {:?}", e))
+        .inspect_err(|e| log::error!("error cancelling service: {:?}", e));
+
+    Ok(call_tool_result.map_err(|e| format!("Tool call failed: {:?}", e))?)
 }
 
 /// Run MCP tool via SSE (Server-Sent Events)
@@ -54,31 +62,52 @@ pub async fn run_tool_via_sse(
     url: String,
     tool: String,
     parameters: serde_json::Map<String, Value>,
-) -> Result<CallToolResult, String> {
+) -> Result<CallToolResult> {
     // Create SSE transport
-    let transport = SseClientTransport::new(&url)
+    let transport = SseClientTransport::start(url)
         .await
+        .inspect_err(|e| log::error!("error starting sse transport: {:?}", e))
         .map_err(|e| format!("Failed to create SSE transport: {:?}", e))?;
 
-    // Create MCP client
-    let client = McpClient::new(transport);
-
-    // Initialize the client
-    timeout(MCP_TIMEOUT, client.initialize("zoo-node".to_string(), "1.0.0".to_string()))
-        .await
-        .map_err(|_| "Client initialization timed out".to_string())?
-        .map_err(|e| format!("Failed to initialize client: {:?}", e))?;
-
-    // Call the tool
-    let request = CallToolRequest {
-        name: tool,
-        arguments: Some(Value::Object(parameters)),
+    // Create client info
+    let client_info = ClientInfo {
+        protocol_version: Default::default(),
+        capabilities: ClientCapabilities::default(),
+        client_info: Implementation {
+            name: "zoo_node_sse_client".to_string(),
+            version: env!("CARGO_PKG_VERSION").to_string(),
+            icons: None,
+            title: None,
+            website_url: None,
+        },
     };
 
-    timeout(MCP_TIMEOUT, client.call_tool(request))
+    // Create service
+    let client = client_info
+        .serve(transport)
         .await
-        .map_err(|_| "Tool call timed out".to_string())?
-        .map_err(|e| format!("Tool call failed: {:?}", e))
+        .inspect_err(|e| log::error!("SSE client connection error: {:?}", e))
+        .map_err(|e| format!("Failed to create client: {:?}", e))?;
+
+    // Initialize
+    let _ = client.peer_info();
+
+    // Call the tool
+    let call_tool_result = client
+        .call_tool(CallToolRequestParam {
+            name: tool.into(),
+            arguments: Some(parameters),
+        })
+        .await
+        .inspect_err(|e| log::error!("error calling tool: {:?}", e));
+
+    // Gracefully shut down
+    let _ = client
+        .cancel()
+        .await
+        .inspect_err(|e| log::error!("error cancelling sse service: {:?}", e));
+
+    Ok(call_tool_result.map_err(|e| format!("Tool call failed: {:?}", e))?)
 }
 
 /// Run MCP tool via HTTP
@@ -86,8 +115,47 @@ pub async fn run_tool_via_http(
     url: String,
     tool: String,
     parameters: serde_json::Map<String, Value>,
-) -> Result<CallToolResult, String> {
-    // For now, HTTP is handled similar to SSE in rmcp 0.8
-    // This may need to be adjusted based on actual HTTP transport implementation
-    run_tool_via_sse(url, tool, parameters).await
+) -> Result<CallToolResult> {
+    // Create HTTP transport
+    let transport = StreamableHttpClientTransport::from_uri(url);
+
+    // Create client info
+    let client_info = ClientInfo {
+        protocol_version: Default::default(),
+        capabilities: ClientCapabilities::default(),
+        client_info: Implementation {
+            name: "zoo_node_http_client".to_string(),
+            version: env!("CARGO_PKG_VERSION").to_string(),
+            icons: None,
+            title: None,
+            website_url: None,
+        },
+    };
+
+    // Create service
+    let client = client_info
+        .serve(transport)
+        .await
+        .inspect_err(|e| log::error!("HTTP client connection error: {:?}", e))
+        .map_err(|e| format!("Failed to create client: {:?}", e))?;
+
+    // Initialize
+    let _ = client.peer_info();
+
+    // Call the tool
+    let call_tool_result = client
+        .call_tool(CallToolRequestParam {
+            name: tool.into(),
+            arguments: Some(parameters),
+        })
+        .await
+        .inspect_err(|e| log::error!("error calling tool: {:?}", e));
+
+    // Gracefully shut down
+    let _ = client
+        .cancel()
+        .await
+        .inspect_err(|e| log::error!("error cancelling http service: {:?}", e));
+
+    Ok(call_tool_result.map_err(|e| format!("Tool call failed: {:?}", e))?)
 }

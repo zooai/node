@@ -4895,12 +4895,14 @@ dependencies = [
  "tokio",
  "tokio-native-tls",
  "tokio-rustls 0.26.4",
+ "tokio-util",
  "tower 0.5.2",
  "tower-http",
  "tower-service",
  "url",
  "wasm-bindgen",
  "wasm-bindgen-futures",
+ "wasm-streams",
  "web-sys",
  "webpki-roots",
 ]
@@ -5003,6 +5005,7 @@ dependencies = [
  "paste",
  "pin-project-lite",
  "process-wrap",
+ "reqwest 0.12.24",
  "rmcp-macros 0.8.5",
  "schemars",
  "serde",
@@ -7830,7 +7833,7 @@ dependencies = [
 
 [[package]]
 name = "zoo-crypto-identities"
-version = "1.1.35"
+version = "1.1.11"
 dependencies = [
  "chrono",
  "dashmap",
@@ -7974,7 +7977,7 @@ dependencies = [
 
 [[package]]
 name = "zoo-message-primitives"
-version = "1.1.35"
+version = "1.1.11"
 dependencies = [
  "aes-gcm",
  "async-trait",
@@ -8002,7 +8005,7 @@ dependencies = [
 
 [[package]]
 name = "zoo-node"
-version = "1.1.35"
+version = "1.1.11"
 dependencies = [
  "aes-gcm",
  "ai-model-catalog",
@@ -8079,7 +8082,7 @@ dependencies = [
 
 [[package]]
 name = "zoo-non-rust-code"
-version = "1.1.35"
+version = "1.1.11"
 dependencies = [
  "log",
  "serde",
@@ -8170,7 +8173,7 @@ dependencies = [
 
 [[package]]
 name = "zoo-tools-runner"
-version = "1.1.35"
+version = "1.1.11"
 dependencies = [
  "hanzo_tools_runner",
  "serde",
