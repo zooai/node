@@ -60,8 +60,8 @@ reqwest = { workspace = true, features = [
     "stream",
 ] }
 keyphrases = { workspace = true }
-zoo_message_primitives = { workspace = true }
-zoo_crypto_identities = { workspace = true }
+zoo-message-primitives = { workspace = true }
+zoo-crypto-identities = { workspace = true }
 zoo-job-queue-manager = { workspace = true }
 zoo-tools-primitives = { workspace = true }
 zoo-libp2p-relayer = { workspace = true }
@@ -69,8 +69,8 @@ zoo-http-api = { workspace = true }
 zoo-sqlite = { workspace = true }
 zoo-embedding = { workspace = true }
 zoo-fs = { workspace = true }
-zoo_non_rust_code = { workspace = true }
-zoo-mcp = { workspace = true }
+zoo-non-rust-code = { workspace = true }
+# hanzo_mcp = "1.1.10"  # DISABLED - requires rmcp 0.8 API changes
 # zoo-baml = { workspace = true }
 bincode = { workspace = true }
 urlencoding = "2.1.0"
@@ -81,7 +81,7 @@ cron-parser = "0.8.1"
 dashmap = { workspace = true }
 async-lock = "2.4.0"
 governor = "0.6.3"
-zoo_tools_runner = { workspace = true, features = ["built-in-tools"] }
+zoo-tools-runner = { workspace = true, features = ["built-in-tools"] }
 console-subscriber = { version = "0.1", optional = true }
 downcast-rs = "1.2.1"
 bigdecimal = "0.2.2"

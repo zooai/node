@@ -46,8 +46,7 @@ features = [ "static_secrets",]
 version = "2.1.1"
 features = [ "rand_core",]
 
-[dependencies.zoo_message_primitives]
-version = "1.1.35"
+zoo-message-primitives = { workspace = true }
 
 [dependencies.zoo-tools-primitives]
 workspace = true

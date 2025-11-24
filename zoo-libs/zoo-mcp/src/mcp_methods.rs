@@ -86,13 +86,18 @@ pub async fn list_tools_via_sse(sse_url: &str, _config: Option<HashMap<String, S
 pub async fn list_tools_via_http(sse_url: &str, _config: Option<HashMap<String, String>>) -> Result<Vec<Tool>> {
     // TODO: The config parameter is not currently used by SseTransport or ClientInfo setup in the example.
     // It might be used in the future for authentication headers or other SSE-specific configurations.
-    let transport = StreamableHttpClientTransport::from_uri(sse_url);
+    let transport = StreamableHttpClientTransport::from(sse_url.parse().map_err(|e| McpError {
+        message: format!("Invalid URI: {:?}", e),
+    })?);
     let client_info = ClientInfo {
         protocol_version: Default::default(),
         capabilities: ClientCapabilities::default(),
         client_info: Implementation {
             name: "zoo_node_http_client".to_string(),
             version: env!("CARGO_PKG_VERSION").to_string(),
+            icons: None,
+            title: None,
+            website_url: None,
         },
     };
     let client = client_info.serve(transport).await.map_err(|e| McpError {
@@ -170,7 +175,7 @@ pub async fn run_tool_via_sse(
     tool: String,
     parameters: serde_json::Map<String, serde_json::Value>,
 ) -> Result<CallToolResult> {
-    let transport = SseClientTransport::start(url)
+    let transport = SseClientTransport::new(&url)
         .await
         .inspect_err(|e| log::error!("error starting sse transport: {:?}", e))
         .map_err(|e| McpError {
@@ -183,6 +188,9 @@ pub async fn run_tool_via_sse(
         client_info: Implementation {
             name: "Zoo Node Client".to_string(),
             version: "0.0.1".to_string(),
+            icons: None,
+            title: None,
+            website_url: None,
         },
     };
     let client = client_info
@@ -220,7 +228,9 @@ pub async fn run_tool_via_http(
     tool: String,
     parameters: serde_json::Map<String, serde_json::Value>,
 ) -> Result<CallToolResult> {
-    let transport = StreamableHttpClientTransport::from_uri(url);
+    let transport = StreamableHttpClientTransport::from(url.parse().map_err(|e| McpError {
+        message: format!("Invalid URI: {:?}", e),
+    })?);
 
     let client_info = ClientInfo {
         protocol_version: Default::default(),
@@ -228,6 +238,9 @@ pub async fn run_tool_via_http(
         client_info: Implementation {
             name: "Zoo Node HTTP Client".to_string(),
             version: env!("CARGO_PKG_VERSION").to_string(),
+            icons: None,
+            title: None,
+            website_url: None,
         },
     };
     let client = client_info

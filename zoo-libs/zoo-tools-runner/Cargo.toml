@@ -1,5 +1,5 @@
 [package]
-name = "zoo_tools_runner"
+name = "zoo-tools-runner"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }

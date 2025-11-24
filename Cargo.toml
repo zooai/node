@@ -12,7 +12,7 @@ members = [
   "zoo-libs/zoo-tools-runner",
   "zoo-libs/zoo-sqlite",
   "zoo-libs/zoo-non-rust-code",
-  # "zoo-libs/zoo-mcp",  # Keep disabled - uses outdated rmcp API (missing fields, methods)
+  # "zoo-libs/zoo-mcp",  # DISABLED - requires rmcp v0.6 transport API rewrite
   # "zoo-libs/zoo-sheet",  # Keep disabled - missing sheet module in zoo_message_primitives
   "zoo-test-framework",
   "zoo-test-macro",
@@ -31,8 +31,8 @@ keywords = ["ai", "blockchain", "decentralized", "llm"]
 categories = ["cryptography", "network-programming"]
 
 [workspace.dependencies]
-zoo_message_primitives = { path = "./zoo-libs/zoo-message-primitives" }
-zoo_crypto_identities = { path = "./zoo-libs/zoo-crypto-identities" }
+zoo-message-primitives = { path = "./zoo-libs/zoo-message-primitives" }
+zoo-crypto-identities = { path = "./zoo-libs/zoo-crypto-identities" }
 zoo-libp2p-relayer = { path = "./zoo-libs/zoo-libp2p-relayer" }
 zoo-job-queue-manager = { path = "./zoo-libs/zoo-job-queue-manager" }
 # zoo-baml = { path = "./zoo-libs/zoo-baml" }
@@ -41,12 +41,11 @@ zoo-tools-primitives = { path = "./zoo-libs/zoo-tools-primitives" }
 zoo-sqlite = { path = "./zoo-libs/zoo-sqlite" }
 zoo-fs = { path = "./zoo-libs/zoo-fs" }
 zoo-embedding = { path = "./zoo-libs/zoo-embedding" }
-zoo_non_rust_code = { path = "./zoo-libs/zoo-non-rust-code" }
-zoo-mcp = { path = "./zoo-libs/zoo-mcp" }
-zoo_tools_runner = { path = "./zoo-libs/zoo-tools-runner" }
+zoo-non-rust-code = { path = "./zoo-libs/zoo-non-rust-code" }
+zoo-tools-runner = { path = "./zoo-libs/zoo-tools-runner" }
 
 # External dependencies
-rmcp = { version = "0.6" }
+rmcp = { version = "0.8" }
 futures = "0.3.30"
 keyphrases = "0.3.3"
 tokio = { version = "1.36", features = [
@@ -112,7 +111,8 @@ libp2p = { version = "0.55.0", features = [
   "macros",
 ] }
 
-# Hanzo dependencies (published on crates.io with underscores)
-hanzo_tools_runner = "1.0.3"
-hanzo_non_rust_code = "1.1.10"
-hanzo_message_primitives = "0.0.0"  # Local/vendored dependency
+# Hanzo dependencies (published on crates.io)
+hanzo-tools-runner = "1.0.3"
+hanzo-mcp = "1.1.10"
+hanzo-non-rust-code = "1.1.10"
+hanzo-message-primitives = "0.0.0"  # Local/vendored dependency

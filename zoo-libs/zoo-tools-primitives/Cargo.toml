@@ -20,11 +20,10 @@ once_cell = "1.19"
 version = "1.36"
 features = [ "rt", "rt-multi-thread", "macros", "fs", "io-util", "net", "sync", "time",]
 
-[dependencies.zoo_message_primitives]
-version = "1.1.35"
+zoo-message-primitives = { workspace = true }
 
-# Use zoo_tools_runner from workspace (wraps hanzo_tools_runner)
-[dependencies.zoo_tools_runner]
+# Use zoo-tools-runner from workspace (wraps hanzo-tools-runner)
+[dependencies.zoo-tools-runner]
 workspace = true
 
 # Also keep direct hanzo_tools_runner dependency for compatibility
@@ -32,13 +31,16 @@ workspace = true
 version = "1.0.3"
 features = [ "built-in-tools",]
 
+# Note: NOT using hanzo_mcp - it requires rmcp 0.8 which is incompatible with Zoo's current architecture
+# Zoo uses rmcp 0.8 now but has architectural changes needed to support it properly
+
 [dependencies.serde]
 version = "1.0.219"
 features = [ "derive",]
 
 [dependencies.rmcp]
-version = "0.6"
+workspace = true
 features = [ "client", "transport-child-process", "transport-sse-client",]
 
 # [dependencies.zoo-mcp]
-# workspace = true  # Disabled - zoo-mcp uses outdated rmcp API
+# workspace = true  # Disabled - zoo-mcp uses outdated rmcp API, now using rmcp 0.8 directly

@@ -12,7 +12,7 @@ tokio = { workspace = true }
 async-channel = { workspace = true }
 anyhow = { workspace = true }
 zoo-http-api = { workspace = true }
-zoo_message_primitives = { workspace = true }
+zoo-message-primitives = { workspace = true }
 zoo-embedding = { workspace = true }
 zoo-sqlite = { workspace = true }
 zoo-node = { path = "../zoo-bin/zoo-node" }

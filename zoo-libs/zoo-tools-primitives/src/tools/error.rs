@@ -95,12 +95,6 @@ impl From<SerdeError> for ToolError {
     }
 }
 
-impl From<zoo_mcp::error::McpError> for ToolError {
-    fn from(err: zoo_mcp::error::McpError) -> ToolError {
-        ToolError::ParseError(err.message)
-    }
-}
-
 impl From<String> for ToolError {
     fn from(err: String) -> ToolError {
         ToolError::ParseError(err)

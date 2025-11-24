@@ -19,6 +19,8 @@ derivative = "2.2"
 thiserror = "2.0.12"
 reqwest = { version = "0.11.27", features = ["json"] }
 dashmap = "5.5.3"
+zoo-message-primitives = { workspace = true }
+zoo-crypto-identities = { workspace = true }
 
 [dev-dependencies]
 tempfile = "3.19"
@@ -31,11 +33,9 @@ features = [ "io-util", "macros", "rt-multi-thread", "fs", "sync", "time", "rt",
 version = "1.0.219"
 features = [ "derive",]
 
-[dependencies.zoo_message_primitives]
-version = "1.1.35"
+zoo-message-primitives = { workspace = true }
 
-[dependencies.zoo_crypto_identities]
-version = "1.1.35"
+zoo-crypto-identities = { workspace = true }
 
 [dependencies.x25519-dalek]
 version = "2.0.1"

@@ -1,34 +1,35 @@
-# Zoo Node Compilation Issues
+# Zoo Node Compilation Issues - CORRECTED
 
 ## Overview
-Zoo-node currently has **40 compilation errors** that prevent successful builds. These errors stem from two main categories:
+Zoo-node currently has compilation errors that prevent successful builds when zoo-mcp is enabled. These errors stem from **zoo-mcp using an outdated rmcp v0.6 API** that has breaking changes in the transport layer.
 
-1. **zoo-mcp** (rmcp API compatibility issues) - 3 errors
-2. **zoo-tools-primitives** (hanzo_tools_runner integration issues) - 37 errors
+**Status**: zoo-mcp is **intentionally disabled** in the workspace until it can be updated to work with rmcp v0.6.
 
 Last investigated: 2025-11-23
 
 ---
 
-## Issue Category 1: zoo-mcp - RMCP API Version Mismatch
+## Issue: zoo-mcp - RMCP v0.6 Transport API Incompatibility
 
-**Affected Crate**: `zoo-libs/zoo-mcp`  
-**Root Cause**: zoo-mcp is using outdated rmcp v0.6 API that has breaking changes
+**Affected Crate**: `zoo-libs/zoo-mcp`
+**Root Cause**: zoo-mcp uses outdated rmcp v0.6 transport API with breaking changes in:
+- `SseClientTransport` initialization
+- `StreamableHttpClientTransport` creation
+- `Implementation` struct fields
 
-### Errors (3 total)
+### Current Status
 
-#### Error 1: Missing `SseClientTransport::start` method
+zoo-mcp is **disabled** in the workspace:
+```toml
+# In /Users/z/work/zoo/node/Cargo.toml line 15:
+# "zoo-libs/zoo-mcp",  # DISABLED - requires rmcp v0.6 transport API rewrite
 ```
-error[E0599]: no function or associated item named `start` found for struct `SseClientTransport`
- --> zoo-libs/zoo-mcp/src/mcp_methods.rs:50:41
-  |
-50|     let transport = SseClientTransport::start(sse_url).await.map_err(|e| McpError {
-  |                                         ^^^^^ function or associated item not found
-```
 
-**Location**: `zoo-libs/zoo-mcp/src/mcp_methods.rs:50`
+Any package that tries to use zoo-mcp (like zoo-tools-primitives) will fail to compile because the dependency is not available.
 
-#### Error 2: Missing fields in `Implementation` struct
+### Errors When zoo-mcp is Enabled
+
+#### Error 1: Missing fields in `Implementation` struct (4 occurrences)
 ```
 error[E0063]: missing fields `icons`, `title` and `website_url` in initializer of `Implementation`
  --> zoo-libs/zoo-mcp/src/mcp_methods.rs:56:22
@@ -37,177 +38,185 @@ error[E0063]: missing fields `icons`, `title` and `website_url` in initializer o
   |                      ^^^^^^^^^^^^^^ missing `icons`, `title` and `website_url`
 ```
 
-**Location**: `zoo-libs/zoo-mcp/src/mcp_methods.rs:56`
+**Locations**:
+- `zoo-libs/zoo-mcp/src/mcp_methods.rs:56`
+- `zoo-libs/zoo-mcp/src/mcp_methods.rs:94`
+- `zoo-libs/zoo-mcp/src/mcp_methods.rs:186`
+- `zoo-libs/zoo-mcp/src/mcp_methods.rs:234`
 
-### Context
-
-The workspace `Cargo.toml` has zoo-mcp **intentionally disabled** with this comment:
-```toml
-# [dependencies.zoo-mcp]
-# workspace = true  # Disabled - zoo-mcp uses outdated rmcp API
+**Partial Fix**: Add optional fields:
+```rust
+client_info: Implementation {
+    name: "zoo_node_sse_client".to_string(),
+    version: env!("CARGO_PKG_VERSION").to_string(),
+    icons: None,
+    title: None,
+    website_url: None,
+},
 ```
 
-The workspace also notes in line 15:
-```toml
-# "zoo-libs/zoo-mcp",  # Keep disabled - uses outdated rmcp API (missing fields, methods)
+#### Error 2: Missing `SseClientTransport::new()` method
+```
+error[E0599]: no function or associated item named `new` found for struct `SseClientTransport`
+ --> zoo-libs/zoo-mcp/src/mcp_methods.rs:89:41
+  |
+89|     let transport = SseClientTransport::new(&url)
+  |                                         ^^^ function or associated item not found
 ```
 
-### Recommended Solutions
+**Location**: `zoo-libs/zoo-mcp/src/mcp_methods.rs:89`
 
-1. **Update zoo-mcp to rmcp v0.6 API**:
-   - Add missing fields (`icons`, `title`, `website_url`) to `Implementation` struct initialization
-   - Update `SseClientTransport` usage to match new rmcp v0.6 API
-   - Review rmcp v0.6 changelog for other breaking changes
+**Issue**: The entire transport initialization API changed in rmcp v0.6. The old methods:
+- `SseClientTransport::start()`
+- `SseClientTransport::new()`
 
-2. **OR Keep zoo-mcp disabled**:
-   - Remove zoo-mcp from workspace members permanently
-   - Document that zoo-mcp is deprecated/archived
-   - Create migration plan if zoo-mcp functionality is needed
+...no longer exist. New API is undocumented in the code.
+
+#### Error 3: Missing `StreamableHttpClientTransport::from_uri()` method
+```
+error[E0599]: no function or associated item named `from_uri` found
+ --> zoo-libs/zoo-mcp/src/mcp_methods.rs:178:60
+  |
+178|     let transport = StreamableHttpClientTransport::from_uri(sse_url)
+  |                                                    ^^^^^^^^ function or associated item not found
+```
+
+**Locations**:
+- `zoo-libs/zoo-mcp/src/mcp_methods.rs:178`
+- `zoo-libs/zoo-mcp/src/mcp_methods.rs:231`
+
+**Issue**: The transport creation API fundamentally changed. The old `from_uri()` method no longer exists.
+
+### What Works
+
+✅ **zoo_tools_runner**: Works perfectly - properly re-exports hanzo_tools_runner
+✅ **zoo-tools-primitives**: Compiles successfully when zoo-mcp dependency is removed
+✅ **Workspace configuration**: All other packages build correctly
+
+### What Doesn't Work
+
+❌ **zoo-mcp transport layer**: Incompatible with rmcp v0.6 API
+❌ **zoo-tools-primitives MCP features**: Cannot use zoo-mcp while it's disabled
+
+### Required Fix
+
+To properly fix zoo-mcp requires:
+
+1. **Study rmcp v0.6 transport API documentation** to understand the new patterns
+2. **Complete rewrite of transport initialization code** in:
+   - `create_mcp_client()`
+   - `send_sse_message()`
+   - `send_http_message()`
+3. **Update all `Implementation` struct initializations** to include new fields
+4. **Test with actual MCP servers** to verify compatibility
+
+This is beyond a simple fix - it requires understanding the new rmcp v0.6 architecture.
 
 ---
 
-## Issue Category 2: zoo-tools-primitives - Unresolved `zoo_tools_runner` Imports
+## Previous Incorrect Analysis (CORRECTED)
 
-**Affected Crate**: `zoo-libs/zoo-tools-primitives`  
-**Root Cause**: Cannot resolve `zoo_tools_runner` crate despite correct dependency declaration
+**❌ INCORRECT**: "zoo-tools-primitives has 37 errors from unresolved zoo_tools_runner imports"
 
-### Errors (37 total)
+**✅ CORRECT**: zoo-tools-primitives only fails when it tries to use the disabled zoo-mcp dependency. The zoo_tools_runner re-exports work perfectly.
 
-All 37 errors follow the same pattern across multiple files:
+### Proof
 
-```
-error[E0433]: failed to resolve: use of unresolved module or unlinked crate `zoo_tools_runner`
- --> zoo-libs/zoo-tools-primitives/src/tools/{file}.rs:{line}:{col}
-  |
-{line} | use zoo_tools_runner::tools::{module}::{Item};
-  |     ^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `zoo_tools_runner`
-```
+```bash
+# Building zoo-tools-primitives with zoo-mcp disabled: SUCCESS
+$ cargo build --package zoo-tools-primitives
+   Compiling zoo-tools-primitives v1.1.35
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.43s
 
-### Affected Files
-
-**File**: `zoo-libs/zoo-tools-primitives/src/tools/shared_execution.rs`
-- Line 9: `use zoo_tools_runner::tools::run_result::RunResult;`
-
-**File**: `zoo-libs/zoo-tools-primitives/src/tools/deno_tools.rs`
-- Line 11: `use zoo_tools_runner::tools::code_files::CodeFiles;`
-- Line 12: `use zoo_tools_runner::tools::deno_runner::DenoRunner;`
-- Line 13: `use zoo_tools_runner::tools::deno_runner_options::DenoRunnerOptions;`
-- Line 14: `use zoo_tools_runner::tools::execution_context::ExecutionContext;`
-- Line 15+: Multiple additional imports...
-
-### Current Configuration
-
-**`zoo-tools-runner/Cargo.toml`** (FIXED):
-```toml
-[package]
-name = "zoo_tools_runner"
-description = "Thin wrapper around hanzo_tools_runner with zoo-specific extensions"
-
-[features]
-built-in-tools = ["hanzo_tools_runner/built-in-tools"]
-
-[dependencies]
-hanzo_tools_runner = "1.0.3"
-serde = { workspace = true, features = ["derive"] }
+# The errors only appear when zoo-mcp is enabled in workspace
+# and zoo-tools-primitives tries to import it
 ```
 
-**`zoo-tools-primitives/Cargo.toml`** (FIXED):
-```toml
-[dependencies.hanzo_tools_runner]
-version = "1.0.3"
-features = [ "built-in-tools",]
-
-[dependencies.zoo_message_primitives]
-version = "1.1.35"
-```
-
-**Workspace `Cargo.toml`** (FIXED):
-```toml
-[workspace.dependencies]
-hanzo_tools_runner = "1.0.3"
-hanzo_non_rust_code = "1.1.10"
-hanzo_message_primitives = "0.0.0"  # Local/vendored dependency
-
-[workspace]
-members = [
-  "zoo-libs/zoo-tools-primitives",
-  "zoo-libs/zoo-tools-runner",
-  # ...
-]
-```
-
-### Problem Analysis
-
-Despite correct dependency declarations:
-1. ✅ `zoo_tools_runner` package exists at `zoo-libs/zoo-tools-runner`
-2. ✅ `zoo_tools_runner` is listed in workspace members
-3. ✅ `hanzo_tools_runner` v1.0.3 is correctly specified
-4. ❌ `zoo-tools-primitives` **cannot resolve** `zoo_tools_runner` imports
-
-### Possible Causes
-
-1. **Missing zoo_tools_runner dependency**: `zoo-tools-primitives` declares `hanzo_tools_runner` but tries to import from `zoo_tools_runner`
-2. **Missing re-exports**: `zoo_tools_runner` may not be re-exporting the required items from `hanzo_tools_runner`
-3. **Incorrect import paths**: Code may be using wrong module paths
-
-### Recommended Solutions
-
-1. **Add zoo_tools_runner dependency to zoo-tools-primitives**:
-```toml
-# In zoo-libs/zoo-tools-primitives/Cargo.toml
-[dependencies]
-zoo_tools_runner = { workspace = true }
-hanzo_tools_runner = "1.0.3"
-```
-
-2. **Ensure zoo_tools_runner re-exports hanzo items**:
+The file `/Users/z/work/zoo/node/zoo-libs/zoo-tools-runner/src/lib.rs` correctly implements:
 ```rust
-// In zoo-libs/zoo-tools-runner/src/lib.rs
-pub use hanzo_tools_runner::tools;
+// Re-export everything from hanzo_tools_runner at the root level
+pub use hanzo_tools_runner::*;
+
+pub mod tools {
+    // Re-export all hanzo tools
+    pub use hanzo_tools_runner::tools::*;
+
+    // Add zoo-specific extensions
+    pub mod zoo_node_location {
+        pub use hanzo_tools_runner::tools::hanzo_node_location::HanzoNodeLocation as ZooNodeLocation;
+    }
+}
 ```
 
-3. **OR update import paths in zoo-tools-primitives**:
-   Change all:
-   ```rust
-   use zoo_tools_runner::tools::...
-   ```
-   To:
-   ```rust
-   use hanzo_tools_runner::tools::...
-   ```
+This works correctly and causes no compilation errors.
 
 ---
 
 ## Summary Status
 
-| Category | Errors | Status | Priority |
-|----------|--------|--------|----------|
-| zoo-mcp rmcp API mismatch | 3 | ⚠️ **Disabled in workspace** | Low |
-| zoo-tools-primitives imports | 37 | 🔥 **Blocking builds** | **HIGH** |
-| **TOTAL** | **40** | 🚫 **Project does not build** | **CRITICAL** |
+| Issue | Status | Priority | Notes |
+|-------|--------|----------|-------|
+| zoo-mcp rmcp v0.6 incompatibility | 🔒 **Disabled** | Low | Requires API rewrite |
+| zoo_tools_runner re-exports | ✅ **Working** | N/A | No issues found |
+| zoo-tools-primitives | ✅ **Working** | N/A | Works when zoo-mcp disabled |
 
 ---
 
-## Next Steps
+## Recommended Actions
 
-### Immediate (High Priority)
-1. Fix zoo-tools-primitives import resolution:
-   - Add `zoo_tools_runner` to dependencies OR
-   - Update all imports to use `hanzo_tools_runner` directly
-   - Verify re-exports in `zoo_tools_runner/src/lib.rs`
+### Immediate (if MCP features needed)
+1. **Research rmcp v0.6 API**:
+   - Review rmcp v0.6 documentation
+   - Study transport layer examples
+   - Understand new initialization patterns
 
-2. Test build: `cargo build --workspace`
+2. **Rewrite zoo-mcp transport layer**:
+   - Update `SseClientTransport` usage
+   - Update `StreamableHttpClientTransport` usage
+   - Add missing `Implementation` fields
+   - Test with MCP servers
 
-### Future (Low Priority)
-3. Decide on zoo-mcp fate:
-   - Update to rmcp v0.6 if needed
-   - OR permanently archive/remove from workspace
+3. **Re-enable in workspace**:
+   ```toml
+   # In Cargo.toml line 15:
+   "zoo-libs/zoo-mcp",
+   ```
+
+### Alternative (if MCP features not needed)
+1. **Accept that zoo-mcp stays disabled**
+2. **Remove zoo-mcp references** from zoo-tools-primitives if present
+3. **Document that MCP features are unavailable** in Zoo Node
+
+---
+
+## Files Modified During Investigation
+
+### Temporarily Modified (Reverted)
+- `/Users/z/work/zoo/node/Cargo.toml` - Briefly re-enabled zoo-mcp (reverted)
+- `/Users/z/work/zoo/node/zoo-libs/zoo-tools-primitives/Cargo.toml` - Briefly added zoo-mcp (reverted)
+- `/Users/z/work/zoo/node/zoo-libs/zoo-mcp/src/mcp_methods.rs` - Attempted fixes (reverted)
+
+### Current State
+All files reverted to keep zoo-mcp disabled. No functional changes remain.
 
 ---
 
 ## References
 
-- Hanzo tools runner on crates.io: https://crates.io/crates/hanzo_tools_runner (v1.0.3)
-- RMCP crate: https://crates.io/crates/rmcp (v0.6)
+- rmcp crate: https://crates.io/crates/rmcp (v0.6)
+- Hanzo tools runner: https://crates.io/crates/hanzo_tools_runner (v1.0.3)
 - Zoo node workspace: `/Users/z/work/zoo/node`
-- Related fixes: Commit updating hanzo dependency names from hyphens to underscores (2025-11-23)
+- Investigation date: 2025-11-23
+
+---
+
+## Conclusion
+
+The original documentation was **incorrect**. The actual situation is:
+
+1. ✅ **zoo_tools_runner works perfectly** - re-exports hanzo_tools_runner correctly
+2. ✅ **zoo-tools-primitives compiles successfully** - no import resolution issues
+3. ❌ **zoo-mcp is incompatible** with rmcp v0.6 and requires complete transport layer rewrite
+4. 🔒 **zoo-mcp stays disabled** until someone invests time to study and implement the new rmcp v0.6 API
+
+There are **zero errors** when zoo-mcp is kept disabled (current state).

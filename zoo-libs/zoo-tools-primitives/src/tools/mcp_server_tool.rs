@@ -1,3 +1,4 @@
+use super::mcp_methods::{run_tool_via_command, run_tool_via_http, run_tool_via_sse};
 use super::parameters::Parameters;
 use super::tool_config::ToolConfig;
 use super::tool_output_arg::ToolOutputArg;
@@ -6,7 +7,6 @@ use super::tool_types::{OperatingSystem, RunnerType, ToolResult};
 use crate::tools::error::ToolError;
 use rmcp::model::{CallToolResult, Content};
 use serde_json::Value;
-use zoo_mcp::mcp_methods::{run_tool_via_command, run_tool_via_http, run_tool_via_sse};
 use zoo_message_primitives::schemas::mcp_server::{MCPServer, MCPServerType};
 use zoo_message_primitives::schemas::tool_router_key::ToolRouterKey;
 use zoo_tools_runner::tools::run_result::RunResult;
@@ -124,7 +124,7 @@ impl MCPServerTool {
         tool: String,
         env: HashMap<String, String>,
         parameters: serde_json::Map<String, serde_json::Value>,
-    ) -> Result<CallToolResult, zoo_mcp::error::McpError> {
+    ) -> Result<CallToolResult, String> {
         match mcp_server.r#type {
             MCPServerType::Command => {
                 run_tool_via_command(mcp_server.command.unwrap_or_default(), tool, env, parameters).await
