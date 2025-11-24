@@ -51,7 +51,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ matrix.arch }}-build-cargo-v2
+          key: ${{ matrix.arch }}-build-cargo-v1
           restore-keys: |
             ${{ matrix.arch }}-build-cargo-
 
