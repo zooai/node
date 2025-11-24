@@ -29,7 +29,8 @@ use zoo_http_api::{
     api_v2::api_v2_handlers_general::InitialRegistrationRequest,
     node_api_router::{APIError, GetPublicKeysResponse},
 };
-use zoo_mcp::mcp_methods::{list_tools_via_command, list_tools_via_http, list_tools_via_sse};
+// DISABLED - zoo-mcp uses rmcp 0.6, incompatible with rmcp 0.8 upgrade
+// use zoo_mcp::mcp_methods::{list_tools_via_command, list_tools_via_http, list_tools_via_sse};
 use zoo_message_primitives::schemas::llm_providers::zoo_backend::QuotaResponse;
 use zoo_message_primitives::schemas::mcp_server::{MCPServer, MCPServerType};
 use zoo_message_primitives::schemas::zoo_preferences::ZooInternalComms;
@@ -2491,33 +2492,34 @@ impl Node {
                                 }));
                             }
                         }
-                        match list_tools_via_command(command_str, server.env.clone()).await {
-                            Ok(tools) => {
-                                for tool in tools {
-                                    // Use the new function from mcp_manager instead of inline conversion
-                                    let server_id = server.id.as_ref().expect("Server ID should exist").to_string();
-                                    let zoo_tool = mcp_manager::convert_to_zoo_tool(
-                                        &tool,
-                                        &server.name,
-                                        &server_id,
-                                        &server_command_hash,
-                                        &node_name.to_string(),
-                                        tools_config.clone(),
-                                    );
-
-                                    if let Err(err) = db.add_tool(zoo_tool).await {
-                                        eprintln!("Warning: Failed to add mcp server tool: {}", err);
-                                    };
-                                }
-                            }
-                            Err(e) => {
-                                log::error!(
-                                    "Failed to list tools for command '{}' via list_tools_via_command: {:?}",
-                                    command_str,
-                                    e
-                                );
-                            }
-                        }
+                        // DISABLED - zoo-mcp uses rmcp 0.6, incompatible with rmcp 0.8 upgrade
+                        // match list_tools_via_command(command_str, server.env.clone()).await {
+                        //     Ok(tools) => {
+                        //         for tool in tools {
+                        //             // Use the new function from mcp_manager instead of inline conversion
+                        //             let server_id = server.id.as_ref().expect("Server ID should exist").to_string();
+                        //             let zoo_tool = mcp_manager::convert_to_zoo_tool(
+                        //                 &tool,
+                        //                 &server.name,
+                        //                 &server_id,
+                        //                 &server_command_hash,
+                        //                 &node_name.to_string(),
+                        //                 tools_config.clone(),
+                        //             );
+                        //
+                        //             if let Err(err) = db.add_tool(zoo_tool).await {
+                        //                 eprintln!("Warning: Failed to add mcp server tool: {}", err);
+                        //             };
+                        //         }
+                        //     }
+                        //     Err(e) => {
+                        //         log::error!(
+                        //             "Failed to list tools for command '{}' via list_tools_via_command: {:?}",
+                        //             command_str,
+                        //             e
+                        //         );
+                        //     }
+                        // }
                     } else {
                         // This should ideally not be reached if the check at the beginning of the function is robust,
                         // as mcp_server.command would have been validated.
@@ -2529,60 +2531,62 @@ impl Node {
                     }
                 } else if server.r#type == MCPServerType::Sse && server.is_enabled {
                     if let Some(url) = &server.url {
-                        match list_tools_via_sse(url, None).await {
-                            Ok(tools) => {
-                                for tool in tools {
-                                    // Use the new function from mcp_manager instead of inline conversion
-                                    let server_id = server.id.as_ref().expect("Server ID should exist").to_string();
-                                    let zoo_tool = mcp_manager::convert_to_zoo_tool(
-                                        &tool,
-                                        &server.name,
-                                        &server_id,
-                                        &server_command_hash,
-                                        &node_name.to_string(),
-                                        vec![],
-                                    );
-
-                                    if let Err(err) = db.add_tool(zoo_tool).await {
-                                        eprintln!("Warning: Failed to add mcp server tool: {}", err);
-                                    };
-                                }
-                            }
-                            Err(e) => {
-                                log::error!("Failed to list tools for sse '{}' via list_tools_via_sse: {:?}", url, e);
-                            }
-                        }
+                        // DISABLED - zoo-mcp uses rmcp 0.6, incompatible with rmcp 0.8 upgrade
+                        // match list_tools_via_sse(url, None).await {
+                        //     Ok(tools) => {
+                        //         for tool in tools {
+                        //             // Use the new function from mcp_manager instead of inline conversion
+                        //             let server_id = server.id.as_ref().expect("Server ID should exist").to_string();
+                        //             let zoo_tool = mcp_manager::convert_to_zoo_tool(
+                        //                 &tool,
+                        //                 &server.name,
+                        //                 &server_id,
+                        //                 &server_command_hash,
+                        //                 &node_name.to_string(),
+                        //                 vec![],
+                        //             );
+                        //
+                        //             if let Err(err) = db.add_tool(zoo_tool).await {
+                        //                 eprintln!("Warning: Failed to add mcp server tool: {}", err);
+                        //             };
+                        //         }
+                        //     }
+                        //     Err(e) => {
+                        //         log::error!("Failed to list tools for sse '{}' via list_tools_via_sse: {:?}", url, e);
+                        //     }
+                        // }
                     } else {
                         log::warn!("MCP Server '{}' (ID: {:?}) is of type Sse and enabled, but has no URL for spawning. This indicates an inconsistent state.", server.name, server.id);
                     }
                 } else if server.r#type == MCPServerType::Http && server.is_enabled {
                     if let Some(url) = &server.url {
-                        match list_tools_via_http(url, None).await {
-                            Ok(tools) => {
-                                for tool in tools {
-                                    let server_id = server.id.as_ref().expect("Server ID should exist").to_string();
-                                    let zoo_tool = mcp_manager::convert_to_zoo_tool(
-                                        &tool,
-                                        &server.name,
-                                        &server_id,
-                                        &server_command_hash,
-                                        &node_name.to_string(),
-                                        vec![],
-                                    );
-
-                                    if let Err(err) = db.add_tool(zoo_tool).await {
-                                        eprintln!("Warning: Failed to add mcp server tool: {}", err);
-                                    };
-                                }
-                            }
-                            Err(e) => {
-                                log::error!(
-                                    "Failed to list tools for http '{}' via list_tools_via_http: {:?}",
-                                    url,
-                                    e
-                                );
-                            }
-                        }
+                        // DISABLED - zoo-mcp uses rmcp 0.6, incompatible with rmcp 0.8 upgrade
+                        // match list_tools_via_http(url, None).await {
+                        //     Ok(tools) => {
+                        //         for tool in tools {
+                        //             let server_id = server.id.as_ref().expect("Server ID should exist").to_string();
+                        //             let zoo_tool = mcp_manager::convert_to_zoo_tool(
+                        //                 &tool,
+                        //                 &server.name,
+                        //                 &server_id,
+                        //                 &server_command_hash,
+                        //                 &node_name.to_string(),
+                        //                 vec![],
+                        //             );
+                        //
+                        //             if let Err(err) = db.add_tool(zoo_tool).await {
+                        //                 eprintln!("Warning: Failed to add mcp server tool: {}", err);
+                        //             };
+                        //         }
+                        //     }
+                        //     Err(e) => {
+                        //         log::error!(
+                        //             "Failed to list tools for http '{}' via list_tools_via_http: {:?}",
+                        //             url,
+                        //             e
+                        //         );
+                        //     }
+                        // }
                     } else {
                         log::warn!("MCP Server '{}' (ID: {:?}) is of type Http and enabled, but has no URL for spawning. This indicates an inconsistent state.", server.name, server.id);
                     }
@@ -2759,86 +2763,89 @@ impl Node {
                                     }));
                                 }
                             }
-                            match list_tools_via_command(cmd, mcp_server.env.clone()).await {
-                                Ok(tools) => {
-                                    for tool in tools {
-                                        let zoo_tool = mcp_manager::convert_to_zoo_tool(
-                                            &tool,
-                                            &updated_mcp_server.name,
-                                            &server_id,
-                                            &server_command_hash,
-                                            &node_name.to_string(),
-                                            tools_config.clone(),
-                                        );
-                                        if let Err(err) = db.add_tool(zoo_tool).await {
-                                            eprintln!("Warning: Failed to add mcp server tool: {}", err);
-                                        }
-                                    }
-                                }
-                                Err(e) => {
-                                    log::error!(
-                                        "Failed to list tools for command '{}' via list_tools_via_command: {:?}",
-                                        cmd,
-                                        e
-                                    );
-                                }
-                            }
+                            // DISABLED - zoo-mcp uses rmcp 0.6, incompatible with rmcp 0.8 upgrade
+                            // match list_tools_via_command(cmd, mcp_server.env.clone()).await {
+                            //     Ok(tools) => {
+                            //         for tool in tools {
+                            //             let zoo_tool = mcp_manager::convert_to_zoo_tool(
+                            //                 &tool,
+                            //                 &updated_mcp_server.name,
+                            //                 &server_id,
+                            //                 &server_command_hash,
+                            //                 &node_name.to_string(),
+                            //                 tools_config.clone(),
+                            //             );
+                            //             if let Err(err) = db.add_tool(zoo_tool).await {
+                            //                 eprintln!("Warning: Failed to add mcp server tool: {}", err);
+                            //             }
+                            //         }
+                            //     }
+                            //     Err(e) => {
+                            //         log::error!(
+                            //             "Failed to list tools for command '{}' via list_tools_via_command: {:?}",
+                            //             cmd,
+                            //             e
+                            //         );
+                            //     }
+                            // }
                         }
                     }
                     MCPServerType::Sse => {
                         if let Some(url) = &mcp_server.url {
-                            match list_tools_via_sse(url, None).await {
-                                Ok(tools) => {
-                                    for tool in tools {
-                                        let zoo_tool = mcp_manager::convert_to_zoo_tool(
-                                            &tool,
-                                            &updated_mcp_server.name,
-                                            &server_id,
-                                            &server_command_hash,
-                                            &node_name.to_string(),
-                                            vec![],
-                                        );
-                                        if let Err(err) = db.add_tool(zoo_tool).await {
-                                            eprintln!("Warning: Failed to add mcp server tool: {}", err);
-                                        }
-                                    }
-                                }
-                                Err(e) => {
-                                    log::error!(
-                                        "Failed to list tools for sse '{}' via list_tools_via_sse: {:?}",
-                                        url,
-                                        e
-                                    );
-                                }
-                            }
+                            // DISABLED - zoo-mcp uses rmcp 0.6, incompatible with rmcp 0.8 upgrade
+                            // match list_tools_via_sse(url, None).await {
+                            //     Ok(tools) => {
+                            //         for tool in tools {
+                            //             let zoo_tool = mcp_manager::convert_to_zoo_tool(
+                            //                 &tool,
+                            //                 &updated_mcp_server.name,
+                            //                 &server_id,
+                            //                 &server_command_hash,
+                            //                 &node_name.to_string(),
+                            //                 vec![],
+                            //             );
+                            //             if let Err(err) = db.add_tool(zoo_tool).await {
+                            //                 eprintln!("Warning: Failed to add mcp server tool: {}", err);
+                            //             }
+                            //         }
+                            //     }
+                            //     Err(e) => {
+                            //         log::error!(
+                            //             "Failed to list tools for sse '{}' via list_tools_via_sse: {:?}",
+                            //             url,
+                            //             e
+                            //         );
+                            //     }
+                            // }
                         }
                     }
                     MCPServerType::Http => {
                         if let Some(url) = &mcp_server.url {
-                            match list_tools_via_http(url, None).await {
-                                Ok(tools) => {
-                                    for tool in tools {
-                                        let zoo_tool = mcp_manager::convert_to_zoo_tool(
-                                            &tool,
-                                            &updated_mcp_server.name,
-                                            &server_id,
-                                            &server_command_hash,
-                                            &node_name.to_string(),
-                                            vec![],
-                                        );
-                                        if let Err(err) = db.add_tool(zoo_tool).await {
-                                            eprintln!("Warning: Failed to add mcp server tool: {}", err);
-                                        }
-                                    }
-                                }
-                                Err(e) => {
-                                    log::error!(
-                                        "Failed to list tools for http '{}' via list_tools_via_http: {:?}",
-                                        url,
-                                        e
-                                    );
-                                }
-                            }
+                            // DISABLED - zoo-mcp uses rmcp 0.6, incompatible with rmcp 0.8 upgrade
+                            // match list_tools_via_http(url, None).await {
+                            //     Ok(tools) => {
+                            //         for tool in tools {
+                            //             let zoo_tool = mcp_manager::convert_to_zoo_tool(
+                            //                 &tool,
+                            //                 &updated_mcp_server.name,
+                            //                 &server_id,
+                            //                 &server_command_hash,
+                            //                 &node_name.to_string(),
+                            //                 vec![],
+                            //             );
+                            //             if let Err(err) = db.add_tool(zoo_tool).await {
+                            //                 eprintln!("Warning: Failed to add mcp server tool: {}", err);
+                            //             }
+                            //         }
+                            //     }
+                            //     Err(e) => {
+                            //         log::error!(
+                            //             "Failed to list tools for http '{}' via list_tools_via_http: {:?}",
+                            //             url,
+                            //             e
+                            //         );
+                            //     }
+                            // }
                         }
                     }
                     _ => {

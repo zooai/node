@@ -46,7 +46,8 @@ features = [ "static_secrets",]
 version = "2.1.1"
 features = [ "rand_core",]
 
-zoo-message-primitives = { workspace = true }
+[dependencies.zoo-message-primitives]
+workspace = true
 
 [dependencies.zoo-tools-primitives]
 workspace = true
@@ -64,7 +65,7 @@ version = "1.6.1"
 features = [ "v4",]
 
 [dependencies.rmcp]
-version = "0.6"
+workspace = true
 features = [ "server", "macros",]
 
 [dependencies.tokio-tungstenite]

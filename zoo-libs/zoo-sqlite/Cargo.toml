@@ -41,7 +41,8 @@ features = [ "rt", "rt-multi-thread", "macros", "fs", "io-util", "net", "sync", 
 [dependencies.zoo-tools-primitives]
 workspace = true
 
-zoo-message-primitives = { workspace = true }
+[dependencies.zoo-message-primitives]
+workspace = true
 
 [dependencies.zoo-embedding]
 workspace = true

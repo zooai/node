@@ -20,7 +20,8 @@ once_cell = "1.19"
 version = "1.36"
 features = [ "rt", "rt-multi-thread", "macros", "fs", "io-util", "net", "sync", "time",]
 
-zoo-message-primitives = { workspace = true }
+[dependencies.zoo-message-primitives]
+workspace = true
 
 # Use zoo-tools-runner from workspace (wraps hanzo-tools-runner)
 [dependencies.zoo-tools-runner]

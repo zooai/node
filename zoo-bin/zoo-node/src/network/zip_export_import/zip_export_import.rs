@@ -8,7 +8,8 @@ use serde_json::{json, Value};
 use zoo_embedding::embedding_generator::EmbeddingGenerator;
 use zoo_fs::zoo_file_manager::{FileProcessingMode, ZooFileManager};
 use zoo_http_api::node_api_router::APIError;
-use zoo_mcp::mcp_methods::{list_tools_via_command, list_tools_via_http, list_tools_via_sse};
+// DISABLED - zoo-mcp uses rmcp 0.6, incompatible with rmcp 0.8 upgrade
+// use zoo_mcp::mcp_methods::{list_tools_via_command, list_tools_via_http, list_tools_via_sse};
 use zoo_message_primitives::schemas::llm_providers::agent::Agent;
 use zoo_message_primitives::schemas::mcp_server::{MCPServer, MCPServerType};
 use zoo_message_primitives::schemas::zoo_name::ZooName;
@@ -942,26 +943,28 @@ pub async fn import_mcp_server(
             message: format!("Failed to save MCP server to database: {}", e),
         })?;
     println!("[IMPORTING MCP SERVER]: {}", mcp_server.name);
-    let tools = match mcp_server.r#type {
-        MCPServerType::Command => {
-            let tools = list_tools_via_command(&mcp_server.command.clone().unwrap_or_default().to_string(), None)
-                .await
-                .map_err(|e| println!("Failed to list tools: {:?}", e));
-            tools
-        }
-        MCPServerType::Sse => {
-            let tools = list_tools_via_sse(&mcp_server.url.clone().unwrap_or_default().to_string(), None)
-                .await
-                .map_err(|e| println!("Failed to list tools: {:?}", e));
-            tools
-        }
-        MCPServerType::Http => {
-            let tools = list_tools_via_http(&mcp_server.url.clone().unwrap_or_default().to_string(), None)
-                .await
-                .map_err(|e| println!("Failed to list tools: {:?}", e));
-            tools
-        }
-    };
+    // DISABLED - zoo-mcp uses rmcp 0.6, incompatible with rmcp 0.8 upgrade
+    // let tools = match mcp_server.r#type {
+    //     MCPServerType::Command => {
+    //         let tools = list_tools_via_command(&mcp_server.command.clone().unwrap_or_default().to_string(), None)
+    //             .await
+    //             .map_err(|e| println!("Failed to list tools: {:?}", e));
+    //         tools
+    //     }
+    //     MCPServerType::Sse => {
+    //         let tools = list_tools_via_sse(&mcp_server.url.clone().unwrap_or_default().to_string(), None)
+    //             .await
+    //             .map_err(|e| println!("Failed to list tools: {:?}", e));
+    //         tools
+    //     }
+    //     MCPServerType::Http => {
+    //         let tools = list_tools_via_http(&mcp_server.url.clone().unwrap_or_default().to_string(), None)
+    //             .await
+    //             .map_err(|e| println!("Failed to list tools: {:?}", e));
+    //         tools
+    //     }
+    // };
+    let tools: Result<Vec<_>, _> = Ok(vec![]); // Placeholder - MCP tool listing disabled
     if let Ok(tools) = tools {
         for tool in tools {
             println!("[IMPORTING TOOL]: {}", tool.name);
