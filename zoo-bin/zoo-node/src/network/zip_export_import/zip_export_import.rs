@@ -964,7 +964,7 @@ pub async fn import_mcp_server(
     //         tools
     //     }
     // };
-    let tools: Result<Vec<_>, _> = Ok(vec![]); // Placeholder - MCP tool listing disabled
+    let tools: Result<Vec<rmcp::model::Tool>, String> = Ok(vec![]); // Placeholder - MCP tool listing disabled
     if let Ok(tools) = tools {
         for tool in tools {
             println!("[IMPORTING TOOL]: {}", tool.name);

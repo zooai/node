@@ -120,18 +120,14 @@ impl MCPServerTool {
     }
 
     pub async fn run_tool(
-        mcp_server: MCPServer,
-        tool: String,
-        env: HashMap<String, String>,
-        parameters: serde_json::Map<String, serde_json::Value>,
+        _mcp_server: MCPServer,
+        _tool: String,
+        _env: HashMap<String, String>,
+        _parameters: serde_json::Map<String, serde_json::Value>,
     ) -> Result<CallToolResult, String> {
-        match mcp_server.r#type {
-            MCPServerType::Command => {
-                run_tool_via_command(mcp_server.command.unwrap_or_default(), tool, env, parameters).await
-            }
-            MCPServerType::Sse => run_tool_via_sse(mcp_server.url.unwrap_or_default(), tool, parameters).await,
-            MCPServerType::Http => run_tool_via_http(mcp_server.url.unwrap_or_default(), tool, parameters).await,
-        }
+        // DISABLED - rmcp client API changed between 0.6 and 0.8
+        // MCP client functions temporarily disabled - rmcp 0.6 to 0.8 migration pending
+        Err("MCP client functionality temporarily disabled - rmcp 0.6 to 0.8 migration pending".to_string())
     }
 
     pub async fn map_content_to_error_message(content: Vec<Content>) -> String {

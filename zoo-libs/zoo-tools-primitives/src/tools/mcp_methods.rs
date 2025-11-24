@@ -1,15 +1,34 @@
+// DISABLED - rmcp client API changed between 0.6 and 0.8
+// These functions use outdated rmcp 0.6 client-side API that is incompatible with rmcp 0.8
+// Zoo Node has been upgraded to rmcp 0.8 but these client functions haven't been updated yet
+// TODO: Update to rmcp 0.8 client API or remove if not needed
+
+/*
 use rmcp::{
     model::{CallToolRequestParam, CallToolResult, ClientCapabilities, ClientInfo, Implementation},
     transport::{SseClientTransport, StreamableHttpClientTransport, TokioChildProcess},
     ServiceExt,
 };
+*/
 use serde_json::Value;
 use std::collections::HashMap;
-use tokio::process::Command;
+// use tokio::process::Command;
 
 type Result<T> = std::result::Result<T, String>;
 
+// DISABLED - uses rmcp 0.6 API
 /// Run MCP tool via child process (command)
+#[allow(dead_code)]
+pub async fn run_tool_via_command(
+    _command: String,
+    _tool: String,
+    _env: HashMap<String, String>,
+    _parameters: serde_json::Map<String, Value>,
+) -> Result<String> {
+    Err("MCP client functions temporarily disabled - rmcp 0.6 to 0.8 migration pending".to_string())
+}
+
+/*
 pub async fn run_tool_via_command(
     command: String,
     tool: String,
@@ -56,8 +75,20 @@ pub async fn run_tool_via_command(
 
     Ok(call_tool_result.map_err(|e| format!("Tool call failed: {:?}", e))?)
 }
+*/
 
+// DISABLED - uses rmcp 0.6 API
 /// Run MCP tool via SSE (Server-Sent Events)
+#[allow(dead_code)]
+pub async fn run_tool_via_sse(
+    _url: String,
+    _tool: String,
+    _parameters: serde_json::Map<String, Value>,
+) -> Result<String> {
+    Err("MCP client functions temporarily disabled - rmcp 0.6 to 0.8 migration pending".to_string())
+}
+
+/*
 pub async fn run_tool_via_sse(
     url: String,
     tool: String,
@@ -109,8 +140,20 @@ pub async fn run_tool_via_sse(
 
     Ok(call_tool_result.map_err(|e| format!("Tool call failed: {:?}", e))?)
 }
+*/
 
+// DISABLED - uses rmcp 0.6 API
 /// Run MCP tool via HTTP
+#[allow(dead_code)]
+pub async fn run_tool_via_http(
+    _url: String,
+    _tool: String,
+    _parameters: serde_json::Map<String, Value>,
+) -> Result<String> {
+    Err("MCP client functions temporarily disabled - rmcp 0.6 to 0.8 migration pending".to_string())
+}
+
+/*
 pub async fn run_tool_via_http(
     url: String,
     tool: String,
@@ -159,3 +202,4 @@ pub async fn run_tool_via_http(
 
     Ok(call_tool_result.map_err(|e| format!("Tool call failed: {:?}", e))?)
 }
+*/
