@@ -111,8 +111,8 @@ libp2p = { version = "0.55.0", features = [
   "macros",
 ] }
 
-# Hanzo dependencies (published on crates.io)
-hanzo-tools-runner = "1.0.3"
-hanzo-mcp = "1.1.10"
-hanzo-non-rust-code = "1.1.10"
+# Hanzo dependencies (temporarily using git while crates.io cooldown)
+hanzo-tools-runner = { git = "https://github.com/hanzoai/node", branch = "main" }
+hanzo-mcp = { git = "https://github.com/hanzoai/node", branch = "main" }
+hanzo-non-rust-code = { git = "https://github.com/hanzoai/node", branch = "main" }
 hanzo-message-primitives = "0.0.0"  # Local/vendored dependency

@@ -2018,10 +2018,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "hanzo_tools_runner"
-version = "1.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b641d0862c6b93457d7c0b497e00f4f3ab6d4f11170a9a4de78bb7584f7f36c"
+name = "hanzo-tools-runner"
+version = "1.0.0"
+source = "git+https://github.com/hanzoai/node?branch=main#1bbae4a153e182ed4a22d429bcde7b0b9d82874c"
 dependencies = [
  "anyhow",
  "base64-simd",
@@ -8128,7 +8127,7 @@ name = "zoo-tools-primitives"
 version = "1.1.35"
 dependencies = [
  "base64 0.22.1",
- "hanzo_tools_runner",
+ "hanzo-tools-runner",
  "log",
  "once_cell",
  "regex",
@@ -8145,7 +8144,7 @@ dependencies = [
 name = "zoo-tools-runner"
 version = "1.1.11"
 dependencies = [
- "hanzo_tools_runner",
+ "hanzo-tools-runner",
  "serde",
 ]
 

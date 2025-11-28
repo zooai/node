@@ -9,8 +9,8 @@ repository = { workspace = true }
 homepage = { workspace = true }
 
 [features]
-built-in-tools = ["hanzo_tools_runner/built-in-tools"]
+built-in-tools = ["hanzo-tools-runner/built-in-tools"]
 
 [dependencies]
-hanzo_tools_runner = "1.0.3"
+hanzo-tools-runner = { workspace = true }
 serde = { workspace = true, features = ["derive"] }

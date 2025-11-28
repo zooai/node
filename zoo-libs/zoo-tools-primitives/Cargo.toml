@@ -27,10 +27,9 @@ workspace = true
 [dependencies.zoo-tools-runner]
 workspace = true
 
-# Also keep direct hanzo_tools_runner dependency for compatibility
-[dependencies.hanzo_tools_runner]
-version = "1.0.3"
-features = [ "built-in-tools",]
+# Also keep direct hanzo-tools-runner dependency for compatibility
+[dependencies.hanzo-tools-runner]
+workspace = true
 
 # Note: NOT using hanzo_mcp - it requires rmcp 0.8 which is incompatible with Zoo's current architecture
 # Zoo uses rmcp 0.8 now but has architectural changes needed to support it properly
