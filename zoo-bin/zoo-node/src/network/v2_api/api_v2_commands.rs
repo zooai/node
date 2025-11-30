@@ -19,8 +19,8 @@ use ed25519_dalek::{SigningKey, VerifyingKey};
 use reqwest::StatusCode;
 use rusqlite::params;
 use serde_json::{json, Value};
-use zoo_embedding::embedding_generator::EmbeddingGenerator;
-use zoo_embedding::{embedding_generator::RemoteEmbeddingGenerator, model_type::EmbeddingModelType};
+use hanzo_embed::embedding_generator::EmbeddingGenerator;
+use hanzo_embed::{embedding_generator::RemoteEmbeddingGenerator, model_type::EmbeddingModelType};
 use zoo_http_api::api_v2::api_v2_handlers_mcp_servers::{
     AddMCPServerRequest, DeleteMCPServerResponse, UpdateMCPServerRequest,
 };

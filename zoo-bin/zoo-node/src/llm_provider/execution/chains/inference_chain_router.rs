@@ -9,7 +9,7 @@ use crate::managers::model_capabilities_manager::ModelCapabilitiesManager;
 use crate::managers::tool_router::ToolRouter;
 use crate::network::agent_payments_manager::external_agent_offerings_manager::ExtAgentOfferingsManager;
 use crate::network::agent_payments_manager::my_agent_offerings_manager::MyAgentOfferingsManager;
-use zoo_embedding::embedding_generator::RemoteEmbeddingGenerator;
+use hanzo_embed::embedding_generator::RemoteEmbeddingGenerator;
 use zoo_message_primitives::schemas::job::Job;
 use zoo_message_primitives::schemas::llm_providers::common_agent_llm_provider::ProviderOrAgent;
 use zoo_message_primitives::schemas::zoo_name::ZooName;

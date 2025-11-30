@@ -9,7 +9,7 @@ use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 
-use zoo_embedding::embedding_generator::RemoteEmbeddingGenerator;
+use hanzo_embed::embedding_generator::RemoteEmbeddingGenerator;
 use zoo_message_primitives::schemas::job::Job;
 use zoo_message_primitives::schemas::llm_providers::common_agent_llm_provider::ProviderOrAgent;
 use zoo_message_primitives::schemas::llm_providers::serialized_llm_provider::SerializedLLMProvider;

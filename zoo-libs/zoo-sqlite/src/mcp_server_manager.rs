@@ -300,7 +300,7 @@ impl SqliteManager {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+    use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
     use std::collections::HashMap;
     use std::path::PathBuf;
     use tempfile::NamedTempFile;

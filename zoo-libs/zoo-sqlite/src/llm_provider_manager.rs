@@ -241,7 +241,7 @@ impl SqliteManager {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+    use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
     use zoo_message_primitives::schemas::{
         llm_providers::serialized_llm_provider::{LLMProviderInterface, OpenAI}, zoo_name::ZooName
     };

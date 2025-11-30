@@ -216,8 +216,8 @@ mod tests {
 
     use super::*;
     use serial_test::serial;
-    use zoo_embedding::mock_generator::MockGenerator;
-    use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+    use hanzo_embed::mock_generator::MockGenerator;
+    use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
     use zoo_message_primitives::schemas::zoo_fs::ZooFileChunk;
     use std::fs::{self, File};
     use std::io::Read;

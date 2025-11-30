@@ -1,5 +1,5 @@
 use crate::llm_provider::job_manager::JobManager;
-use zoo_embedding::embedding_generator::{EmbeddingGenerator, RemoteEmbeddingGenerator};
+use hanzo_embed::embedding_generator::{EmbeddingGenerator, RemoteEmbeddingGenerator};
 use zoo_fs::zoo_file_manager::ZooFileManager;
 use zoo_message_primitives::schemas::zoo_fs::{ZooFileChunk, ZooFileChunkCollection};
 use zoo_message_primitives::zoo_utils::job_scope::MinimalJobScope;

@@ -267,7 +267,7 @@ impl SqliteManager {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+    use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
     use zoo_message_primitives::schemas::{zoo_name::ZooName, tool_router_key::ToolRouterKey};
     use std::collections::HashMap;
     use std::path::PathBuf;

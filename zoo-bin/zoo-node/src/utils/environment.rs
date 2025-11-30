@@ -2,7 +2,7 @@ use std::env;
 use std::net::{IpAddr, SocketAddr};
 use std::str::FromStr;
 
-use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
 use zoo_message_primitives::schemas::llm_providers::serialized_llm_provider::{
     LLMProviderInterface, SerializedLLMProvider
 };

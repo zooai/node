@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
 use zoo_message_primitives::zoo_utils::zoo_path::ZooPath;
 use zoo_sqlite::SqliteManager;
 use tempfile::NamedTempFile;

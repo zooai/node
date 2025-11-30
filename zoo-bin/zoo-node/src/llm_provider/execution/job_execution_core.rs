@@ -10,7 +10,7 @@ use crate::network::agent_payments_manager::external_agent_offerings_manager::Ex
 use crate::network::agent_payments_manager::my_agent_offerings_manager::MyAgentOfferingsManager;
 use ed25519_dalek::SigningKey;
 
-use zoo_embedding::embedding_generator::RemoteEmbeddingGenerator;
+use hanzo_embed::embedding_generator::RemoteEmbeddingGenerator;
 use zoo_fs::zoo_file_manager::ZooFileManager;
 use zoo_job_queue_manager::job_queue_manager::{JobForProcessing, JobQueueManager};
 use zoo_message_primitives::schemas::job::{Job, JobLike};

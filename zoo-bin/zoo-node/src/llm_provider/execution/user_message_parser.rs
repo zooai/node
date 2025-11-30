@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use zoo_embedding::embedding_generator::{EmbeddingGenerator, RemoteEmbeddingGenerator};
+use hanzo_embed::embedding_generator::{EmbeddingGenerator, RemoteEmbeddingGenerator};
 use zoo_fs::zoo_fs_error::ZooFsError;
 // use zoo_vector_resources::{
 //     embedding_generator::{EmbeddingGenerator, RemoteEmbeddingGenerator},

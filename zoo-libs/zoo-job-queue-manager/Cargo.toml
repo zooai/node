@@ -21,7 +21,7 @@ workspace = true
 [dependencies.zoo-sqlite]
 workspace = true
 
-[dependencies.zoo-embedding]
+[dependencies.hanzo-embed]
 workspace = true
 
 [dependencies.tokio]

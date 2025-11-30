@@ -424,7 +424,7 @@ impl SqliteManager {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+    use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
     use zoo_message_primitives::schemas::{
         invoices::InvoiceStatusEnum, zoo_name::ZooName, zoo_tool_offering::{ZooToolOffering, ToolPrice, UsageType, UsageTypeInquiry}, wallet_mixed::{NetworkIdentifier, PublicAddress}, x402_types::Network
     };

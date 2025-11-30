@@ -1,4 +1,4 @@
-use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
 use zoo_message_primitives::schemas::inbox_name::InboxName;
 use zoo_message_primitives::zoo_message::zoo_message::ZooMessage;
 use zoo_message_primitives::zoo_message::zoo_message_schemas::MessageSchemaType;

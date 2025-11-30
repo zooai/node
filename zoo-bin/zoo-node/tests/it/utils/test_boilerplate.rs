@@ -1,8 +1,8 @@
 use super::db_handlers::{setup, setup_node_storage_path};
 use async_channel::{bounded, Receiver, Sender};
 
-use zoo_embedding::embedding_generator::RemoteEmbeddingGenerator;
-use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+use hanzo_embed::embedding_generator::RemoteEmbeddingGenerator;
+use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
 use zoo_node::llm_provider::job_callback_manager::JobCallbackManager;
 use zoo_node::managers::tool_router::ToolRouter;
 use zoo_sqlite::SqliteManager;

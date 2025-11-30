@@ -524,8 +524,8 @@ async fn process_function_call(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use zoo_embedding::model_type::EmbeddingModelType;
-    use zoo_embedding::model_type::OllamaTextEmbeddingsInference;
+    use hanzo_embed::model_type::EmbeddingModelType;
+    use hanzo_embed::model_type::OllamaTextEmbeddingsInference;
     use zoo_sqlite::SqliteManager;
     use std::sync::Arc;
     use tempfile::NamedTempFile;

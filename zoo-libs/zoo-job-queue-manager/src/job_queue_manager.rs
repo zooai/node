@@ -257,7 +257,7 @@ impl<T: Clone + Send + 'static + Debug> Clone for JobQueueManager<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+    use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
     use zoo_message_primitives::{
         schemas::zoo_name::ZooName, zoo_utils::zoo_logging::{zoo_log, ZooLogLevel, ZooLogOption}
     };

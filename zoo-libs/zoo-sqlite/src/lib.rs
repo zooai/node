@@ -4,7 +4,7 @@ use log::info;
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
 use rusqlite::{ffi::sqlite3_auto_extension, Result, Row, ToSql};
-use zoo_embedding::model_type::EmbeddingModelType;
+use hanzo_embed::model_type::EmbeddingModelType;
 use zoo_message_primitives::schemas::zoo_name::ZooName;
 use sqlite_vec::sqlite3_vec_init;
 use std::path::Path;
@@ -1287,7 +1287,7 @@ impl SqliteManager {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use zoo_embedding::model_type::OllamaTextEmbeddingsInference;
+    use hanzo_embed::model_type::OllamaTextEmbeddingsInference;
     use std::path::PathBuf;
     use std::sync::{Arc, RwLock};
     use std::thread;

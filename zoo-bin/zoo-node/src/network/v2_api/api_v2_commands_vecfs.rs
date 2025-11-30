@@ -6,7 +6,7 @@ use chrono::{DateTime, Utc};
 use reqwest::StatusCode;
 use serde_json::Value;
 
-use zoo_embedding::embedding_generator::EmbeddingGenerator;
+use hanzo_embed::embedding_generator::EmbeddingGenerator;
 use zoo_fs::{
     zoo_file_manager::{FileProcessingMode, ZooFileManager}, zoo_fs_error::ZooFsError
 };

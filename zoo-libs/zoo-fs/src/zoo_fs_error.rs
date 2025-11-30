@@ -1,6 +1,6 @@
 use regex::Error as RegexError;
 use serde_json::Error as SerdeError;
-use zoo_embedding::zoo_embedding_errors::ZooEmbeddingError;
+use hanzo_embed::hanzo_embedding_errors::HanzoEmbeddingError;
 use zoo_sqlite::errors::SqliteManagerError;
 use std::io;
 use thiserror::Error;
@@ -127,8 +127,8 @@ impl From<reqwest::Error> for ZooFsError {
     }
 }
 
-impl From<ZooEmbeddingError> for ZooFsError {
-    fn from(error: ZooEmbeddingError) -> Self {
+impl From<HanzoEmbeddingError> for ZooFsError {
+    fn from(error: HanzoEmbeddingError) -> Self {
         ZooFsError::FailedEmbeddingGeneration(error.to_string())
     }
 }

@@ -12,7 +12,7 @@ use ed25519_dalek::{ed25519::signature::SignerMut, SigningKey};
 use reqwest::StatusCode;
 use rusqlite::Error as RusqliteError;
 use serde_json::{json, Map, Value};
-use zoo_embedding::embedding_generator::EmbeddingGenerator;
+use hanzo_embed::embedding_generator::EmbeddingGenerator;
 use zoo_http_api::node_api_router::{APIError, SendResponseBodyData};
 use zoo_message_primitives::{
     schemas::{

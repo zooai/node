@@ -1144,7 +1144,7 @@ dependencies = [
  "cssparser-macros",
  "dtoa-short",
  "itoa",
- "phf 0.11.3",
+ "phf 0.10.1",
  "smallvec",
 ]
 
@@ -1622,7 +1622,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -2018,9 +2018,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "hanzo-embed"
+version = "1.1.11"
+source = "git+https://github.com/hanzoai/node?branch=main#8d7dc45aea133df059f19854d285102b68f3f3b5"
+dependencies = [
+ "async-trait",
+ "bincode",
+ "blake3",
+ "chrono",
+ "csv",
+ "futures",
+ "keyphrases",
+ "lazy_static",
+ "rand 0.8.5",
+ "regex",
+ "reqwest 0.11.27",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.17",
+ "utoipa",
+]
+
+[[package]]
 name = "hanzo-tools-runner"
 version = "1.0.0"
-source = "git+https://github.com/hanzoai/node?branch=main#1bbae4a153e182ed4a22d429bcde7b0b9d82874c"
+source = "git+https://github.com/hanzoai/node?branch=main#8d7dc45aea133df059f19854d285102b68f3f3b5"
 dependencies = [
  "anyhow",
  "base64-simd",
@@ -2522,7 +2544,7 @@ dependencies = [
  "js-sys",
  "log",
  "wasm-bindgen",
- "windows-core 0.62.2",
+ "windows-core 0.61.2",
 ]
 
 [[package]]
@@ -3820,7 +3842,7 @@ version = "0.50.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7957b9740744892f114936ab4a57b3f487491bbeafaf8083688b16841a4240e5"
 dependencies = [
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -4135,7 +4157,9 @@ version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fabbf1ead8a5bcbc20f5f8b939ee3f5b0f6f281b6ad3468b84656b658b455259"
 dependencies = [
+ "phf_macros 0.10.0",
  "phf_shared 0.10.0",
+ "proc-macro-hack",
 ]
 
 [[package]]
@@ -4144,7 +4168,7 @@ version = "0.11.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fd6780a80ae0c52cc120a26a1a42c1ae51b247a253e4e06113d23d2c2edd078"
 dependencies = [
- "phf_macros",
+ "phf_macros 0.11.3",
  "phf_shared 0.11.3",
 ]
 
@@ -4186,6 +4210,20 @@ checksum = "3c80231409c20246a13fddb31776fb942c38553c51e871f8cbd687a4cfb5843d"
 dependencies = [
  "phf_shared 0.11.3",
  "rand 0.8.5",
+]
+
+[[package]]
+name = "phf_macros"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "58fdf3184dd560f160dd73922bea2d5cd6e8f064bf4b13110abd81b03697b4e0"
+dependencies = [
+ "phf_generator 0.10.0",
+ "phf_shared 0.10.0",
+ "proc-macro-hack",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
 ]
 
 [[package]]
@@ -4406,6 +4444,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "proc-macro-hack"
+version = "0.5.20+deprecated"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc375e1527247fe1a97d8b7156678dfe7c1af2fc075c9a4db3690ecd2a148068"
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.103"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4612,7 +4656,7 @@ dependencies = [
  "once_cell",
  "socket2 0.6.1",
  "tracing",
- "windows-sys 0.60.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -5125,7 +5169,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -5954,7 +5998,7 @@ dependencies = [
  "getrandom 0.3.4",
  "once_cell",
  "rustix",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -6981,7 +7025,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -7043,19 +7087,6 @@ dependencies = [
  "windows-link 0.1.3",
  "windows-result 0.3.4",
  "windows-strings 0.4.2",
-]
-
-[[package]]
-name = "windows-core"
-version = "0.62.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8e83a14d34d0623b51dce9581199302a221863196a1dde71a7663a4c2be9deb"
-dependencies = [
- "windows-implement",
- "windows-interface",
- "windows-link 0.2.1",
- "windows-result 0.4.1",
- "windows-strings 0.5.1",
 ]
 
 [[package]]
@@ -7814,27 +7845,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "zoo-embedding"
-version = "1.1.35"
-dependencies = [
- "async-trait",
- "bincode",
- "blake3",
- "chrono",
- "csv",
- "futures",
- "keyphrases",
- "lazy_static",
- "rand 0.8.5",
- "regex",
- "reqwest 0.11.27",
- "serde",
- "serde_json",
- "thiserror 2.0.17",
- "utoipa",
-]
-
-[[package]]
 name = "zoo-fs"
 version = "1.1.35"
 dependencies = [
@@ -7845,6 +7855,7 @@ dependencies = [
  "comrak",
  "csv",
  "futures",
+ "hanzo-embed",
  "keyphrases",
  "lazy_static",
  "os_path",
@@ -7861,7 +7872,6 @@ dependencies = [
  "urlencoding",
  "utoipa",
  "walkdir",
- "zoo-embedding",
  "zoo-message-primitives",
  "zoo-non-rust-code",
  "zoo-sqlite",
@@ -7908,11 +7918,11 @@ name = "zoo-job-queue-manager"
 version = "1.1.35"
 dependencies = [
  "chrono",
+ "hanzo-embed",
  "serde",
  "serde_json",
  "tempfile",
  "tokio",
- "zoo-embedding",
  "zoo-message-primitives",
  "zoo-sqlite",
 ]
@@ -7996,6 +8006,7 @@ dependencies = [
  "fs_extra",
  "futures",
  "governor",
+ "hanzo-embed",
  "hex",
  "keyphrases",
  "lazy_static",
@@ -8033,7 +8044,6 @@ dependencies = [
  "x25519-dalek",
  "zip 2.4.2",
  "zoo-crypto-identities",
- "zoo-embedding",
  "zoo-fs",
  "zoo-http-api",
  "zoo-job-queue-manager",
@@ -8069,6 +8079,7 @@ dependencies = [
  "bytemuck",
  "chrono",
  "ed25519-dalek",
+ "hanzo-embed",
  "hex",
  "keyphrases",
  "log",
@@ -8087,7 +8098,6 @@ dependencies = [
  "tokio",
  "x25519-dalek",
  "zerocopy",
- "zoo-embedding",
  "zoo-message-primitives",
  "zoo-tools-primitives",
 ]
@@ -8099,13 +8109,13 @@ dependencies = [
  "anyhow",
  "async-channel",
  "ed25519-dalek",
+ "hanzo-embed",
  "proc-macro2",
  "quote",
  "syn 2.0.111",
  "tempfile",
  "tokio",
  "x25519-dalek",
- "zoo-embedding",
  "zoo-http-api",
  "zoo-message-primitives",
  "zoo-node",

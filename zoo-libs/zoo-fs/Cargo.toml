@@ -41,7 +41,7 @@ serial_test = "0.5"
 [dependencies.zoo-message-primitives]
 workspace = true
 
-[dependencies.zoo-embedding]
+[dependencies.hanzo-embed]
 workspace = true
 
 [dependencies.zoo-sqlite]

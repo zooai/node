@@ -7,8 +7,8 @@ use ed25519_dalek::SigningKey;
 use futures::SinkExt;
 use futures::StreamExt;
 
-use zoo_embedding::model_type::EmbeddingModelType;
-use zoo_embedding::model_type::OllamaTextEmbeddingsInference;
+use hanzo_embed::model_type::EmbeddingModelType;
+use hanzo_embed::model_type::OllamaTextEmbeddingsInference;
 use zoo_message_primitives::schemas::identity::Identity;
 use zoo_message_primitives::schemas::identity::StandardIdentity;
 use zoo_message_primitives::schemas::identity::StandardIdentityType;

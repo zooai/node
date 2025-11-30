@@ -1,4 +1,4 @@
-use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
 use zoo_message_primitives::schemas::identity::{StandardIdentity, StandardIdentityType};
 use zoo_message_primitives::schemas::zoo_name::{ZooName, ZooSubidentityType};
 use zoo_message_primitives::zoo_message::zoo_message_schemas::{IdentityPermissions, RegistrationCodeType};

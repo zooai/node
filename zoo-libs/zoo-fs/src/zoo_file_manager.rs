@@ -5,7 +5,7 @@ use std::time::SystemTime;
 use chrono::{DateTime, Utc};
 use serde::Serializer;
 use serde::{Deserialize, Serialize};
-use zoo_embedding::embedding_generator::EmbeddingGenerator;
+use hanzo_embed::embedding_generator::EmbeddingGenerator;
 use zoo_message_primitives::schemas::zoo_fs::{ParsedFile, ZooFileChunk};
 use zoo_message_primitives::zoo_utils::zoo_path::ZooPath;
 use zoo_message_primitives::zoo_utils::utils::count_tokens_from_message_llama3;
@@ -662,8 +662,8 @@ where
 mod tests {
     use super::*;
     use serial_test::serial;
-    use zoo_embedding::mock_generator::MockGenerator;
-    use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+    use hanzo_embed::mock_generator::MockGenerator;
+    use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
     use zoo_message_primitives::schemas::zoo_fs::ParsedFile;
     use zoo_message_primitives::zoo_utils::job_scope::MinimalJobScope;
     use std::fs::{self, File};

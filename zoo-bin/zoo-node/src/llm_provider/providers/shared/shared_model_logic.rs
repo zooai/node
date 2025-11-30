@@ -3,7 +3,7 @@ use base64::Engine as _;
 use zoo_message_primitives::{schemas::{
     inbox_name::InboxName, llm_providers::serialized_llm_provider::LLMProviderInterface, prompts::Prompt
 }, zoo_utils::{zoo_path::ZooPath, utils::count_tokens_from_message_llama3}};
-use zoo_embedding::embedding_generator::RemoteEmbeddingGenerator;
+use hanzo_embed::embedding_generator::RemoteEmbeddingGenerator;
 use zoo_fs::zoo_file_manager::{FileProcessingMode, ZooFileManager};
 use zoo_sqlite::SqliteManager;
 

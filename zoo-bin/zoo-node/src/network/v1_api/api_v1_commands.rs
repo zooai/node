@@ -12,8 +12,8 @@ use log::error;
 use reqwest::StatusCode;
 use serde_json::{json, Value as JsonValue};
 
-use zoo_embedding::embedding_generator::RemoteEmbeddingGenerator;
-use zoo_embedding::model_type::EmbeddingModelType;
+use hanzo_embed::embedding_generator::RemoteEmbeddingGenerator;
+use hanzo_embed::model_type::EmbeddingModelType;
 use zoo_http_api::node_api_router::{APIError, APIUseRegistrationCodeSuccessResponse, SendResponseBodyData};
 use zoo_message_primitives::schemas::identity::{
     DeviceIdentity, Identity, IdentityType, RegistrationCode, StandardIdentity, StandardIdentityType

@@ -67,7 +67,7 @@ zoo-tools-primitives = { workspace = true }
 zoo-libp2p-relayer = { workspace = true }
 zoo-http-api = { workspace = true }
 zoo-sqlite = { workspace = true }
-zoo-embedding = { workspace = true }
+hanzo-embed = { workspace = true }
 zoo-fs = { workspace = true }
 zoo-non-rust-code = { workspace = true }
 # hanzo_mcp = "1.1.10"  # DISABLED - requires rmcp 0.8 API changes

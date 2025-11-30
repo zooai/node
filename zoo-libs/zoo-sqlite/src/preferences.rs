@@ -190,7 +190,7 @@ mod tests {
     use super::*;
     use crate::SqliteManager;
     use serde::{Deserialize, Serialize};
-    use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+    use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
     use std::path::PathBuf;
     use std::sync::Arc;
     use std::thread;

@@ -5,7 +5,7 @@ use crate::network::Node;
 use crate::utils::environment::NodeEnvironment;
 use reqwest::StatusCode;
 use serde_json::{json, Value};
-use zoo_embedding::embedding_generator::EmbeddingGenerator;
+use hanzo_embed::embedding_generator::EmbeddingGenerator;
 use zoo_fs::zoo_file_manager::{FileProcessingMode, ZooFileManager};
 use zoo_http_api::node_api_router::APIError;
 // DISABLED - zoo-mcp uses rmcp 0.6, incompatible with rmcp 0.8 upgrade
@@ -1359,8 +1359,8 @@ async fn bytes_to_zip_tool(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use zoo_embedding::model_type::EmbeddingModelType;
-    use zoo_embedding::model_type::OllamaTextEmbeddingsInference;
+    use hanzo_embed::model_type::EmbeddingModelType;
+    use hanzo_embed::model_type::OllamaTextEmbeddingsInference;
     use zoo_message_primitives::schemas::zoo_name::ZooName;
     use zoo_message_primitives::schemas::tool_router_key::ToolRouterKey;
     use zoo_message_primitives::zoo_utils::job_scope::MinimalJobScope;

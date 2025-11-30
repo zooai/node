@@ -308,7 +308,7 @@ impl ToolExecutor for ConfigSetupTool {
 mod tests {
     use super::*;
 
-    use zoo_embedding::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
+    use hanzo_embed::model_type::{EmbeddingModelType, OllamaTextEmbeddingsInference};
     use zoo_message_primitives::schemas::tool_router_key::ToolRouterKey;
     use zoo_tools_primitives::tools::tool_config::BasicConfig;
     use zoo_tools_primitives::tools::tool_types::{OperatingSystem, RunnerType, ToolResult};

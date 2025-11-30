@@ -1,7 +1,7 @@
 use reqwest::Client;
 use rusqlite::Result;
 use serde::{Deserialize, Serialize};
-use zoo_embedding::model_type::EmbeddingModelType;
+use hanzo_embed::model_type::EmbeddingModelType;
 
 #[derive(Serialize, Deserialize)]
 struct OllamaResponse {

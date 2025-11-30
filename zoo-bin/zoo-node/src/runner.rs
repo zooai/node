@@ -6,7 +6,7 @@ use crate::utils::environment::{fetch_llm_provider_env, fetch_node_environment};
 use crate::utils::keys::generate_or_load_keys;
 use async_channel::{bounded, Receiver, Sender};
 use ed25519_dalek::VerifyingKey;
-use zoo_embedding::embedding_generator::RemoteEmbeddingGenerator;
+use hanzo_embed::embedding_generator::RemoteEmbeddingGenerator;
 use zoo_http_api::node_api_router;
 use zoo_http_api::node_commands::NodeCommand;
 use zoo_message_primitives::zoo_utils::encryption::{

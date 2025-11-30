@@ -17,7 +17,7 @@ use zoo_message_primitives::schemas::tool_router_key::ToolRouterKey;
 
 use crate::utils::environment::{fetch_node_environment, NodeEnvironment};
 use async_trait::async_trait;
-use zoo_embedding::embedding_generator::RemoteEmbeddingGenerator;
+use hanzo_embed::embedding_generator::RemoteEmbeddingGenerator;
 use zoo_fs::zoo_fs_error::ZooFsError;
 use zoo_message_primitives::schemas::inbox_name::InboxName;
 use zoo_message_primitives::schemas::job::{Job, JobLike};

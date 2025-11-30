@@ -16,7 +16,7 @@ use crate::utils::environment::{fetch_node_environment, NodeEnvironment};
 use ed25519_dalek::SigningKey;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use zoo_embedding::embedding_generator::EmbeddingGenerator;
+use hanzo_embed::embedding_generator::EmbeddingGenerator;
 use zoo_fs::zoo_file_manager::ZooFileManager;
 use zoo_message_primitives::schemas::llm_providers::agent::Agent;
 use zoo_message_primitives::schemas::zoo_tools::CodeLanguage;

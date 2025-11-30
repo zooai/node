@@ -1131,8 +1131,8 @@ impl SqliteManager {
 mod tests {
     use super::*;
     use serde_json::json;
-    use zoo_embedding::model_type::EmbeddingModelType;
-    use zoo_embedding::model_type::OllamaTextEmbeddingsInference;
+    use hanzo_embed::model_type::EmbeddingModelType;
+    use hanzo_embed::model_type::OllamaTextEmbeddingsInference;
     use zoo_message_primitives::schemas::zoo_name::ZooName;
     use zoo_message_primitives::schemas::zoo_tool_offering::ToolPrice;
     use zoo_message_primitives::schemas::zoo_tool_offering::UsageType;

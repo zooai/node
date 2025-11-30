@@ -1,5 +1,5 @@
 use ed25519_dalek::SigningKey;
-use zoo_embedding::embedding_generator::RemoteEmbeddingGenerator;
+use hanzo_embed::embedding_generator::RemoteEmbeddingGenerator;
 use zoo_job_queue_manager::job_queue_manager::{JobForProcessing, JobQueueManager};
 use zoo_message_primitives::schemas::inbox_name::InboxName;
 use zoo_message_primitives::schemas::ws_types::WSUpdateHandler;
