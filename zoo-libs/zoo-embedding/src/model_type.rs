@@ -63,7 +63,7 @@ impl OllamaTextEmbeddingsInference {
             Self::ALL_MINI_LML6V2 => Ok(Self::AllMiniLML6v2),
             Self::SNOWFLAKE_ARCTIC_EMBED_M => Ok(Self::SnowflakeArcticEmbedM),
             Self::JINA_EMBEDDINGS_V2_BASE_ES => Ok(Self::JinaEmbeddingsV2BaseEs),
-            _ => Err(ZooEmbeddingError::InvalidModelArchitecture),
+            _ => Ok(Self::Other(s.to_string())),
         }
     }
 
