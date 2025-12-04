@@ -47,7 +47,7 @@ pub async fn list_tools_via_command(cmd_str: &str, config: Option<HashMap<String
 pub async fn list_tools_via_sse(sse_url: &str, _config: Option<HashMap<String, String>>) -> Result<Vec<Tool>> {
     // TODO: The config parameter is not currently used by SseTransport or ClientInfo setup in the example.
     // It might be used in the future for authentication headers or other SSE-specific configurations.
-    let transport = SseClientTransport::new(sse_url).await.map_err(|e| McpError {
+    let transport = SseClientTransport::start(sse_url).await.map_err(|e| McpError {
         message: format!("{}", e),
     })?;
     let client_info = ClientInfo {
@@ -86,9 +86,7 @@ pub async fn list_tools_via_sse(sse_url: &str, _config: Option<HashMap<String, S
 pub async fn list_tools_via_http(sse_url: &str, _config: Option<HashMap<String, String>>) -> Result<Vec<Tool>> {
     // TODO: The config parameter is not currently used by SseTransport or ClientInfo setup in the example.
     // It might be used in the future for authentication headers or other SSE-specific configurations.
-    let transport = StreamableHttpClientTransport::from(sse_url.parse().map_err(|e| McpError {
-        message: format!("Invalid URI: {:?}", e),
-    })?);
+    let transport = StreamableHttpClientTransport::from_uri(sse_url);
     let client_info = ClientInfo {
         protocol_version: Default::default(),
         capabilities: ClientCapabilities::default(),
@@ -175,7 +173,7 @@ pub async fn run_tool_via_sse(
     tool: String,
     parameters: serde_json::Map<String, serde_json::Value>,
 ) -> Result<CallToolResult> {
-    let transport = SseClientTransport::new(&url)
+    let transport = SseClientTransport::start(url)
         .await
         .inspect_err(|e| log::error!("error starting sse transport: {:?}", e))
         .map_err(|e| McpError {
@@ -228,9 +226,7 @@ pub async fn run_tool_via_http(
     tool: String,
     parameters: serde_json::Map<String, serde_json::Value>,
 ) -> Result<CallToolResult> {
-    let transport = StreamableHttpClientTransport::from(url.parse().map_err(|e| McpError {
-        message: format!("Invalid URI: {:?}", e),
-    })?);
+    let transport = StreamableHttpClientTransport::from_uri(url);
 
     let client_info = ClientInfo {
         protocol_version: Default::default(),
