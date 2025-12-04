@@ -202,6 +202,12 @@ mod tests {
 
     #[tokio::test]
     async fn test_non_rust_code_runner() {
+        // Skip in CI testing environment (deno runtime not available in Docker)
+        if std::env::var("IS_TESTING").unwrap_or_else(|_| "false".to_string()) == "1" {
+            println!("Skipping test_non_rust_code_runner in CI (requires deno runtime)");
+            return;
+        }
+
         let code = r#"
             async function run(configurations, params) {
                 return {
