@@ -442,6 +442,12 @@ mod tests {
             return;
         }
 
+        // Skip in CI testing environment (deno binary not available in Docker)
+        if env::var("IS_TESTING").unwrap_or_else(|_| "false".to_string()) == "1" {
+            println!("Skipping test_get_identity_record in CI (requires deno binary)");
+            return;
+        }
+
         let dir = tempdir().unwrap();
         env::set_var("NODE_STORAGE_PATH", dir.path().to_string_lossy().to_string());
 
