@@ -33,5 +33,5 @@ version = "1.36"
 features = [ "rt", "rt-multi-thread", "macros", "fs", "io-util", "net", "sync", "time",]
 
 [dependencies.rmcp]
-version = "0.6"
-features = [ "client", "transport-child-process", "transport-sse-client", "transport-streamable-http-client", "reqwest",]
+workspace = true
+features = [ "client", "transport-child-process", "transport-sse-client-reqwest", "transport-streamable-http-client-reqwest", "reqwest",]
