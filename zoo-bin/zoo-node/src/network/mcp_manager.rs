@@ -363,6 +363,12 @@ pub mod tests_mcp_manager {
 
     #[tokio::test]
     async fn test_import_mcp_server_from_github_url_nodejs() {
+        // Skip in CI testing environment (requires external network access)
+        if std::env::var("IS_TESTING").unwrap_or_else(|_| "false".to_string()) == "1" {
+            println!("Skipping test_import_mcp_server_from_github_url_nodejs in CI (requires network access)");
+            return;
+        }
+
         let github_url = "https://github.com/zooai/mcp-server-helius".to_string();
         let result = import_mcp_server_from_github_url(github_url).await;
 
