@@ -67,7 +67,9 @@ jobs:
         run: |
           mkdir files-to-r2
           cp target/release/zoo-node${{ env.EXTENSION }} files-to-r2/zoo-node${{ env.EXTENSION }}
-          cp -r target/release/zoo-tools-runner-resources files-to-r2/
+          if [ -d "target/release/shinkai-tools-runner-resources" ]; then
+            cp -r target/release/shinkai-tools-runner-resources files-to-r2/
+          fi
           cd ./files-to-r2
           7z a -tzip ${{ env.ZIP_FILE_NAME}} . -sdel
           cp ${{ env.ZIP_FILE_NAME}} latest.zip
