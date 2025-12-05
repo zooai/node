@@ -68,10 +68,16 @@ jobs:
           ZIP_FILE_NAME: ${{ github.ref_name }}.zip
           EXTENSION: ${{ matrix.arch == 'x86_64-pc-windows-msvc' && '.exe' || '' }}
         run: |
-          mkdir files-to-r2
+          mkdir -p files-to-r2/zoo-tools-runner-resources
           cp target/release/zoo-node${{ env.EXTENSION }} files-to-r2/zoo-node${{ env.EXTENSION }}
+          # Copy tools from pre-install folder (deno, uv)
+          if [ -d "pre-install" ]; then
+            find pre-install -name "deno*" -type f -exec cp {} files-to-r2/zoo-tools-runner-resources/deno${{ env.EXTENSION }} \; 2>/dev/null || true
+            find pre-install -name "uv*" -type f -not -name "*.zip" -exec cp {} files-to-r2/zoo-tools-runner-resources/uv${{ env.EXTENSION }} \; 2>/dev/null || true
+          fi
+          # Legacy support: copy if exists in build output
           if [ -d "target/release/shinkai-tools-runner-resources" ]; then
-            cp -r target/release/shinkai-tools-runner-resources files-to-r2/
+            cp -r target/release/shinkai-tools-runner-resources/* files-to-r2/zoo-tools-runner-resources/ 2>/dev/null || true
           fi
           cd ./files-to-r2
           7z a -tzip ${{ env.ZIP_FILE_NAME}} . -sdel
