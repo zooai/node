@@ -1,0 +1,72 @@
+#!/bin/bash
+set -e
+
+# ============================================================================
+# Zoo Node Startup Script
+# Pure Environment Variable Configuration - No config files required
+# ============================================================================
+
+# Network Configuration
+export NODE_API_IP=${NODE_API_IP:-0.0.0.0}
+export NODE_IP=${NODE_IP:-0.0.0.0}
+export NODE_API_PORT=${NODE_API_PORT:-9550}
+export NODE_WS_PORT=${NODE_WS_PORT:-9551}
+export NODE_PORT=${NODE_PORT:-9552}
+export NODE_HTTPS_PORT=${NODE_HTTPS_PORT:-9553}
+
+# Path Configuration
+export INSTALL_FOLDER_PATH=${INSTALL_FOLDER_PATH:-/app/pre-install}
+export NODE_STORAGE_PATH=${NODE_STORAGE_PATH:-zoo-storage}
+export ZOO_TOOLS_RUNNER_DENO_BINARY_PATH=${ZOO_TOOLS_RUNNER_DENO_BINARY_PATH:-/app/zoo-tools-runner-resources/deno}
+export ZOO_TOOLS_RUNNER_UV_BINARY_PATH=${ZOO_TOOLS_RUNNER_UV_BINARY_PATH:-/app/zoo-tools-runner-resources/uv}
+export PATH="/app/zoo-tools-runner-resources:/root/.local/bin:$PATH"
+
+# Node Identity and Security
+export IDENTITY_SECRET_KEY=${IDENTITY_SECRET_KEY:-}
+export ENCRYPTION_SECRET_KEY=${ENCRYPTION_SECRET_KEY:-}
+export GLOBAL_IDENTITY_NAME=${GLOBAL_IDENTITY_NAME:-@@localhost.sep-zoo}
+
+# Node Behavior
+export PING_INTERVAL_SECS=${PING_INTERVAL_SECS:-0}
+export STARTING_NUM_QR_PROFILES=${STARTING_NUM_QR_PROFILES:-1}
+export STARTING_NUM_QR_DEVICES=${STARTING_NUM_QR_DEVICES:-1}
+export FIRST_DEVICE_NEEDS_REGISTRATION_CODE=${FIRST_DEVICE_NEEDS_REGISTRATION_CODE:-false}
+export SKIP_IMPORT_FROM_DIRECTORY=${SKIP_IMPORT_FROM_DIRECTORY:-false}
+export NO_SECRET_FILE=${NO_SECRET_FILE:-true}
+
+# Logging Configuration
+export RUST_LOG=${RUST_LOG:-debug,error,info}
+export LOG_SIMPLE=${LOG_SIMPLE:-true}
+export LOG_ALL=${LOG_ALL:-1}
+
+# AI Provider Configuration
+export EMBEDDINGS_SERVER_URL=${EMBEDDINGS_SERVER_URL:-}
+export PROXY_IDENTITY=${PROXY_IDENTITY:-@@relayer_pub_01.sep-zoo}
+
+# ============================================================================
+# Startup Information
+# ============================================================================
+echo "========================================="
+echo "Zoo Node Starting"
+echo "========================================="
+echo "Version: ${ZOO_VERSION:-dev}"
+echo "Build: ${BUILD_TYPE:-debug}"
+echo ""
+echo "Network Configuration:"
+echo "  NODE_API_IP:        $NODE_API_IP"
+echo "  NODE_API_PORT:      $NODE_API_PORT"
+echo "  NODE_WS_PORT:       $NODE_WS_PORT"
+echo "  NODE_PORT:          $NODE_PORT"
+echo "  NODE_HTTPS_PORT:    $NODE_HTTPS_PORT"
+echo ""
+echo "Identity:"
+echo "  GLOBAL_IDENTITY_NAME: $GLOBAL_IDENTITY_NAME"
+echo "  PROXY_IDENTITY:       $PROXY_IDENTITY"
+echo ""
+echo "Storage:"
+echo "  NODE_STORAGE_PATH: $NODE_STORAGE_PATH"
+echo "========================================="
+echo ""
+
+# Start the node
+exec /app/zoo-node
