@@ -19,11 +19,11 @@ services:
         max-file: "10"
 
   zoo-node:
-    image: dcspark/zoo-node:latest
+    image: zooai/node:latest
     container_name: zoo-node
     restart: "always"
     environment:
-      - GLOBAL_IDENTITY_NAME=@@localhost.zoo
+      - GLOBAL_IDENTITY_NAME=did:zoo:localhost
       - FIRST_DEVICE_NEEDS_REGISTRATION_CODE=false
       - STARTING_NUM_QR_PROFILES=0
       - STARTING_NUM_QR_DEVICES=0
@@ -43,7 +43,7 @@ services:
       - LOG_ALL=true
       - RUST_LOG=info
     volumes:
-      - shinode-storage:/app/storage
+      - zoo-storage:/app/storage
     networks:
       - zoo
     ports:
@@ -57,8 +57,8 @@ services:
         max-file: "10"
 
 volumes:
-  shinode-storage:
-    name: shinode-storage
+  zoo-storage:
+    name: zoo-storage
   embeddings-models:
     name: embeddings-models
 

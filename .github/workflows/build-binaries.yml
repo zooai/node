@@ -76,8 +76,8 @@ jobs:
             find pre-install -name "uv*" -type f -not -name "*.zip" -exec cp {} files-to-r2/zoo-tools-runner-resources/uv${{ env.EXTENSION }} \; 2>/dev/null || true
           fi
           # Legacy support: copy if exists in build output
-          if [ -d "target/release/shinkai-tools-runner-resources" ]; then
-            cp -r target/release/shinkai-tools-runner-resources/* files-to-r2/zoo-tools-runner-resources/ 2>/dev/null || true
+          if [ -d "target/release/hanzo-tools-runner-resources" ]; then
+            cp -r target/release/hanzo-tools-runner-resources/* files-to-r2/zoo-tools-runner-resources/ 2>/dev/null || true
           fi
           cd ./files-to-r2
           7z a -tzip ${{ env.ZIP_FILE_NAME}} . -sdel

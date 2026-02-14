@@ -11,10 +11,10 @@ on:
 
 jobs:
   build-and-deploy:
-    uses: dcSpark/zoo-node/.github/workflows/build-workflow.yml@devops
+    uses: zoolabs/node/.github/workflows/build-workflow.yml@devops
     with:
-      REGISTRY: dcspark
-      REPOSITORY: zoo-node
+      REGISTRY: zooai
+      REPOSITORY: node
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

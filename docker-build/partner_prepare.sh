@@ -6,13 +6,13 @@ set -o noglob
 SED_COMMAND=sed
 COPY_COMMAND=cp
 
-ZOO_NODE_IMAGE=${ZOO_NODE_IMAGE:-dcspark/zoo-node}
+ZOO_NODE_IMAGE=${ZOO_NODE_IMAGE:-zooai/node}
 ZOO_NODE_VERSION=${ZOO_NODE_VERSION:-latest}
 
 ZOO_COMPOSE_FILE=docker-compose.yml
 ZOO_NODE_DOCKERFILE=Dockerfile-RELEASE
 
-ZOO_NODE_ARCHIVE=dcspark_zoo-node.tar
+ZOO_NODE_ARCHIVE=zooai_node.tar
 ZOO_SOURCE_PATH=../
 
 DOCKER_BUILD_CMD="docker build --quiet"
@@ -55,7 +55,7 @@ PARTNER_PREPARE_SCRIPT=$(cat << EOF
 set -e
 set -o noglob
 
-ZOO_NODE_ARCHIVE=dcspark_zoo-node.tar
+ZOO_NODE_ARCHIVE=zooai_node.tar
 DOCKER_LOAD_CMD="docker load --input"
 DOCKER_COMPOSE_CMD="docker compose" # docker-compose
 DOCKER_COMPOSE_ENV_FILE=.env

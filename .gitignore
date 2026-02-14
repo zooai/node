@@ -81,7 +81,7 @@ storage_debug_serve_mode
 zoo-tools-runner-resources
 zoo-tools-runner-execution-storage
 # Binary files and build artifacts
-zoo-bin/zoo-node/shinkai-tools-runner-resources/
+zoo-bin/zoo-node/hanzo-tools-runner-resources/
 zoo-bin/zoo-node/zoo-tools-runner-resources/
 *.dylib
 *.so

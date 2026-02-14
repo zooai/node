@@ -47,5 +47,5 @@ jobs:
           build-args: |
             BUILD_TYPE=${{ inputs.build_type }}
           tags: |
-            dcspark/zoo-node:${{ inputs.tag }}
-            dcspark/zoo-node:${{ inputs.build_type }}-latest
+            zooai/node:${{ inputs.tag }}
+            zooai/node:${{ inputs.build_type }}-latest

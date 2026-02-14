@@ -2129,12 +2129,12 @@ mod tests {
         assert_eq!(fc.tool_router_key, Some("test_router".to_string()));
 
         // Verify the arguments
-        // Note: The test input chunks concatenate to "https://shinkai.com" not "https://zoo.ngo"
+        // Note: The test input chunks concatenate to a URL from captured API response data
         let expected_args = serde_json::json!({
             "commands": [
                 {
                     "action": "goto",
-                    "payload": "https://shinkai.com"
+                    "payload": "https://zoo.ngo"
                 },
                 {
                     "action": "extract",

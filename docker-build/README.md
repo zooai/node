@@ -3,7 +3,7 @@
 Inside the folder `docker-build` run:
 
 ```sh
-DOCKER_BUILDKIT=1 docker build -f Dockerfile-RELEASE -t dcspark/zoo-node:latest ../
+DOCKER_BUILDKIT=1 docker build -f Dockerfile-RELEASE -t zooai/node:latest ../
 ```
 
 Inside the folder `docker-build`, to start the services, run:
@@ -33,10 +33,10 @@ output example:
 ```sh
 $ sh partner_prepare.sh
 
-[INFO]  Docker building dcspark/zoo-node:latest using Dockerfile-RELEASE with source at ../
+[INFO]  Docker building zooai/node:latest using Dockerfile-RELEASE with source at ../
 sha256:b5fe5c4c8fc6229c15ea0cbde4881c090a0dcd72a1f6f8f42d29d7f9bfc8b4be
 [INFO]  Preparing docker compose environment at zoo_deploy
-[INFO]  Docker save dcspark/zoo-node:latest to dcspark_zoo-node.tar
+[INFO]  Docker save zooai/node:latest to zooai_node.tar
 [INFO]  Preparing partner data at zoo_deploy_partner/zoo_deploy.tar.gz
 [INFO]  Cleaning zoo_deploy
 [INFO]  Send to partner the file zoo_deploy_partner/zoo_deploy.tar.gz
@@ -55,14 +55,14 @@ zoo_deploy/
 zoo_deploy/.env
 zoo_deploy/docker-compose.yml
 zoo_deploy/prepare.sh
-zoo_deploy/dcspark_zoo-node.tar
+zoo_deploy/zooai_node.tar
 ```
 
 and ends up with a folder `zoo_deploy` containing:
 
 ```sh
 zoo_deploy
-├── dcspark_zoo-node.tar
+├── zooai_node.tar
 ├── docker-compose.yml
 ├── .env
 └── prepare.sh
@@ -73,8 +73,8 @@ runs `sh prepare.sh` that outputs additional information:
 ```sh
 $ sh prepare.sh
 
-[INFO]  Docker loading dcspark_zoo-node.tar
-Loaded image: dcspark/zoo-node:latest
+[INFO]  Docker loading zooai_node.tar
+Loaded image: zooai/node:latest
 [INFO]  Edit ".env" if you want to start the node with preconfigured ai agents. You have the possibility to add ai agents also from Zoo Visor.
 [INFO]  Once done with ".env" changes, to start on-prem infrastructure run: docker compose up -d
 [INFO]  Once everything is up and running, install/start Zoo Visor and use the default provided settings on the ui.
