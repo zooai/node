@@ -38,17 +38,17 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./zoo-libs/zoo-libp2p-relayer/Dockerfile
+          file: ./hanzo-libs/hanzo-libp2p-relayer/Dockerfile
           push: true
           build-args: |
             BUILD_TYPE=${{ inputs.build_type }}
           tags: |
-            zooai/libp2p-relayer:${{ inputs.tag }}
-            zooai/libp2p-relayer:${{ inputs.build_type }}-latest
+            hanzoai/hanzo-libp2p-relayer:${{ inputs.tag }}
+            hanzoai/hanzo-libp2p-relayer:${{ inputs.build_type }}-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Summary
         run: |
           echo "🚀 Deployment completed successfully!"
-          echo "📦 Image: zooai/libp2p-relayer:${{ inputs.tag }}"
+          echo "📦 Image: hanzoai/hanzo-libp2p-relayer:${{ inputs.tag }}"

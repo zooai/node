@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
-  title: zoo_node
+  title: hanzo_node
   description: ''
   contact:
     name: Nico Arqueros
-    email: nico@zoo.ai
+    email: nico@hanzo.com
   license:
     name: ''
   version: 0.8.4
