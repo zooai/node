@@ -1,4 +1,4 @@
-name: Build zoo-node binaries
+name: Build hanzo-node binaries
 
 on:
   push:
@@ -8,25 +8,34 @@ on:
 jobs:
   build-binaries:
     name: Build binary
-    permissions:
-      contents: write
     strategy:
+      fail-fast: false
       matrix:
         include:
+          # Linux
           - arch: x86_64-unknown-linux-gnu
             os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+          - arch: aarch64-unknown-linux-gnu
+            os: ubuntu-22.04
+            target: aarch64-unknown-linux-gnu
+            cross: true
+          # macOS
           - arch: aarch64-apple-darwin
             os: macos-14
+            target: aarch64-apple-darwin
+          - arch: x86_64-apple-darwin
+            os: macos-14
+            target: x86_64-apple-darwin
+            cross_mac: true
+          # Windows
           - arch: x86_64-pc-windows-msvc
             os: windows-2022
+            target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
-
-      - name: Download tools from store to pre-install folder
-        run: |
-          ./scripts/update_tools.sh
 
       - name: Configure rust-lld linker for Windows
         if: matrix.os == 'windows-2022'
@@ -36,12 +45,23 @@ jobs:
           echo 'linker = "rust-lld"' >> .cargo/config.toml
 
       - name: Install protobuf compiler (Linux)
-        if: matrix.os == 'ubuntu-22.04'
+        if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
 
+      - name: Install cross-compilation tools (Linux ARM64)
+        if: matrix.cross == true
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          rustup target add aarch64-unknown-linux-gnu
+
       - name: Install protobuf compiler (macOS)
-        if: matrix.os == 'macos-14'
+        if: runner.os == 'macOS'
         run: brew install protobuf
+
+      - name: Install cross-compilation target (macOS x64)
+        if: matrix.cross_mac == true
+        run: rustup target add x86_64-apple-darwin
 
       - name: Cache cargo assets
         id: cache
@@ -53,32 +73,40 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ matrix.arch }}-build-cargo-v1
+          key: ${{ matrix.arch }}-build-cargo-v2
           restore-keys: |
             ${{ matrix.arch }}-build-cargo-
 
+
+      - name: Configure cross-compilation (Linux ARM64)
+        if: matrix.cross == true
+        run: |
+          mkdir -p .cargo
+          echo '' >> .cargo/config.toml
+          echo '[target.aarch64-unknown-linux-gnu]' >> .cargo/config.toml
+          echo 'linker = "aarch64-linux-gnu-gcc"' >> .cargo/config.toml
+
       - name: Build
         env:
-          GLOBAL_IDENTITY_NAME: "@@localhost.sep-zoo"
-        run: cargo build --release --bin zoo-node
+          AI_MODEL_CATALOG_BUILD: 1
+        run: cargo build --release --bin hanzo-node --target ${{ matrix.target }}
+
+      - name: Move binary to expected location
+        shell: bash
+        run: |
+          mkdir -p target/release
+          if [ -f "target/${{ matrix.target }}/release/hanzo-node${{ matrix.arch == 'x86_64-pc-windows-msvc' && '.exe' || '' }}" ]; then
+            cp "target/${{ matrix.target }}/release/hanzo-node${{ matrix.arch == 'x86_64-pc-windows-msvc' && '.exe' || '' }}" target/release/
+          fi
 
       - name: Prepare bundle files
-        shell: bash
         env:
           ZIP_FILE_NAME: ${{ github.ref_name }}.zip
           EXTENSION: ${{ matrix.arch == 'x86_64-pc-windows-msvc' && '.exe' || '' }}
         run: |
-          mkdir -p files-to-r2/zoo-tools-runner-resources
-          cp target/release/zoo-node${{ env.EXTENSION }} files-to-r2/zoo-node${{ env.EXTENSION }}
-          # Copy tools from pre-install folder (deno, uv)
-          if [ -d "pre-install" ]; then
-            find pre-install -name "deno*" -type f -exec cp {} files-to-r2/zoo-tools-runner-resources/deno${{ env.EXTENSION }} \; 2>/dev/null || true
-            find pre-install -name "uv*" -type f -not -name "*.zip" -exec cp {} files-to-r2/zoo-tools-runner-resources/uv${{ env.EXTENSION }} \; 2>/dev/null || true
-          fi
-          # Legacy support: copy if exists in build output
-          if [ -d "target/release/hanzo-tools-runner-resources" ]; then
-            cp -r target/release/hanzo-tools-runner-resources/* files-to-r2/zoo-tools-runner-resources/ 2>/dev/null || true
-          fi
+          mkdir files-to-r2
+          cp target/release/hanzo-node${{ env.EXTENSION }} files-to-r2/hanzo-node${{ env.EXTENSION }}
+          cp -r target/release/hanzo-tools-runner-resources files-to-r2/
           cd ./files-to-r2
           7z a -tzip ${{ env.ZIP_FILE_NAME}} . -sdel
           cp ${{ env.ZIP_FILE_NAME}} latest.zip
@@ -90,9 +118,9 @@ jobs:
           endpoint: https://94a3e3f299092abb1feda2a7481ea845.r2.cloudflarestorage.com
           aws_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          aws_bucket: zooai
+          aws_bucket: hanzoai
           source_dir: files-to-r2
-          destination_dir: ./zoo-node/binaries/production/${{ matrix.arch }}/
+          destination_dir: ./hanzo-node/binaries/production/${{ matrix.arch }}/
 
       - name: Upload bundle to release
         uses: svenstaro/upload-release-action@v2
@@ -101,10 +129,9 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: files-to-r2/${{ github.ref_name }}.zip
-          asset_name: zoo-node-${{ matrix.arch }}.zip
+          asset_name: hanzo-node-${{ matrix.arch }}.zip
           tag: ${{ github.ref }}
           overwrite: true
-
   build-docker-image:
     name: Build and push Docker image to Docker Hub
     runs-on: ubuntu-latest
@@ -114,7 +141,7 @@ jobs:
 
       - name: Download tools from store to pre-install folder
         run: |
-          ./scripts/update_tools.sh
+          ./scripts/update_tools.sh        
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -133,7 +160,7 @@ jobs:
           push: true
           build-args: |
             BUILD_TYPE=release
-            GLOBAL_IDENTITY_NAME=@@localhost.sep-zoo
+            AI_MODEL_CATALOG_BUILD=1
           tags: |
-            zooai/zoo-node:${{ github.ref_name }}
-            zooai/zoo-node:release-latest
+            hanzoai/hanzo-node:${{ github.ref_name }}
+            hanzoai/hanzo-node:release-latest

@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# update_tools.sh - Tool update script for Zoo
+# update_tools.sh - Tool update script for Hanzo
 #
-# This script downloads and updates tools from the Zoo store.
+# This script downloads and updates tools from the Hanzo store.
 # It compares versions and only downloads if a newer version is available.
-# This is only used for Docker builds and Development, bundled app uses 
-# zoo-apps pre-install folder.
-# 
+# This is only used for Docker builds and Development, bundled app uses
+# hanzo-desktop pre-install folder.
+#
 # Usage:
 #   ./update_tools.sh              # Normal update (only newer versions)
 #   ./update_tools.sh --force      # Force download all tools regardless of version
 #
-# Hot to use in Zoo-Node:
-# Set env INSTALL_FOLDER_PATH=${ZOO_NODE_ROOT}/pre-install
+# How to use in Hanzo Node:
+# Set env INSTALL_FOLDER_PATH=${HANZO_NODE_ROOT}/pre-install
 #
 
 # Parse command line arguments
@@ -87,7 +87,7 @@ get_current_version() {
 
 # Step 1: Get the list of default tools
 echo "Fetching default tools from store..."
-TOOLS_JSON=$(curl -s https://store-api.zoo.ai/store/defaults)
+TOOLS_JSON=$(curl -s https://store-api.hanzo.ai/store/defaults)
 
 # Create a list of current tool names
 echo "Creating list of current tools..."

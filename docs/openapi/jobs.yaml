@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
-  title: zoo_node
+  title: hanzo_node
   description: ''
   contact:
     name: Nico Arqueros
-    email: nico@zoo.ai
+    email: nico@hanzo.com
   license:
     name: ''
   version: 0.8.4
@@ -703,9 +703,9 @@ components:
             type: string
       - type: object
         required:
-        - ZooNode
+        - HanzoNode
         properties:
-          ZooNode:
+          HanzoNode:
             type: array
             items:
               allOf:
@@ -1109,10 +1109,10 @@ components:
             $ref: '#/components/schemas/Ollama'
       - type: object
         required:
-        - ZooBackend
+        - HanzoBackend
         properties:
-          ZooBackend:
-            $ref: '#/components/schemas/ZooBackend'
+          HanzoBackend:
+            $ref: '#/components/schemas/HanzoBackend'
       - type: object
         required:
         - LocalLLM
@@ -1145,7 +1145,7 @@ components:
       - model
       properties:
         full_identity_name:
-          $ref: '#/components/schemas/ZooName'
+          $ref: '#/components/schemas/HanzoName'
         id:
           type: string
         model:
@@ -1261,7 +1261,7 @@ components:
       - path
       properties:
         external_identity:
-          $ref: '#/components/schemas/ZooName'
+          $ref: '#/components/schemas/HanzoName'
         name:
           type: string
         path:
@@ -1415,7 +1415,7 @@ components:
           type: string
           nullable: true
         full_identity_name:
-          $ref: '#/components/schemas/ZooName'
+          $ref: '#/components/schemas/HanzoName'
         id:
           type: string
         model:
@@ -1444,31 +1444,31 @@ components:
           nullable: true
         sheet_action:
           $ref: '#/components/schemas/SheetJobAction'
-    ZooBackend:
+    HanzoBackend:
       type: object
       required:
       - model_type
       properties:
         model_type:
           type: string
-    ZooFileType:
+    HanzoFileType:
       oneOf:
       - type: string
         enum:
-        - ZooJobKai
+        - HanzoJobKai
       - type: string
         enum:
-        - ZooVRKai
+        - HanzoVRKai
       - type: string
         enum:
-        - ZooVRPack
+        - HanzoVRPack
       - type: object
         required:
         - Other
         properties:
           Other:
             type: string
-    ZooName:
+    HanzoName:
       type: object
       required:
       - full_name
@@ -1486,9 +1486,9 @@ components:
           nullable: true
         subidentity_type:
           allOf:
-          - $ref: '#/components/schemas/ZooSubidentityType'
+          - $ref: '#/components/schemas/HanzoSubidentityType'
           nullable: true
-    ZooSubidentityType:
+    HanzoSubidentityType:
       type: string
       enum:
       - Agent
@@ -1578,10 +1578,10 @@ components:
             $ref: '#/components/schemas/AudioFileType'
       - type: object
         required:
-        - Zoo
+        - Hanzo
         properties:
-          Zoo:
-            $ref: '#/components/schemas/ZooFileType'
+          Hanzo:
+            $ref: '#/components/schemas/HanzoFileType'
     SourceReference:
       oneOf:
       - type: object

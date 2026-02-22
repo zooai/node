@@ -1,6 +1,6 @@
-# Zoo Node Cloud Deployment Guide
+# Hanzo Node Cloud Deployment Guide
 
-This guide explains how to deploy a Zoo Node on various cloud providers. The setup includes running the node as a systemd service with Docker and configuring HTTPS access.
+This guide explains how to deploy a Hanzo Node on various cloud providers. The setup includes running the node as a systemd service with Docker and configuring HTTPS access.
 
 ## Prerequisites
 
@@ -13,33 +13,33 @@ This guide explains how to deploy a Zoo Node on various cloud providers. The set
 cloud-node/
 ├── Dockerfile         # Docker image definition
 ├── env.conf          # Environment variables configuration
-└── zoo-node.service  # Systemd service definition
+└── hanzo-node.service  # Systemd service definition
 ```
 
 ## General Setup Steps
 
 1. Create the necessary directories:
 ```bash
-sudo mkdir -p /opt/zoo-node
+sudo mkdir -p /opt/hanzo-node
 ```
 
 2. Copy configuration files:
 ```bash
-sudo cp env.conf /opt/zoo-node/
-sudo cp zoo-node.service /etc/systemd/system/
+sudo cp env.conf /opt/hanzo-node/
+sudo cp hanzo-node.service /etc/systemd/system/
 ```
 
 3. Configure environment variables:
 ```bash
-sudo nano /opt/zoo-node/env.conf
+sudo nano /opt/hanzo-node/env.conf
 # Set your IDENTITY_SECRET_KEY, ENCRYPTION_SECRET_KEY, EMBEDDINGS_SERVER_URL, and INITIAL_AGENT_API_KEYS
 ```
 
 4. Enable and start the service:
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable zoo-node
-sudo systemctl start zoo-node
+sudo systemctl enable hanzo-node
+sudo systemctl start hanzo-node
 ```
 
 ## Cloud-Specific Setup
@@ -48,7 +48,7 @@ sudo systemctl start zoo-node
 
 1. Create VM Instance:
 ```bash
-gcloud compute instances create zoo-node \
+gcloud compute instances create hanzo-node \
   --machine-type=e2-standard-2 \
   --image-family=debian-11 \
   --image-project=debian-cloud \
@@ -141,8 +141,8 @@ sudo certbot --nginx -d your-domain.com
 1. Create VM:
 ```bash
 az vm create \
-  --resource-group zoo-group \
-  --name zoo-node \
+  --resource-group hanzo-group \
+  --name hanzo-node \
   --image Debian:debian-11:11:latest \
   --size Standard_B2s \
   --admin-username azureuser \
@@ -153,8 +153,8 @@ az vm create \
 ```bash
 # Allow HTTP
 az network nsg rule create \
-  --resource-group zoo-group \
-  --nsg-name zoo-node-nsg \
+  --resource-group hanzo-group \
+  --nsg-name hanzo-node-nsg \
   --name allow-http \
   --protocol tcp \
   --priority 1001 \
@@ -162,8 +162,8 @@ az network nsg rule create \
 
 # Allow HTTPS
 az network nsg rule create \
-  --resource-group zoo-group \
-  --nsg-name zoo-node-nsg \
+  --resource-group hanzo-group \
+  --nsg-name hanzo-node-nsg \
   --name allow-https \
   --protocol tcp \
   --priority 1002 \
@@ -186,7 +186,7 @@ az network nsg rule create \
    - Allow TCP 80 (HTTP)
    - Allow TCP 443 (HTTPS)
    - Do NOT expose port 9550 to the internet
-   - Apply to Zoo Node droplet
+   - Apply to Hanzo Node droplet
 
 3. Follow the same Nginx and SSL setup as above.
 
@@ -214,18 +214,18 @@ sudo systemctl start certbot.timer
 
 Check service status:
 ```bash
-sudo systemctl status zoo-node
+sudo systemctl status hanzo-node
 ```
 
 View logs:
 ```bash
-sudo journalctl -u zoo-node -f
+sudo journalctl -u hanzo-node -f
 ```
 
 Update the container:
 ```bash
-sudo docker pull zoo/zoo-node:latest
-sudo systemctl restart zoo-node
+sudo docker pull ghcr.io/hanzoai/node:latest
+sudo systemctl restart hanzo-node
 ```
 
 ## Security Considerations
@@ -253,17 +253,17 @@ sudo ufw enable
 
 1. Check service status:
 ```bash
-sudo systemctl status zoo-node
+sudo systemctl status hanzo-node
 ```
 
 2. View detailed logs:
 ```bash
-sudo journalctl -u zoo-node -f
+sudo journalctl -u hanzo-node -f
 ```
 
 3. Verify container is running:
 ```bash
-docker ps | grep zoo-node
+docker ps | grep hanzo-node
 ```
 
 4. Test API endpoint:
@@ -278,4 +278,4 @@ sudo nginx -t
 
 ## Support
 
-For additional support or questions, please refer to the Zoo documentation at https://docs.zoo.ai or contact Zoo Industries Inc. support. 
+For additional support or questions, please refer to the Hanzo documentation or contact support. 

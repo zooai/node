@@ -1,9 +1,9 @@
 *
 !Cargo.*
 !src
-!zoo-libs/zoo-message-primitives/src
-!zoo-libs/zoo-message-primitives/Cargo.*
-!zoo-libs/zoo-vector-resources/src
-!zoo-libs/zoo-vector-resources/Cargo.*
-!zoo-libs/llama-tokenizer/src
-!zoo-libs/llama-tokenizer/Cargo.*
+!hanzo-libs/hanzo-message-primitives/src
+!hanzo-libs/hanzo-message-primitives/Cargo.*
+!hanzo-libs/hanzo-vector-resources/src
+!hanzo-libs/hanzo-vector-resources/Cargo.*
+!hanzo-libs/llama-tokenizer/src
+!hanzo-libs/llama-tokenizer/Cargo.*

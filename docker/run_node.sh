@@ -2,7 +2,7 @@
 set -e
 
 # ============================================================================
-# Zoo Node Startup Script
+# Hanzo Node Startup Script
 # Pure Environment Variable Configuration - No config files required
 # ============================================================================
 
@@ -16,15 +16,15 @@ export NODE_HTTPS_PORT=${NODE_HTTPS_PORT:-9553}
 
 # Path Configuration
 export INSTALL_FOLDER_PATH=${INSTALL_FOLDER_PATH:-/app/pre-install}
-export NODE_STORAGE_PATH=${NODE_STORAGE_PATH:-zoo-storage}
-export ZOO_TOOLS_RUNNER_DENO_BINARY_PATH=${ZOO_TOOLS_RUNNER_DENO_BINARY_PATH:-/app/zoo-tools-runner-resources/deno}
-export ZOO_TOOLS_RUNNER_UV_BINARY_PATH=${ZOO_TOOLS_RUNNER_UV_BINARY_PATH:-/app/zoo-tools-runner-resources/uv}
-export PATH="/app/zoo-tools-runner-resources:/root/.local/bin:$PATH"
+export NODE_STORAGE_PATH=${NODE_STORAGE_PATH:-hanzo-storage}
+export HANZO_TOOLS_RUNNER_DENO_BINARY_PATH=${HANZO_TOOLS_RUNNER_DENO_BINARY_PATH:-/app/hanzo-tools-runner-resources/deno}
+export HANZO_TOOLS_RUNNER_UV_BINARY_PATH=${HANZO_TOOLS_RUNNER_UV_BINARY_PATH:-/app/hanzo-tools-runner-resources/uv}
+export PATH="/app/hanzo-tools-runner-resources:/root/.local/bin:$PATH"
 
 # Node Identity and Security
 export IDENTITY_SECRET_KEY=${IDENTITY_SECRET_KEY:-}
 export ENCRYPTION_SECRET_KEY=${ENCRYPTION_SECRET_KEY:-}
-export GLOBAL_IDENTITY_NAME=${GLOBAL_IDENTITY_NAME:-@@localhost.sep-zoo}
+export GLOBAL_IDENTITY_NAME=${GLOBAL_IDENTITY_NAME:-@@my_local_ai.sep-hanzo}
 
 # Node Behavior
 export PING_INTERVAL_SECS=${PING_INTERVAL_SECS:-0}
@@ -41,15 +41,22 @@ export LOG_ALL=${LOG_ALL:-1}
 
 # AI Provider Configuration
 export EMBEDDINGS_SERVER_URL=${EMBEDDINGS_SERVER_URL:-}
-export PROXY_IDENTITY=${PROXY_IDENTITY:-@@relayer_pub_01.sep-zoo}
+export PROXY_IDENTITY=${PROXY_IDENTITY:-@@relayer_pub_01.sep-hanzo}
+
+# Multi-Provider AI Agent Configuration
+# Format: comma-separated lists (must have same number of entries)
+export INITIAL_AGENT_NAMES=${INITIAL_AGENT_NAMES:-do_qwen32b}
+export INITIAL_AGENT_URLS=${INITIAL_AGENT_URLS:-https://inference.do-ai.run}
+export INITIAL_AGENT_MODELS=${INITIAL_AGENT_MODELS:-openai:alibaba-qwen3-32b}
+export INITIAL_AGENT_API_KEYS=${INITIAL_AGENT_API_KEYS:-}
 
 # ============================================================================
 # Startup Information
 # ============================================================================
 echo "========================================="
-echo "Zoo Node Starting"
+echo "Hanzo Node Starting"
 echo "========================================="
-echo "Version: ${ZOO_VERSION:-dev}"
+echo "Version: ${HANZO_VERSION:-dev}"
 echo "Build: ${BUILD_TYPE:-debug}"
 echo ""
 echo "Network Configuration:"
@@ -63,10 +70,14 @@ echo "Identity:"
 echo "  GLOBAL_IDENTITY_NAME: $GLOBAL_IDENTITY_NAME"
 echo "  PROXY_IDENTITY:       $PROXY_IDENTITY"
 echo ""
+echo "AI Providers:"
+echo "  INITIAL_AGENT_NAMES:  $INITIAL_AGENT_NAMES"
+echo "  INITIAL_AGENT_MODELS: $INITIAL_AGENT_MODELS"
+echo ""
 echo "Storage:"
 echo "  NODE_STORAGE_PATH: $NODE_STORAGE_PATH"
 echo "========================================="
 echo ""
 
 # Start the node
-exec /app/zoo-node
+exec /app/hanzo_node

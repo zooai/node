@@ -29,7 +29,25 @@ COPY . .
 RUN cargo clean
 RUN rustup default 1.88
 RUN rustup component add rustfmt
-RUN CARGO_BUILD_RERUN_IF_CHANGED=1 cargo build $([ "$BUILD_TYPE" = "release" ] && echo "--release")
+
+# Build main code, pre-compile tests, and cleanup in SINGLE layer
+# This is critical - separate RUN commands create Docker layers that preserve old data
+# Even if we delete files in a later layer, the image size includes all layers
+RUN CARGO_BUILD_RERUN_IF_CHANGED=1 cargo build $([ "$BUILD_TYPE" = "release" ] && echo "--release") && \
+    cargo test --no-run 2>/dev/null || true && \
+    rm -rf /app/target/debug/incremental && \
+    rm -rf /app/target/debug/.fingerprint && \
+    rm -rf /app/target/debug/build && \
+    rm -rf /app/target/debug/examples && \
+    rm -rf /app/target/debug/deps/*.d && \
+    rm -rf /app/target/.rustc_info.json && \
+    rm -rf /root/.cargo/registry/cache && \
+    rm -rf /root/.cargo/git/checkouts && \
+    rm -rf /root/.cargo/registry/index && \
+    echo "=== Target size after cleanup ===" && \
+    du -sh /app/target/ && \
+    du -sh /app/target/debug/ && \
+    ls -la /app/target/debug/ | head -20
 
 COPY .github/run-main*.sh /entrypoints/
 RUN chmod 755 /entrypoints/*.sh
