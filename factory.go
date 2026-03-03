@@ -29,6 +29,9 @@ import (
 
 	// ZOO precompiles -- blank imports trigger init() registration.
 
+	// AI Mining (0x0300) — Proof of AI: GPU/CPU compute rewards, model hosting, data sharing
+	_ "github.com/luxfi/precompile/ai"
+
 	// Post-quantum cryptography
 	_ "github.com/luxfi/precompile/blake3"
 	_ "github.com/luxfi/precompile/mldsa"
@@ -49,7 +52,7 @@ import (
 	// DEX precompile (V4 pool manager at 0x9010)
 	_ "github.com/luxfi/precompile/dex"
 
-	// Encryption & privacy
+	// Encryption & privacy (FHE at 0x0700 — CKKS/TFHE encrypted compute)
 	_ "github.com/luxfi/precompile/fhe"
 	_ "github.com/luxfi/precompile/hpke"
 	_ "github.com/luxfi/precompile/ecies"

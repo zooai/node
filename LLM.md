@@ -48,12 +48,21 @@ zood
 ## Precompiles
 
 All activated at genesis:
-- Post-quantum: ML-DSA, SLH-DSA, ML-KEM, PQCrypto, Blake3
-- Threshold sigs: CGGMP21, FROST, Corona
-- Curves: Ed25519, secp256r1, SR25519
-- DEX: LXPool (0x9010), LXBook (0x9020), LXRouter (0x9012)
-- Privacy: FHE (CKKS/TFHE), HPKE, ECIES, Ring signatures
-- Zero-knowledge: ZK proofs, Graph queries
+
+| Address | Name | Purpose |
+|---------|------|---------|
+| 0x0300 | **AI Mining** | Proof of AI — GPU/CPU compute rewards, model hosting, data sharing |
+| 0x0700 | **FHE** | Fully Homomorphic Encryption (CKKS/TFHE) — private inference, encrypted compute |
+| 0x9010 | LXPool | AMM pool manager (Uniswap V4 style) |
+| 0x9020 | LXBook | CLOB order matching |
+| 0x9012 | LXRouter | Swap router |
+| 0x0200 | ML-DSA | Post-quantum digital signatures |
+| 0x0600 | SLH-DSA | Stateless hash-based signatures |
+| 0x0800 | FROST | Threshold EdDSA |
+| 0x0800+3 | CGGMP21 | Threshold ECDSA |
+| 0x020B | Corona | 2-round lattice threshold |
+| 0x0500 | Blake3 | Fast hashing |
+| 0x0900 | ZK | Zero-knowledge proofs |
 
 ## Build
 
