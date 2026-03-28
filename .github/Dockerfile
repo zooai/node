@@ -1,12 +1,12 @@
 # Use a Rust base image
-FROM rust:bookworm as builder
+FROM rust:bookworm AS builder
 ARG BUILD_TYPE
-RUN apt-get update && apt-get install -y libclang-dev cmake libssl-dev libc++-dev libc++abi-dev lld
+RUN apt-get update && apt-get install -y clang libclang-dev cmake libssl-dev libc++-dev libc++abi-dev lld
 
 # Install nvm, npm and node
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION v22.13.1
+ENV NVM_DIR=/usr/local/nvm
+ENV NODE_VERSION=v22.13.1
 RUN mkdir $NVM_DIR
 
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
@@ -15,9 +15,16 @@ RUN source $NVM_DIR/nvm.sh \
     && nvm alias default $NODE_VERSION \
     && nvm use default
 
-ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+ENV NODE_PATH=$NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH=$NVM_DIR/versions/node/$NODE_VERSION/bin:/root/.local/bin:$PATH
 RUN node -v
+
+# Pre-install MCP test server dependencies so npx doesn't fail with missing modules
+RUN npx -y @modelcontextprotocol/server-everything@2025.9.12 --help 2>/dev/null || true
+
+# Install uv (Python package manager) and Python for runner tests
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN uv python install 3.12
 
 # Create a new directory for your app
 WORKDIR /app
@@ -25,10 +32,13 @@ WORKDIR /app
 # Clone the repository
 COPY . .
 
-# Build the dependencies (cached)
-RUN cargo clean
+# Set up Rust toolchain
 RUN rustup default 1.88
 RUN rustup component add rustfmt
+
+# Limit parallel jobs to prevent OOM on arm64 (16GB Graviton).
+# lld linker configured in .cargo/config.toml (uses ~3x less RAM than ld).
+ENV CARGO_BUILD_JOBS=4
 
 # Build main code, pre-compile tests, and cleanup in SINGLE layer
 # This is critical - separate RUN commands create Docker layers that preserve old data

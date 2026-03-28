@@ -15,7 +15,7 @@
 # ============================================================================
 # Stage 1: Builder
 # ============================================================================
-FROM rust:bookworm as builder
+FROM rust:bookworm AS builder
 
 # Build configuration
 ARG BUILD_TYPE=debug
@@ -25,6 +25,7 @@ ARG VCS_REF
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
+    clang \
     libclang-dev \
     cmake \
     libssl-dev \
@@ -43,6 +44,10 @@ COPY . .
 # Add rustfmt for build
 RUN rustup component add rustfmt
 
+# Limit parallel codegen/linker jobs to prevent OOM on arm64 (16GB Graviton).
+# lld is configured as the linker via .cargo/config.toml (uses ~3x less RAM than ld).
+ENV CARGO_BUILD_JOBS=4
+
 # Build the project
 # Build the entire workspace to properly resolve all dependencies
 # Then extract just the hanzo_node binary we need
@@ -55,7 +60,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 # ============================================================================
 # Stage 2: Runtime
 # ============================================================================
-FROM debian:bookworm-slim as runner
+FROM debian:bookworm-slim AS runner
 
 # Metadata
 ARG BUILD_TYPE=debug
