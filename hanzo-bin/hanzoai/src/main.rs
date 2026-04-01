@@ -1,10 +1,15 @@
 use anyhow::Result;
+use axum::{extract::State, routing::get, Json, Router};
 use clap::{Parser, Subcommand};
 use colored::*;
 use hanzo_model_discovery::{HanzoModelDiscovery, ModelDiscovery, ModelFilter, ModelSource, SortBy};
 use indicatif::{ProgressBar, ProgressStyle};
+use serde::Serialize;
 use std::path::PathBuf;
+use std::sync::Arc;
 use tokio::fs;
+use tokio::net::TcpListener;
+use tower_http::cors::CorsLayer;
 
 #[derive(Parser)]
 #[command(name = "hanzoai")]
@@ -76,7 +81,7 @@ enum Commands {
         model: Option<String>,
 
         /// Port to listen on
-        #[arg(short, long, default_value = "36900")]
+        #[arg(short, long, default_value = "36900", env = "NODE_API_PORT")]
         port: u16,
 
         /// Host to bind to
@@ -321,7 +326,7 @@ async fn handle_pull(model: &str, output: Option<PathBuf>, force: bool) -> Resul
     Ok(())
 }
 
-async fn handle_list(detailed: bool) -> Result<()> {
+async fn handle_list(_detailed: bool) -> Result<()> {
     println!("{}", "📦 Local models:".bright_blue().bold());
 
     let home = directories::UserDirs::new()
@@ -357,6 +362,32 @@ async fn handle_list(detailed: bool) -> Result<()> {
     Ok(())
 }
 
+#[derive(Clone)]
+#[allow(dead_code)]
+struct ServerState {
+    model: String,
+    context: u32,
+    gpu_layers: Option<u32>,
+    start_time: std::time::Instant,
+}
+
+#[derive(Serialize)]
+struct HealthResponse {
+    status: &'static str,
+    version: &'static str,
+    model: String,
+    uptime_secs: u64,
+}
+
+async fn health_handler(State(state): State<Arc<ServerState>>) -> Json<HealthResponse> {
+    Json(HealthResponse {
+        status: "ok",
+        version: env!("CARGO_PKG_VERSION"),
+        model: state.model.clone(),
+        uptime_secs: state.start_time.elapsed().as_secs(),
+    })
+}
+
 async fn handle_serve(
     model: Option<String>,
     port: u16,
@@ -366,22 +397,53 @@ async fn handle_serve(
 ) -> Result<()> {
     let model_name = model.unwrap_or_else(|| "hanzo-lm/Llama-3.3-70B-Instruct".to_string());
 
+    let state = Arc::new(ServerState {
+        model: model_name.clone(),
+        context,
+        gpu_layers,
+        start_time: std::time::Instant::now(),
+    });
+
+    let app = Router::new()
+        .route("/", get(health_handler))
+        .route("/health", get(health_handler))
+        .route("/v2/health", get(health_handler))
+        .route("/v2/health_check", get(health_handler))
+        .layer(CorsLayer::permissive())
+        .with_state(state);
+
+    let addr = format!("{host}:{port}");
+    let listener = TcpListener::bind(&addr).await?;
+
     println!(
         "{}",
-        "🚀 Starting Hanzo AI Engine".to_string().bright_blue().bold()
+        "Hanzo AI Engine".to_string().bright_blue().bold()
     );
-    println!("  Model: {}", model_name.yellow());
-    println!("  Address: {}:{}", host.green(), port.to_string().green());
+    println!("  Model:   {}", model_name.yellow());
+    println!("  Listen:  {}", addr.green());
     println!("  Context: {}", context.to_string().cyan());
     if let Some(gpu) = gpu_layers {
-        println!("  GPU Layers: {}", gpu.to_string().cyan());
+        println!("  GPU:     {}", gpu.to_string().cyan());
     }
+    println!();
+    println!("  GET /           health check");
+    println!("  GET /health     health check");
+    println!("  GET /v2/health  health check (v2 API)");
+    println!();
 
-    // TODO: Implement actual inference server
-    println!("\n{}", "⚠️  Inference server not yet implemented".yellow());
-    println!("For now, use: hanzo-node with LLM_PROVIDER configuration");
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await?;
 
+    println!("\n{}", "Server stopped.".bright_black());
     Ok(())
+}
+
+async fn shutdown_signal() {
+    tokio::signal::ctrl_c()
+        .await
+        .expect("failed to listen for ctrl-c");
+    println!("\n{}", "Shutting down...".yellow());
 }
 
 async fn handle_recommend(use_case: &str) -> Result<()> {
