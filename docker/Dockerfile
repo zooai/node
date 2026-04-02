@@ -49,9 +49,9 @@ RUN rustup component add rustfmt
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/build/target \
     cargo build --locked --bin hanzo-node $([ "$BUILD_TYPE" = "release" ] && echo "--release") && \
-    cp target/${BUILD_TYPE}/hanzo-node /build/hanzo-node && \
-    mkdir -p /build/hanzo-tools-runner-resources && \
-    cp -r target/${BUILD_TYPE}/hanzo-tools-runner-resources/* /build/hanzo-tools-runner-resources/ 2>/dev/null || true
+    cp target/${BUILD_TYPE}/hanzo-node /build/hanzo-node
+# Tools runner resources (may not exist in all configurations)
+RUN mkdir -p /build/hanzo-tools-runner-resources
 
 # ============================================================================
 # Stage 2: Runtime
