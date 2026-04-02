@@ -1,0 +1,44 @@
+{
+  "chain": {
+    "name": "Beluga",
+    "type": "l3",
+    "parent": "zoo",
+    "parentChainId": 200200,
+    "evmChainId": 420420,
+    "networkId": 1,
+    "coin": "BLG",
+    "coinName": "BELUGA",
+    "decimals": 18
+  },
+  "block": {
+    "targetRate": 2,
+    "gasLimit": 15000000,
+    "maxBlockGasCost": 1000000
+  },
+  "fees": {
+    "minBaseFee": 25000000000,
+    "baseFeeChangeDenominator": 48,
+    "targetGas": 50000000
+  },
+  "precompiles": {
+    "ai": true,
+    "fhe": true,
+    "pq": true,
+    "dex": false,
+    "zk": true
+  },
+  "supply": {
+    "total": "100000000000000000000000000",
+    "safe": "60000000000000000000000000",
+    "inferencePool": "20000000000000000000000000",
+    "trainingBounties": "10000000000000000000000000",
+    "lpSeeding": "10000000000000000000000000"
+  },
+  "genesis": {
+    "file": "genesis.json",
+    "safeAddress": "0xBe106a0000000000000000000000000000000001",
+    "inferencePoolAddress": "0xBe106a0000000000000000000000000000000002",
+    "trainingBountiesAddress": "0xBe106a0000000000000000000000000000000003",
+    "lpSeedingAddress": "0xBe106a0000000000000000000000000000000004"
+  }
+}

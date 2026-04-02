@@ -1,0 +1,77 @@
+{
+  "config": {
+    "chainId": 420420,
+    "homesteadBlock": 0,
+    "eip150Block": 0,
+    "eip155Block": 0,
+    "eip158Block": 0,
+    "byzantiumBlock": 0,
+    "constantinopleBlock": 0,
+    "petersburgBlock": 0,
+    "istanbulBlock": 0,
+    "muirGlacierBlock": 0,
+    "berlinBlock": 0,
+    "londonBlock": 0,
+    "arrowGlacierBlock": 0,
+    "grayGlacierBlock": 0,
+    "mergeNetsplitBlock": 0,
+    "shanghaiTime": 0,
+    "cancunTime": 0,
+    "blobSchedule": {
+      "cancun": {"target": 3, "max": 6, "baseFeeUpdateFraction": 3338477}
+    },
+    "terminalTotalDifficulty": 0,
+    "chainEVMTimestamp": 0,
+    "durangoTimestamp": 0,
+    "etnaTimestamp": 253399622400,
+    "feeConfig": {
+      "gasLimit": 15000000,
+      "targetBlockRate": 2,
+      "minBaseFee": 25000000000,
+      "targetGas": 50000000,
+      "baseFeeChangeDenominator": 48,
+      "minBlockGasCost": 0,
+      "maxBlockGasCost": 1000000,
+      "blockGasCostStep": 200000
+    },
+    "warpConfig": {
+      "blockTimestamp": 0,
+      "quorumNumerator": 67,
+      "requirePrimaryNetworkSigners": false
+    },
+    "aiConfig": {
+      "blockTimestamp": 0,
+      "inferenceEnabled": true,
+      "modelRegistryEnabled": true
+    },
+    "fheConfig": {
+      "blockTimestamp": 0,
+      "enableCKKS": true,
+      "enableTFHE": true
+    }
+  },
+  "alloc": {
+    "Be106a0000000000000000000000000000000001": {
+      "balance": "0x31a17e847807b1bc000000"
+    },
+    "Be106a0000000000000000000000000000000002": {
+      "balance": "0x108b2a2c28029094000000"
+    },
+    "Be106a0000000000000000000000000000000003": {
+      "balance": "0x84595161401484a000000"
+    },
+    "Be106a0000000000000000000000000000000004": {
+      "balance": "0x84595161401484a000000"
+    }
+  },
+  "nonce": "0x0",
+  "timestamp": "0x0",
+  "extraData": "0x42454c554741",
+  "gasLimit": "0xe4e1c0",
+  "difficulty": "0x0",
+  "mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "coinbase": "0x0000000000000000000000000000000000000000",
+  "number": "0x0",
+  "gasUsed": "0x0",
+  "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
+}
