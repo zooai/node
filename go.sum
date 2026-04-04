@@ -269,6 +269,8 @@ github.com/luxfi/consensus v1.22.70 h1:IQlDxkNY2j6W55nYh11WenvdIsZ9g619qo+xS69GA
 github.com/luxfi/consensus v1.22.70/go.mod h1:y6y+bVjvpDLkkTBCCKLcch6R4PRW8EA+lTfr+6sB6F8=
 github.com/luxfi/constants v1.4.4 h1:R5MaZkQs70eHceZx+2LS9G2gmG7OcLF98BSkJol3OJE=
 github.com/luxfi/constants v1.4.4/go.mod h1:ENkJ121cmDEkwQPDiKK4QhnTnW9u37PGpepbrdVcAmc=
+github.com/luxfi/constants v1.4.6 h1:9a/ED2t/sRfeOfvNur2lssyjaw2I7tSyddTJHVSDYWg=
+github.com/luxfi/constants v1.4.6/go.mod h1:hOszZ2NDQ8gMZKncfcZ67PXkb5OIbnwAzXC3oFbQwW0=
 github.com/luxfi/container v0.0.4 h1:BXhF82WyfqVP5mjlNcr7tP0Fcnvl0Ap1rkiu+rq5XuM=
 github.com/luxfi/container v0.0.4/go.mod h1:Z3SpmMF5d4t77MM0nHYXURpn+EMVaeu1fhbd/3BGaek=
 github.com/luxfi/crypto v1.17.44 h1:N3uWiHs1hC0DGsr2jwIdTfsEcpVR1Da583Z1LcqOaH8=
@@ -285,6 +287,10 @@ github.com/luxfi/formatting v1.0.1 h1:ZnE1rAdEUds9yAegdVdGDOBGN6hLMPOv6E03Fp8IEY
 github.com/luxfi/formatting v1.0.1/go.mod h1:mYzNf5DJOiqSSKUPzNj5dKy4tstFbN3pZlkI5716eKc=
 github.com/luxfi/genesis v1.6.2 h1:wMYoswFylcLBiNqKcXMYFkOmovY/CF/5KBYxtpIYmSY=
 github.com/luxfi/genesis v1.6.2/go.mod h1:RXMF1kTwh1tWqpu07svpWz86xcGxDk2j6fIxdds9/N0=
+github.com/luxfi/genesis v1.7.0 h1:/k6pvlrdvdBlQystzc8fx3EKlQi/G+5mMAkyjZC37J8=
+github.com/luxfi/genesis v1.7.0/go.mod h1:k26ZZvzES8e9cep9oWUDggBX+6oa5bnIQ7MmQP7dm4A=
+github.com/luxfi/genesis v1.7.1 h1:rMzmyt9kcSmF7wSf/ajoReDz8nBAX83v2xE4EgqgPOo=
+github.com/luxfi/genesis v1.7.1/go.mod h1:k26ZZvzES8e9cep9oWUDggBX+6oa5bnIQ7MmQP7dm4A=
 github.com/luxfi/geth v1.16.77 h1:bFbSV6C0KCqU6bFtq+I8hJw9bWAj2hCZXyx0fJPIUfo=
 github.com/luxfi/geth v1.16.77/go.mod h1:al8oFHXxsVly+Y3fcRHIhNhBSgAFNRR5Ey6YKemEDUs=
 github.com/luxfi/go-bip32 v1.0.2 h1:7vFbb+Wr4Z499q2tuCLdd7wWjtn8sH+HWBlx76mhH9Y=
