@@ -31,7 +31,7 @@ import (
 	"github.com/luxfi/node/config"
 	nodeversion "github.com/luxfi/node/version"
 
-	"github.com/zooio/node/vm"
+	"github.com/zoo-labs/chain/vm"
 )
 
 const header = `
