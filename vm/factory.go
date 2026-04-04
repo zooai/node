@@ -75,7 +75,7 @@ var (
 	// FHEVMID is the FHE VM identifier for encrypted computation.
 	// Provides CKKS/TFHE operations: private inference, encrypted portfolio
 	// management, confidential securities compliance checks.
-	FHEVMID = ids.FromStringOrPanic("fhevm1111111111111111111111111111111111111115")
+	FHEVMID = ids.FromStringOrPanic("RqxGi72cio4QcProSVa5nmsd8weLrrKrvBieZRoPD4HxQYp8L")
 
 	// DEXFactory creates new DEX VM instances.
 	DEXFactory = &dexvm.Factory{}
