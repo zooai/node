@@ -42,7 +42,7 @@ const (
 // RIPEMD160(SHA256(compressed_secp256k1_pubkey)), not keccak256. When the
 // genesis allocates to an ETH address, the P-Chain wallet cannot find UTXOs.
 //
-// This function loads a secp256k1 key from LUX_MNEMONIC/LIGHT_MNEMONIC or LUX_PRIVATE_KEY,
+// This function loads a secp256k1 key from MNEMONIC/LIGHT_MNEMONIC or LUX_PRIVATE_KEY,
 // derives both address formats, rebuilds genesis with correct addresses, and
 // overwrites nodeConfig.GenesisBytes in place.
 func patchDevGenesis(nodeConfig *node.Config, dataDir string) error {
@@ -187,16 +187,16 @@ func patchDevGenesis(nodeConfig *node.Config, dataDir string) error {
 	return nil
 }
 
-// loadDevKey loads a secp256k1 private key from LUX_MNEMONIC/LIGHT_MNEMONIC or LUX_PRIVATE_KEY.
+// loadDevKey loads a secp256k1 private key from MNEMONIC/LIGHT_MNEMONIC or LUX_PRIVATE_KEY.
 func loadDevKey() (*secp256k1.PrivateKey, error) {
-	mnemonic := os.Getenv("LUX_MNEMONIC")
+	mnemonic := os.Getenv("MNEMONIC")
 	if mnemonic == "" {
 		mnemonic = os.Getenv("LIGHT_MNEMONIC")
 	}
 	if mnemonic != "" {
 		mnemonic = strings.TrimSpace(mnemonic)
 		if !bip39.IsMnemonicValid(mnemonic) {
-			return nil, fmt.Errorf("invalid BIP39 mnemonic in LUX_MNEMONIC/LIGHT_MNEMONIC")
+			return nil, fmt.Errorf("invalid BIP39 mnemonic in MNEMONIC/LIGHT_MNEMONIC")
 		}
 		seed := bip39.NewSeed(mnemonic, "")
 		if len(seed) < 32 {
@@ -205,18 +205,18 @@ func loadDevKey() (*secp256k1.PrivateKey, error) {
 		return secp256k1.ToPrivateKey(seed[:32])
 	}
 
-	if keyHex := os.Getenv("LUX_PRIVATE_KEY"); keyHex != "" {
+	if keyHex := os.Getenv("PRIVATE_KEY"); keyHex != "" {
 		keyHex = strings.TrimSpace(keyHex)
 		keyHex = strings.TrimPrefix(keyHex, "0x")
 		keyHex = strings.TrimPrefix(keyHex, "0X")
 		keyBytes, err := hex.DecodeString(keyHex)
 		if err != nil {
-			return nil, fmt.Errorf("invalid hex in LUX_PRIVATE_KEY: %w", err)
+			return nil, fmt.Errorf("invalid hex in PRIVATE_KEY: %w", err)
 		}
 		return secp256k1.ToPrivateKey(keyBytes)
 	}
 
-	return nil, fmt.Errorf("neither LUX_MNEMONIC/LIGHT_MNEMONIC nor LUX_PRIVATE_KEY is set")
+	return nil, fmt.Errorf("neither MNEMONIC/LIGHT_MNEMONIC nor LUX_PRIVATE_KEY is set")
 }
 
 // readDevStartTime extracts the start time from an existing dev-network.json.

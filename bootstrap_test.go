@@ -59,11 +59,11 @@ func TestParseBootstrapFlags_Defaults(t *testing.T) {
 	if cfg.NetworkName != "Zoo" {
 		t.Errorf("NetworkName: got %q, want %q", cfg.NetworkName, "Zoo")
 	}
-	if cfg.CoinType != 9000 {
-		t.Errorf("CoinType: got %d, want %d", cfg.CoinType, 9000)
+	if cfg.CoinType != 60 {
+		t.Errorf("CoinType: got %d, want %d", cfg.CoinType, 60)
 	}
-	if cfg.KeyIndex != 1 {
-		t.Errorf("KeyIndex: got %d, want %d", cfg.KeyIndex, 1)
+	if cfg.KeyIndex != 0 {
+		t.Errorf("KeyIndex: got %d, want %d", cfg.KeyIndex, 0)
 	}
 	if cfg.ValidatorWeight != 20 {
 		t.Errorf("ValidatorWeight: got %d, want %d", cfg.ValidatorWeight, 20)
