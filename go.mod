@@ -8,10 +8,10 @@ go 1.26.1
 // for the EVM, the same binary detects LUX_VM_TRANSPORT and enters plugin mode.
 
 require (
-	github.com/luxfi/constants v1.4.4
+	github.com/luxfi/constants v1.4.6
 	github.com/luxfi/crypto v1.17.44
 	github.com/luxfi/evm v0.8.42
-	github.com/luxfi/genesis v1.6.2
+	github.com/luxfi/genesis v1.7.1
 	github.com/luxfi/go-bip32 v1.0.2
 	github.com/luxfi/go-bip39 v1.1.2
 	github.com/luxfi/ids v1.2.9
