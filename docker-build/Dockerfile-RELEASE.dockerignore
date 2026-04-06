@@ -1,0 +1,9 @@
+*
+!Cargo.*
+!src
+!hanzo-libs/hanzo-message-primitives/src
+!hanzo-libs/hanzo-message-primitives/Cargo.*
+!hanzo-libs/hanzo-vector-resources/src
+!hanzo-libs/hanzo-vector-resources/Cargo.*
+!hanzo-libs/llama-tokenizer/src
+!hanzo-libs/llama-tokenizer/Cargo.*
