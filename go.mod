@@ -1,4 +1,4 @@
-module github.com/zoo-labs/chain
+module github.com/zooai/node
 
 go 1.26.1
 
