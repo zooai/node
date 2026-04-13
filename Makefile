@@ -1,6 +1,6 @@
 .PHONY: build build-linux test clean docker
 
-BINARY  := lqd
+BINARY  := zood
 VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "v0.2.0")
 COMMIT  := $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 LDFLAGS := -ldflags="-w -s -X github.com/luxfi/node/version.GitCommit=$(COMMIT)"
