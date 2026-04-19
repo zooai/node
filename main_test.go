@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/zoo-labs/chain/vm"
+	"github.com/zooai/node/vm"
 )
 
 func TestInstallPlugin_CreatesSymlink(t *testing.T) {
