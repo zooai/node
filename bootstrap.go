@@ -17,7 +17,7 @@ import (
 	"github.com/luxfi/constants"
 	"github.com/luxfi/crypto/secp256k1"
 	"github.com/luxfi/ids"
-	ptxs "github.com/luxfi/protocol/p/txs"
+	ptxs "github.com/luxfi/proto/p/txs"
 	"github.com/luxfi/sdk/info"
 	"github.com/luxfi/sdk/platformvm"
 	"github.com/luxfi/sdk/wallet/primary"
@@ -137,7 +137,7 @@ func runBootstrap(args []string) {
 	adapter := primary.NewKeychainAdapter(kc)
 
 	wallet, err := primary.MakeWallet(ctx, &primary.WalletConfig{
-		URI: cfg.NodeURI, LUXKeychain: adapter, EthKeychain: adapter,
+		URI: cfg.NodeURI, LUXKeychain: adapter, EVMKeychain: adapter,
 	})
 	if err != nil {
 		log.Fatalf("Wallet creation failed: %v", err)
@@ -230,7 +230,7 @@ func runBootstrap(args []string) {
 
 		// Re-sync wallet — include the subnet tx so the owner cache is populated.
 		w, err := primary.MakeWallet(ctx, &primary.WalletConfig{
-			URI: cfg.NodeURI, LUXKeychain: adapter, EthKeychain: adapter,
+			URI: cfg.NodeURI, LUXKeychain: adapter, EVMKeychain: adapter,
 			PChainTxsToFetch: txsToFetch,
 		})
 		if err != nil {
@@ -257,7 +257,7 @@ func runBootstrap(args []string) {
 	if len(validators) > 0 {
 		log.Printf("Adding %d validators to subnet %s...", len(validators), subnetID)
 		w, err := primary.MakeWallet(ctx, &primary.WalletConfig{
-			URI: cfg.NodeURI, LUXKeychain: adapter, EthKeychain: adapter,
+			URI: cfg.NodeURI, LUXKeychain: adapter, EVMKeychain: adapter,
 			PChainTxsToFetch: txsToFetch,
 		})
 		if err != nil {
@@ -597,7 +597,7 @@ func fundPChain(ctx context.Context, cfg bootstrapConfig, wallet primary.Wallet,
 	kc := secp256k1fx.NewKeychain(privKey)
 	adapter := primary.NewKeychainAdapter(kc)
 	w, err := primary.MakeWallet(ctx, &primary.WalletConfig{
-		URI: cfg.NodeURI, LUXKeychain: adapter, EthKeychain: adapter,
+		URI: cfg.NodeURI, LUXKeychain: adapter, EVMKeychain: adapter,
 	})
 	if err != nil {
 		log.Fatalf("Wallet re-sync failed: %v", err)
