@@ -20,4 +20,4 @@ clean:
 
 # Docker build — CI/CD only, never local
 docker:
-	docker build --platform linux/amd64 -t ghcr.io//node:latest .
+	docker build --platform linux/amd64 -t ghcr.io/zooai/agent:latest .
