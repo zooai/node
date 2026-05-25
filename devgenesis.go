@@ -108,8 +108,8 @@ func patchDevGenesis(nodeConfig *node.Config, dataDir string) error {
 		Allocations: []genesiscfg.Allocation{
 			// Staking allocation — builder will zero InitialAmount since it's in InitialStakedFunds
 			{
-				ETHAddr:       stakerAddr, // doesn't matter for P-chain, just needs to be valid
-				LUXAddr:       stakerAddr,
+				EVMAddr:       stakerAddr, // doesn't matter for P-chain, just needs to be valid
+				UTXOAddr:       stakerAddr,
 				InitialAmount: 0,
 				UnlockSchedule: []genesiscfg.LockedAmount{
 					{Amount: devOneBillionLUX, Locktime: 0},
@@ -117,8 +117,8 @@ func patchDevGenesis(nodeConfig *node.Config, dataDir string) error {
 			},
 			// Spending allocation — NOT in InitialStakedFunds, so InitialAmount survives
 			{
-				ETHAddr:       ethShortID,
-				LUXAddr:       secpAddr,
+				EVMAddr:       ethShortID,
+				UTXOAddr:       secpAddr,
 				InitialAmount: devOneMillionLUX,
 				UnlockSchedule: []genesiscfg.LockedAmount{},
 			},
@@ -163,7 +163,7 @@ func patchDevGenesis(nodeConfig *node.Config, dataDir string) error {
 
 	// Genesis changed -- override in memory
 	nodeConfig.GenesisBytes = genesisBytes
-	nodeConfig.LuxAssetID = luxAssetID
+	nodeConfig.XAssetID = luxAssetID
 
 	genesisHashID, _ := ids.ToID(newHash)
 

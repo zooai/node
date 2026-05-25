@@ -42,7 +42,7 @@ import (
 	// Threshold signatures
 	_ "github.com/luxfi/precompile/cggmp21"
 	_ "github.com/luxfi/precompile/frost"
-	_ "github.com/luxfi/precompile/ringtail"
+	_ "github.com/luxfi/precompile/corona"
 
 	// Curves & migration
 	_ "github.com/luxfi/precompile/ed25519"
@@ -55,7 +55,6 @@ import (
 	// Encryption & privacy (FHE at 0x0700 — CKKS/TFHE encrypted compute)
 	_ "github.com/luxfi/precompile/fhe"
 	_ "github.com/luxfi/precompile/hpke"
-	_ "github.com/luxfi/precompile/ecies"
 	_ "github.com/luxfi/precompile/ring"
 
 	// Zero-knowledge & graph
