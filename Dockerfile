@@ -15,10 +15,10 @@ ENV GOPROXY=direct
 COPY go.mod go.sum ./
 # Strip luxfi checksums — tags get rewritten causing checksum drift.
 # GONOSUMCHECK=* + GONOSUMDB=* + GOFLAGS=-goflags bypass sum verification.
-RUN sed -i '/luxfi\//d; /\//d' go.sum && go mod download
+RUN sed -i '/luxfi\//d' go.sum && go mod download
 
 COPY . .
-RUN sed -i '/luxfi\//d; /\//d' go.sum
+RUN sed -i '/luxfi\//d' go.sum
 RUN xx-go --wrap && \
     CGO_ENABLED=1 CGO_CFLAGS="-Wno-incompatible-pointer-types" \
     go build -mod=mod -ldflags="-w -s" -o /build/zood .
@@ -31,7 +31,7 @@ RUN ln -s /zood/build/zood /usr/local/bin/zood
 RUN ln -s /zood/build/zood /zood/build/plugins/2n2njofjYvece8gZWCNnc1mqkcqfW6kbrhPRZPVzwxrSQrQ4gE && \
     ln -s /zood/build/zood /zood/build/plugins/mDVT5EWMumBp3LCqvKwuyZQeY1VXr1jvjGNAt8nL4UFiXvqXr
 
-COPY genesis.json /etc/liquidity/genesis.json
-COPY cmd/deploy-dex/genesis.json /etc/liquidity/dex-genesis.json
+COPY genesis.json /etc/zoo/genesis.json
+COPY cmd/deploy-dex/genesis.json /etc/zoo/dex-genesis.json
 
 ENTRYPOINT ["zood"]
