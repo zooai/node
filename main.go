@@ -56,10 +56,13 @@ func main() {
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "bootstrap":
-			runBootstrap(os.Args[2:])
+			runBootstrapDispatch(os.Args[2:])
 			return
 		case "version", "--version", "-v":
 			printVersion()
+			return
+		case "vms":
+			printVMs()
 			return
 		}
 	}
@@ -81,6 +84,27 @@ func main() {
 func printVersion() {
 	versions := nodeversion.GetVersions()
 	fmt.Printf("zood %s (luxd %s)\n", "0.2.0", versions.String())
+}
+
+// printVMs lists the native and inherited VMs registered into zood.
+// The 3-VM triumvirate (Zoo EVM, Zoo DEX, Zoo FHE) is wired locally;
+// the 8 other Lux optional VMs come via github.com/luxfi/node.
+func printVMs() {
+	fmt.Println("zood registered VMs:")
+	fmt.Printf("  zoo-evm     %s   GPU EVM with Zoo precompiles  luxfi/cevm + luxcpp/cevm\n", vm.EVMID.String())
+	fmt.Printf("  zoo-dex     %s   CLOB matching engine          luxcpp/dex bindings\n", vm.DEXVMID.String())
+	fmt.Printf("  zoo-fhe     %s   CKKS/TFHE encrypted compute   luxcpp/fhe bindings\n", vm.FHEVMID.String())
+	fmt.Println("  --- inherited from luxfi/node ---")
+	fmt.Println("  aivm       (A-Chain)   AI inference")
+	fmt.Println("  bridgevm   (B-Chain)   Cross-chain bridge")
+	fmt.Println("  graphvm    (G-Chain)   Graph database")
+	fmt.Println("  identityvm (I-Chain)   DID/VC")
+	fmt.Println("  keyvm      (K-Chain)   PQ key management")
+	fmt.Println("  oraclevm   (O-Chain)   Oracle feeds")
+	fmt.Println("  quantumvm  (Q-Chain)   PQ consensus coordination")
+	fmt.Println("  relayvm    (R-Chain)   Cross-chain message relay")
+	fmt.Println("  thresholdvm(T-Chain)   Threshold MPC + FHE")
+	fmt.Println("  zkvm       (Z-Chain)   Zero-knowledge proofs")
 }
 
 func runNode() {

@@ -19,6 +19,14 @@ RUN sed -i '/luxfi\//d' go.sum && go mod download
 
 COPY . .
 RUN sed -i '/luxfi\//d' go.sum
+
+# Per SCALE_STANDARD.md §2 (https://github.com/hanzoai/hips/blob/main/docs/SCALE_STANDARD.md)
+# — every Go production Dockerfile that emits JSON to a client builds
+# with GOEXPERIMENT=jsonv2. Verified -12% time / -23% allocs on the
+# edge POST roundtrip vs encoding/json v1.
+ARG GO_EXPERIMENT=jsonv2
+ENV GOEXPERIMENT=${GO_EXPERIMENT}
+
 RUN xx-go --wrap && \
     CGO_ENABLED=1 CGO_CFLAGS="-Wno-incompatible-pointer-types" \
     go build -mod=mod -ldflags="-w -s" -o /build/zood .
