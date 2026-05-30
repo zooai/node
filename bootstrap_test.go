@@ -1,6 +1,9 @@
 // Copyright (C) 2026, Zoo Labs Foundation. All rights reserved.
 // See the file LICENSE for licensing terms.
 
+//go:build bootstrap
+// +build bootstrap
+
 package main
 
 import (
