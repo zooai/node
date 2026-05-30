@@ -23,7 +23,7 @@ impl EmbeddingModelType {
         std::env::var("DEFAULT_EMBEDDING_MODEL")
             .and_then(|s| Self::from_string(&s).map_err(|_| std::env::VarError::NotPresent))
             .unwrap_or_else(|_| {
-                EmbeddingModelType::OllamaTextEmbeddingsInference(OllamaTextEmbeddingsInference::EmbeddingGemma300M)
+                EmbeddingModelType::OllamaTextEmbeddingsInference(OllamaTextEmbeddingsInference::ZenEmbedding06B)
             })
     }
 
@@ -61,6 +61,7 @@ pub enum OllamaTextEmbeddingsInference {
     SnowflakeArcticEmbedM,
     JinaEmbeddingsV2BaseEs,
     EmbeddingGemma300M,
+    ZenEmbedding06B,
     Other(String),
 }
 
@@ -69,6 +70,7 @@ impl OllamaTextEmbeddingsInference {
     const SNOWFLAKE_ARCTIC_EMBED_M: &'static str = "snowflake-arctic-embed:xs";
     const JINA_EMBEDDINGS_V2_BASE_ES: &'static str = "jina/jina-embeddings-v2-base-es:latest";
     const EMBEDDING_GEMMA_300_M: &'static str = "embeddinggemma:300m";
+    const ZEN_EMBEDDING_0_6_B: &'static str = "zenlm/zen-embedding-0.6b:latest";
 
     pub fn from_string(s: &str) -> Result<Self, HanzoEmbeddingError> {
         match s {
@@ -76,6 +78,8 @@ impl OllamaTextEmbeddingsInference {
             Self::SNOWFLAKE_ARCTIC_EMBED_M => Ok(Self::SnowflakeArcticEmbedM),
             Self::JINA_EMBEDDINGS_V2_BASE_ES => Ok(Self::JinaEmbeddingsV2BaseEs),
             Self::EMBEDDING_GEMMA_300_M => Ok(Self::EmbeddingGemma300M),
+            Self::ZEN_EMBEDDING_0_6_B => Ok(Self::ZenEmbedding06B),
+            "zenlm/zen-embedding-0.6b" => Ok(Self::ZenEmbedding06B),
             _ => Ok(Self::Other(s.to_string())),
         }
     }
@@ -84,6 +88,7 @@ impl OllamaTextEmbeddingsInference {
         match self {
             Self::JinaEmbeddingsV2BaseEs => 1024,
             Self::EmbeddingGemma300M => 2048,
+            Self::ZenEmbedding06B => 8192,
             Self::AllMiniLML6v2 => 512,
             Self::SnowflakeArcticEmbedM => 512,
             _ => 512,
@@ -103,6 +108,7 @@ impl OllamaTextEmbeddingsInference {
             Self::AllMiniLML6v2 => Ok(384),
             Self::JinaEmbeddingsV2BaseEs => Ok(768),
             Self::EmbeddingGemma300M => Ok(768),
+            Self::ZenEmbedding06B => Ok(1024),
             _ => Err(HanzoEmbeddingError::UnimplementedModelDimensions(format!(
                 "{:?}",
                 self
@@ -118,6 +124,7 @@ impl fmt::Display for OllamaTextEmbeddingsInference {
             Self::SnowflakeArcticEmbedM => write!(f, "{}", Self::SNOWFLAKE_ARCTIC_EMBED_M),
             Self::JinaEmbeddingsV2BaseEs => write!(f, "{}", Self::JINA_EMBEDDINGS_V2_BASE_ES),
             Self::EmbeddingGemma300M => write!(f, "{}", Self::EMBEDDING_GEMMA_300_M),
+            Self::ZenEmbedding06B => write!(f, "{}", Self::ZEN_EMBEDDING_0_6_B),
             Self::Other(name) => write!(f, "{}", name),
         }
     }
