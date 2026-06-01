@@ -190,4 +190,28 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn test_parse_zen_embedding_06b() {
+        // Canonical ":latest" form parses to the ZenEmbedding06B variant.
+        let parsed = OllamaTextEmbeddingsInference::from_string("zenlm/zen-embedding-0.6b:latest");
+        assert_eq!(parsed, Ok(OllamaTextEmbeddingsInference::ZenEmbedding06B));
+        // Bare alias (no tag) resolves to the same variant.
+        let parsed_bare = OllamaTextEmbeddingsInference::from_string("zenlm/zen-embedding-0.6b");
+        assert_eq!(parsed_bare, Ok(OllamaTextEmbeddingsInference::ZenEmbedding06B));
+        // Display emits the canonical ":latest" form (round-trips via from_string).
+        assert_eq!(
+            OllamaTextEmbeddingsInference::ZenEmbedding06B.to_string(),
+            "zenlm/zen-embedding-0.6b:latest"
+        );
+    }
+
+    #[test]
+    fn test_zen_embedding_06b_dimensions_and_ctx() {
+        // ZenEmbedding06B is now the default model; guard its advertised dims/context
+        // since the storage layer derives vector size from default().vector_dimensions().
+        let model = OllamaTextEmbeddingsInference::ZenEmbedding06B;
+        assert_eq!(model.vector_dimensions(), Ok(1024));
+        assert_eq!(model.max_input_token_count(), 8192);
+    }
 }
