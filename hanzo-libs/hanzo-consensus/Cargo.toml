@@ -5,8 +5,8 @@ edition = "2021"
 description = "Native Quasar consensus engine for Hanzo Network L2"
 
 [dependencies]
-# Lux consensus SDK (Quasar protocol)
-lux-consensus = { path = "../../../../lux/consensus/pkg/rust" }
+# Lux consensus SDK (Quasar protocol) — published crate, not a sibling path
+lux-consensus = "1.22"
 
 # PQC for dual certificates
 hanzo-pqc = { workspace = true }
