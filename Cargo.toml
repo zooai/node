@@ -22,7 +22,7 @@ members = [
   "hanzo-libs/hanzo-messages",
   "hanzo-libs/hanzo-mining",
   "hanzo-libs/hanzo-vm",
-  "hanzo-libs/hanzo-consensus",
+  # "hanzo-libs/hanzo-consensus", # Excluded: depends on lux-consensus via external path (../../../../lux/consensus/pkg/rust), unavailable in hermetic/CI builds; nothing else depends on it. Vendor or publish lux-consensus to re-enable.
   "hanzo-libs/hanzo-compute",
   "hanzo-libs/hanzo-ai-format",
   "hanzo-libs/hanzo-model-discovery",
