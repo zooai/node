@@ -24,8 +24,8 @@ import (
 	"github.com/luxfi/ids"
 	"github.com/luxfi/log"
 	"github.com/luxfi/node/vms/dexvm"
-	"github.com/luxfi/vm/rpc"
 	luxversion "github.com/luxfi/version"
+	"github.com/luxfi/vm/rpc"
 
 	// ZOO precompiles -- blank imports trigger init() registration.
 
@@ -41,8 +41,8 @@ import (
 
 	// Threshold signatures
 	_ "github.com/luxfi/precompile/cggmp21"
-	_ "github.com/luxfi/precompile/frost"
 	_ "github.com/luxfi/precompile/corona"
+	_ "github.com/luxfi/precompile/frost"
 
 	// Curves & migration
 	_ "github.com/luxfi/precompile/ed25519"
@@ -58,8 +58,8 @@ import (
 	_ "github.com/luxfi/precompile/ring"
 
 	// Zero-knowledge & graph
-	_ "github.com/luxfi/precompile/zk"
 	_ "github.com/luxfi/precompile/graph"
+	_ "github.com/luxfi/precompile/zk"
 )
 
 // VM IDs — all three are always available in the zood binary.

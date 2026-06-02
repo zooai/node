@@ -146,9 +146,9 @@ func runNode() {
 	// The C-Chain VM (evm.ID) must also be installed as a plugin — newer Lux versions
 	// launch ALL chain VMs as subprocesses, including the built-in C-chain.
 	for _, vmID := range []string{
-		vm.EVMID.String(),    // Zoo EVM
-		vm.DEXVMID.String(),  // Zoo DEX
-		vm.FHEVMID.String(),  // Zoo FHE
+		vm.EVMID.String(),   // Zoo EVM
+		vm.DEXVMID.String(), // Zoo DEX
+		vm.FHEVMID.String(), // Zoo FHE
 		vm.StandardEVMID().String(),
 	} {
 		if err := installPlugin(nodeConfig.PluginDir, vmID); err != nil {

@@ -109,7 +109,7 @@ func patchDevGenesis(nodeConfig *node.Config, dataDir string) error {
 			// Staking allocation — builder will zero InitialAmount since it's in InitialStakedFunds
 			{
 				EVMAddr:       stakerAddr, // doesn't matter for P-chain, just needs to be valid
-				UTXOAddr:       stakerAddr,
+				UTXOAddr:      stakerAddr,
 				InitialAmount: 0,
 				UnlockSchedule: []genesiscfg.LockedAmount{
 					{Amount: devOneBillionLUX, Locktime: 0},
@@ -117,9 +117,9 @@ func patchDevGenesis(nodeConfig *node.Config, dataDir string) error {
 			},
 			// Spending allocation — NOT in InitialStakedFunds, so InitialAmount survives
 			{
-				EVMAddr:       ethShortID,
+				EVMAddr:        ethShortID,
 				UTXOAddr:       secpAddr,
-				InitialAmount: devOneMillionLUX,
+				InitialAmount:  devOneMillionLUX,
 				UnlockSchedule: []genesiscfg.LockedAmount{},
 			},
 		},
