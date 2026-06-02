@@ -16,16 +16,16 @@ import (
 	"strings"
 	"time"
 
-	lux "github.com/luxfi/utxo"
 	"github.com/luxfi/constants"
 	"github.com/luxfi/crypto/secp256k1"
 	"github.com/luxfi/ids"
+	"github.com/luxfi/math/set"
 	ptxs "github.com/luxfi/proto/p/txs"
 	"github.com/luxfi/sdk/info"
 	"github.com/luxfi/sdk/platformvm"
 	"github.com/luxfi/sdk/wallet/primary"
+	lux "github.com/luxfi/utxo"
 	"github.com/luxfi/utxo/secp256k1fx"
-	"github.com/luxfi/math/set"
 
 	"github.com/luxfi/go-bip32"
 	"github.com/luxfi/go-bip39"
