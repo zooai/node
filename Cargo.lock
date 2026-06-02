@@ -5284,7 +5284,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-ai-format"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "async-trait",
  "base64 0.22.1",
@@ -5346,7 +5346,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-compute"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "async-trait",
  "blake3",
@@ -5365,7 +5365,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-config"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "dirs 5.0.1",
  "num_cpus",
@@ -5516,7 +5516,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-fs"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "async-trait",
  "bincode",
@@ -5549,7 +5549,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-http-api"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "anyhow",
  "async-channel 1.9.0",
@@ -5602,7 +5602,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-job-queue-manager"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "chrono",
  "hanzo-db-sqlite",
@@ -5787,7 +5787,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-mining"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "blake3",
  "chacha20poly1305 0.10.1",
@@ -5837,7 +5837,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-node"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "aes-gcm",
  "ai-model-catalog",
@@ -6046,7 +6046,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-tools"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "base64 0.22.1",
  "hanzo-mcp",
@@ -6100,7 +6100,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-vm"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -6142,7 +6142,7 @@ dependencies = [
 
 [[package]]
 name = "hanzo-wasm-runtime"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
