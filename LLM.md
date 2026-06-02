@@ -88,3 +88,35 @@ zoo chain deploy beluga --local
 | zoo-labs/node | Rust AI mining node (agents, inference, P2P) |
 | zooai/operator | K8s operator for Zoo network |
 | zooai/universe | Deployment manifests |
+
+## Convergence: this repo vs `hanzoai/node`
+
+This repo (`zooai/node`) and `hanzoai/node` share the same Rust node source
+(`hanzo-bin/hanzo-node/src` is ~identical between the two), but they play
+**different roles** in the shared build:
+
+- **`zooai/node` (this repo) = publish origin / fat monorepo.** It vendors all
+  40+ `hanzo-*` node libraries under `hanzo-libs/*` as path crates. These are the
+  *source of truth* that gets published to crates.io (see `publish-crates.sh`,
+  `prepare-publish.sh`, `rename-to-idiomatic.sh`). It also carries the Go chain
+  layer (`zood`, `bootstrap*.go`, …) and the decomposed mining/L2 crates
+  (`hanzo-mining`, `hanzo-consensus`, `hanzo-compute`, `hanzo-l2`).
+- **`hanzoai/node` = slim consumer.** Its workspace has only 4 members
+  (`hanzo-test-framework`, `hanzo-test-macro`, `hanzo-bin/hanzo-node`,
+  `hanzo-bin/hanzoai`) and pulls every `hanzo-*` lib **from crates.io** at the
+  unified version line, plus `hanzo-engine` (path `../engine/hanzo-engine`).
+
+These are **separate git histories** (no common ancestor). They are NOT merged
+with `git merge`/`git pull`. Cross-repo transfer is a *feature port* driven by an
+explicit token rename map (`hanzo`↔`zoo`), copy → fix imports → build → commit.
+
+### `zoo-libs/` is legacy
+`zoo-libs/*`, `zoo-bin/zoo-node`, `zoo-test-framework`, `zoo-test-macro` are the
+pre-rename Shinkai-lineage originals. They are **not** workspace members and no
+`hanzo-*` crate depends on them. They are retained for reference and slated for
+removal once the rename is finalized (tracked for human review).
+
+### Release order
+`ml → engine → node` (the leaf is `hanzoai/ml`; `hanzoai/engine` depends on `ml`;
+both nodes depend on `engine`). Publish `hanzo-*` node libs from **this** repo at
+a single version line; `hanzoai/node` then consumes them from crates.io.

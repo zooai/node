@@ -47,7 +47,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "1.1.20"
+version = "1.1.21"
 edition = "2021"
 authors = ["Nico Arqueros <nico@hanzo.ai>"]
 
@@ -59,11 +59,11 @@ hanzo-db = { path = "./hanzo-libs/hanzo-db", version = "0.1.1" }
 hanzo-db-sqlite = { path = "./hanzo-libs/hanzo-db-sqlite", version = "1.1.12" }
 hanzo-did = { path = "./hanzo-libs/hanzo-did", version = "1.1.11" }
 hanzo-embed = { path = "./hanzo-libs/hanzo-embed", version = "1.1.12" }
-hanzo-fs = { path = "./hanzo-libs/hanzo-fs" }
+hanzo-fs = { path = "./hanzo-libs/hanzo-fs", version = "1.1.21" }
 hanzo-hmm = { path = "./hanzo-libs/hanzo-hmm", version = "0.1.1" }
-hanzo-http-api = { path = "./hanzo-libs/hanzo-http-api" }
+hanzo-http-api = { path = "./hanzo-libs/hanzo-http-api", version = "1.1.21" }
 hanzo-identity = { path = "./hanzo-libs/hanzo-identity", version = "1.1.12" }
-hanzo-job-queue-manager = { path = "./hanzo-libs/hanzo-job-queue-manager" }
+hanzo-job-queue-manager = { path = "./hanzo-libs/hanzo-job-queue-manager", version = "1.1.21" }
 hanzo-jobs = { path = "./hanzo-libs/hanzo-jobs", version = "1.1.12" }
 hanzo-kbs = { path = "./hanzo-libs/hanzo-kbs", version = "1.1.11" }
 hanzo-l2 = { path = "./hanzo-libs/hanzo-l2", version = "1.1.19" }
@@ -85,7 +85,7 @@ hanzo-runtime-tests = { path = "./hanzo-libs/hanzo-runtime-tests", version = "0.
 hanzo-sheet = { path = "./hanzo-libs/hanzo-sheet", version = "0.1.1" }
 # hanzo-simulation = { path = "./hanzo-libs/hanzo-simulation" }
 hanzo-tests = { path = "./hanzo-libs/hanzo-tests", version = "0.1.1" }
-hanzo-tools = { path = "./hanzo-libs/hanzo-tools" }
+hanzo-tools = { path = "./hanzo-libs/hanzo-tools", version = "1.1.21" }
 hanzo-tools-runner = { path = "./hanzo-libs/hanzo-tools-runner", version = "1.0.1" }
 hanzo-wasm = { path = "./hanzo-libs/hanzo-wasm", version = "0.1.1" }
 hanzo-vm = { path = "./hanzo-libs/hanzo-vm", version = "1.1.19" }
