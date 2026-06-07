@@ -1,6 +1,6 @@
 module github.com/zooai/node
 
-go 1.26.3
+go 1.26.4
 
 // Liquidity Node — single embedded binary combining a Lux node with the
 //  EVM (custom precompiles for threshold sigs, PQ crypto, DEX, etc).
