@@ -163,7 +163,7 @@ func patchDevGenesis(nodeConfig *node.Config, dataDir string) error {
 
 	// Genesis changed -- override in memory
 	nodeConfig.GenesisBytes = genesisBytes
-	nodeConfig.XAssetID = luxAssetID
+	nodeConfig.UTXOAssetID = luxAssetID
 
 	genesisHashID, _ := ids.ToID(newHash)
 

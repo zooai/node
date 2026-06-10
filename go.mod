@@ -8,23 +8,23 @@ go 1.26.4
 // for the EVM, the same binary detects LUX_VM_TRANSPORT and enters plugin mode.
 
 require (
-	github.com/luxfi/constants v1.5.7
-	github.com/luxfi/crypto v1.19.17
-	github.com/luxfi/evm v1.99.19
+	github.com/luxfi/constants v1.5.8-0.20260603055356-93c2c2ceb9ca
+	github.com/luxfi/crypto v1.19.18
+	github.com/luxfi/evm v1.99.20
 	github.com/luxfi/genesis v1.13.8
 	github.com/luxfi/go-bip32 v1.0.2
 	github.com/luxfi/go-bip39 v1.1.2
-	github.com/luxfi/ids v1.2.13
+	github.com/luxfi/ids v1.2.15
 	github.com/luxfi/log v1.4.3
 	github.com/luxfi/math v1.4.1
-	github.com/luxfi/node v1.28.17
-	github.com/luxfi/precompile v0.5.34
-	github.com/luxfi/proto v1.1.0
-	github.com/luxfi/sdk v1.17.0
-	github.com/luxfi/utxo v0.3.4
+	github.com/luxfi/node v1.30.6
+	github.com/luxfi/precompile v0.5.38
+	github.com/luxfi/proto v1.3.4
+	github.com/luxfi/sdk v1.17.6
+	github.com/luxfi/utxo v0.3.7
 	github.com/luxfi/version v1.0.1
-	github.com/luxfi/vm v1.1.6
-	github.com/luxfi/zap v0.7.0
+	github.com/luxfi/vm v1.2.2
+	github.com/luxfi/zap v0.7.2
 	github.com/spf13/pflag v1.0.10
 	golang.org/x/term v0.43.0
 )
@@ -43,7 +43,6 @@ require (
 	github.com/btcsuite/btcd/chainhash/v2 v2.0.0 // indirect
 	github.com/btcsuite/btcutil v1.0.2 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
-	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudflare/circl v1.6.3 // indirect
 	github.com/cockroachdb/errors v1.13.0 // indirect
@@ -93,7 +92,6 @@ require (
 	github.com/gorilla/rpc v1.2.1 // indirect
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674 // indirect
 	github.com/grandcat/zeroconf v1.0.0 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.29.0 // indirect
 	github.com/gtank/merlin v0.1.1 // indirect
 	github.com/gtank/ristretto255 v0.2.0 // indirect
 	github.com/hashicorp/go-bexpr v0.1.16 // indirect
@@ -109,27 +107,27 @@ require (
 	github.com/klauspost/crc32 v1.3.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/luxfi/accel v1.1.9 // indirect
+	github.com/luxfi/accel v1.2.2 // indirect
 	github.com/luxfi/address v1.0.1 // indirect
 	github.com/luxfi/age v1.5.0 // indirect
 	github.com/luxfi/ai v0.2.2 // indirect
-	github.com/luxfi/api v1.0.12 // indirect
+	github.com/luxfi/api v1.0.15 // indirect
 	github.com/luxfi/atomic v1.0.0 // indirect
 	github.com/luxfi/cache v1.2.1 // indirect
-	github.com/luxfi/chains v1.2.7 // indirect
-	github.com/luxfi/codec v1.1.4 // indirect
+	github.com/luxfi/chains v1.3.6 // indirect
+	github.com/luxfi/codec v1.1.5 // indirect
 	github.com/luxfi/compress v0.0.5 // indirect
 	github.com/luxfi/concurrent v0.0.3 // indirect
-	github.com/luxfi/consensus v1.25.14 // indirect
+	github.com/luxfi/consensus v1.25.15 // indirect
 	github.com/luxfi/container v0.0.4 // indirect
 	github.com/luxfi/corona v0.7.6 // indirect
 	github.com/luxfi/crypto/ipa v1.2.4 // indirect
-	github.com/luxfi/database v1.19.0 // indirect
+	github.com/luxfi/database v1.19.2 // indirect
 	github.com/luxfi/fhe v1.8.8 // indirect
 	github.com/luxfi/filesystem v0.0.1 // indirect
 	github.com/luxfi/formatting v1.0.1 // indirect
 	github.com/luxfi/genesis/pkg/genesis/security v1.13.8 // indirect
-	github.com/luxfi/geth v1.16.98 // indirect
+	github.com/luxfi/geth v1.16.99 // indirect
 	github.com/luxfi/gpu v1.0.2 // indirect
 	github.com/luxfi/keychain v1.0.2 // indirect
 	github.com/luxfi/lattice/v7 v7.1.4 // indirect
@@ -140,26 +138,27 @@ require (
 	github.com/luxfi/mdns v0.1.1 // indirect
 	github.com/luxfi/metric v1.5.8 // indirect
 	github.com/luxfi/mock v0.1.1 // indirect
-	github.com/luxfi/net v0.0.4 // indirect
+	github.com/luxfi/net v0.0.5 // indirect
 	github.com/luxfi/oracle v1.0.0 // indirect
-	github.com/luxfi/p2p v1.21.0 // indirect
+	github.com/luxfi/p2p v1.21.1 // indirect
 	github.com/luxfi/pq v1.0.3 // indirect
 	github.com/luxfi/pulsar v1.1.2 // indirect
 	github.com/luxfi/relay v1.0.0 // indirect
 	github.com/luxfi/resource v0.0.1 // indirect
-	github.com/luxfi/rpc v1.0.3 // indirect
-	github.com/luxfi/runtime v1.1.0 // indirect
-	github.com/luxfi/sampler v1.0.0 // indirect
-	github.com/luxfi/staking v1.4.0 // indirect
+	github.com/luxfi/rpc v1.1.0 // indirect
+	github.com/luxfi/runtime v1.1.1 // indirect
+	github.com/luxfi/sampler v1.1.0 // indirect
+	github.com/luxfi/staking v1.5.0 // indirect
 	github.com/luxfi/sys v0.1.0 // indirect
 	github.com/luxfi/threshold v1.9.8 // indirect
 	github.com/luxfi/timer v1.0.2 // indirect
 	github.com/luxfi/tls v1.0.3 // indirect
-	github.com/luxfi/trace v1.0.0 // indirect
-	github.com/luxfi/upgrade v1.0.0 // indirect
-	github.com/luxfi/utils v1.1.4 // indirect
+	github.com/luxfi/trace v1.1.0 // indirect
+	github.com/luxfi/upgrade v1.0.1-0.20260603055252-f51810805436 // indirect
+	github.com/luxfi/utils v1.2.0 // indirect
 	github.com/luxfi/validators v1.2.0 // indirect
-	github.com/luxfi/warp v1.19.1 // indirect
+	github.com/luxfi/warp v1.19.3 // indirect
+	github.com/luxfi/zapcodec v1.0.1 // indirect
 	github.com/luxfi/zapdb v1.10.0 // indirect
 	github.com/luxfi/zwing v0.5.2 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
@@ -217,13 +216,9 @@ require (
 	go.mongodb.org/mongo-driver v1.17.9 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel v1.44.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.44.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.44.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.44.0 // indirect
 	go.opentelemetry.io/otel/metric v1.44.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.44.0 // indirect
 	go.opentelemetry.io/otel/trace v1.44.0 // indirect
-	go.opentelemetry.io/proto/otlp v1.10.0 // indirect
 	go.uber.org/mock v0.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.28.0 // indirect
@@ -238,9 +233,7 @@ require (
 	golang.org/x/time v0.15.0 // indirect
 	golang.org/x/tools v0.45.0 // indirect
 	gonum.org/v1/gonum v0.17.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20260526163538-3dc84a4a5aaa // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260526163538-3dc84a4a5aaa // indirect
-	google.golang.org/grpc v1.81.1 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/ini.v1 v1.67.2 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
