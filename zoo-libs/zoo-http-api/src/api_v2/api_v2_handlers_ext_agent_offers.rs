@@ -105,7 +105,7 @@ pub struct GetAgentNetworkOfferingRequest {
 
 #[utoipa::path(
     post,
-    path = "/v1/set_tool_offering",
+    path = "/v1/node/set_tool_offering",
     request_body = SetToolOfferingRequest,
     responses(
         (status = 200, description = "Successfully set tool offering", body = Value),
@@ -145,7 +145,7 @@ pub async fn set_tool_offering_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/get_tool_offering",
+    path = "/v1/node/get_tool_offering",
     request_body = GetToolOfferingRequest,
     responses(
         (status = 200, description = "Successfully retrieved tool offering", body = ZooToolOffering),
@@ -186,7 +186,7 @@ pub async fn get_tool_offering_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/remove_tool_offering",
+    path = "/v1/node/remove_tool_offering",
     request_body = RemoveToolOfferingRequest,
     responses(
         (status = 200, description = "Successfully removed tool offering", body = Value),
@@ -227,7 +227,7 @@ pub async fn remove_tool_offering_handler(
 
 #[utoipa::path(
     get,
-    path = "/v1/get_all_tool_offerings",
+    path = "/v1/node/get_all_tool_offerings",
     responses(
         (status = 200, description = "Successfully retrieved all tool offerings", body = Vec<ZooToolOffering>),
         (status = 500, description = "Internal server error", body = APIError)
@@ -263,7 +263,7 @@ pub async fn get_all_tool_offerings_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/get_tool_with_offering",
+    path = "/v1/node/get_tool_with_offering",
     request_body = GetToolWithOfferingRequest,
     responses(
         (status = 200, description = "Successfully retrieved network tool and offering", body = Value),
@@ -301,7 +301,7 @@ pub async fn get_tool_with_offering_handler(
 
 #[utoipa::path(
     get,
-    path = "/v1/get_tools_with_offerings",
+    path = "/v1/node/get_tools_with_offerings",
     responses(
         (status = 200, description = "Successfully retrieved all network tools and offerings", body = Value),
         (status = 500, description = "Internal server error", body = APIError)
@@ -334,7 +334,7 @@ pub async fn get_tools_with_offerings_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/get_agent_network_offering",
+    path = "/v1/node/get_agent_network_offering",
     request_body = GetAgentNetworkOfferingRequest,
     responses(
         (status = 200, description = "Successfully retrieved agent network offering", body = Value),
