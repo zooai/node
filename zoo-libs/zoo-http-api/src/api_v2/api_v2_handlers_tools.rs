@@ -392,7 +392,7 @@ pub fn safe_folder_name(tool_router_key: &str) -> String {
 
 #[utoipa::path(
     get,
-    path = "/v2/tool_definitions",
+    path = "/v1/tool_definitions",
     params(
         ("language" = String, Query, description = "Output language (typescript or python)")
     ),
@@ -469,7 +469,7 @@ pub struct ToolExecutionRequest {
 
 #[utoipa::path(
     post,
-    path = "/v2/tool_execution",
+    path = "/v1/tool_execution",
     request_body = ToolExecutionRequest,
     responses(
         (status = 200, description = "Successfully executed tool", body = Value),
@@ -568,7 +568,7 @@ pub struct ToolImplementationRequest {
 
 #[utoipa::path(
     post,
-    path = "/v2/tool_implementation",
+    path = "/v1/tool_implementation",
     request_body = ToolImplementationRequest,
     responses(
         (status = 200, description = "Tool implementation code and metadata", body = ToolImplementationResponse),
@@ -630,7 +630,7 @@ where
 
 #[utoipa::path(
     post,
-    path = "/v2/tool_metadata_implementation",
+    path = "/v1/tool_metadata_implementation",
     request_body = ToolMetadataImplementationRequest,
     responses(
         (status = 200, description = "Tool metadata implementation", body = ToolImplementationResponse),
@@ -671,7 +671,7 @@ pub async fn tool_metadata_implementation_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/search_zoo_tool",
+    path = "/v1/search_zoo_tool",
     params(
         ("query" = String, Query, description = "Search query for Zoo tools"),
         ("agent_or_llm" = Option<String>, Query, description = "Optional agent or LLM identifier")
@@ -728,7 +728,7 @@ pub async fn search_zoo_tool_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/list_all_zoo_tools",
+    path = "/v1/list_all_zoo_tools",
     params(
         ("category" = Option<String>, Query, description = "Optional category filter for tools. Use 'download' to only list tools from external sources.")
     ),
@@ -771,7 +771,7 @@ pub async fn list_all_zoo_tools_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/list_all_network_zoo_tools",
+    path = "/v1/list_all_network_zoo_tools",
     responses(
         (status = 200, description = "Successfully listed all network Zoo tools", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -808,7 +808,7 @@ pub async fn list_all_network_zoo_tools_handler(
 
 #[utoipa::path(
     post,
-    path = "/v2/set_zoo_tool",
+    path = "/v1/set_zoo_tool",
     request_body = Value,
     params(
         ("tool_name" = String, Query, description = "Key name of the Zoo tool")
@@ -859,7 +859,7 @@ pub async fn set_zoo_tool_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/get_zoo_tool",
+    path = "/v1/get_zoo_tool",
     params(
         ("tool_name" = String, Query, description = "Name of the Zoo tool"),
         ("serialize_config" = bool, Query, description = "Serialize the config")
@@ -916,7 +916,7 @@ pub async fn get_zoo_tool_handler(
 
 #[utoipa::path(
     post,
-    path = "/v2/add_zoo_tool",
+    path = "/v1/add_zoo_tool",
     request_body = ZooTool,
     responses(
         (status = 200, description = "Successfully added Zoo tool", body = Value),
@@ -955,7 +955,7 @@ pub async fn add_zoo_tool_handler(
 
 #[utoipa::path(
     post,
-    path = "/v2/add_network_agent",
+    path = "/v1/add_network_agent",
     request_body = ZooTool,
     responses(
         (status = 200, description = "Successfully added network agent with tool", body = Value),
@@ -994,7 +994,7 @@ pub async fn add_network_agent_handler(
 
 #[utoipa::path(
     post,
-    path = "/v2/set_playground_tool",
+    path = "/v1/set_playground_tool",
     request_body = PlaygroundTool,
     responses(
         (status = 200, description = "Successfully set playground tool", body = bool),
@@ -1041,7 +1041,7 @@ pub async fn set_playground_tool_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/list_playground_tools",
+    path = "/v1/list_playground_tools",
     responses(
         (status = 200, description = "Successfully listed all playground tools", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -1077,7 +1077,7 @@ pub async fn list_playground_tools_handler(
 
 #[utoipa::path(
     delete,
-    path = "/v2/remove_playground_tool",
+    path = "/v1/remove_playground_tool",
     params(
         ("tool_key" = String, Query, description = "Key of the playground tool to remove")
     ),
@@ -1125,7 +1125,7 @@ pub async fn remove_playground_tool_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/get_playground_tool",
+    path = "/v1/get_playground_tool",
     params(
         ("tool_key" = String, Query, description = "Key of the playground tool to retrieve")
     ),
@@ -1176,7 +1176,7 @@ pub async fn get_playground_tool_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/get_tool_implementation_prompt",
+    path = "/v1/get_tool_implementation_prompt",
     responses(
         (status = 200, description = "Successfully retrieved tool implementation prompt", body = String),
         (status = 400, description = "Bad request", body = APIError),
@@ -1264,7 +1264,7 @@ fn default_map() -> Value {
 
 #[utoipa::path(
     post,
-    path = "/v2/code_execution",
+    path = "/v1/code_execution",
     request_body = CodeExecutionRequest,
     responses(
         (status = 200, description = "Successfully executed code", body = Value),
@@ -1360,7 +1360,7 @@ pub struct UndoToRequest {
 
 #[utoipa::path(
     post,
-    path = "/v2/tool_implementation_undo_to",
+    path = "/v1/tool_implementation_undo_to",
     request_body = UndoToRequest,
     responses(
         (status = 200, description = "Successfully undone to specified state", body = Value),
@@ -1408,7 +1408,7 @@ pub struct ToolImplementationCodeUpdateRequest {
 
 #[utoipa::path(
     post,
-    path = "/v2/tool_implementation_code_update",
+    path = "/v1/tool_implementation_code_update",
     request_body = ToolImplementationCodeUpdateRequest,
     responses(
         (status = 200, description = "Successfully updated tool implementation code", body = Value),
@@ -1450,7 +1450,7 @@ pub async fn tool_implementation_code_update_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/export_tool",
+    path = "/v1/export_tool",
     params(
         ("tool_key_path" = String, Query, description = "Tool key path")
     ),
@@ -1512,7 +1512,7 @@ pub async fn export_tool_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/publish_tool",
+    path = "/v1/publish_tool",
     params(
         ("tool_key_path" = String, Query, description = "Tool key path"),
     ),
@@ -1571,7 +1571,7 @@ pub struct ImportToolRequest {
 
 #[utoipa::path(
     post,
-    path = "/v2/import_tool",
+    path = "/v1/import_tool",
     request_body = ImportToolRequest,
     responses(
         (status = 200, description = "Imported tool", body = Value),
@@ -1614,7 +1614,7 @@ pub async fn import_tool_handler(
 
 #[utoipa::path(
     post,
-    path = "/v2/import_tool_zip",
+    path = "/v1/import_tool_zip",
     responses(
         (status = 200, description = "Successfully imported tool from zip", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -1732,7 +1732,7 @@ pub async fn import_tool_zip_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/resolve_zoo_file_protocol",
+    path = "/v1/resolve_zoo_file_protocol",
     params(
         ("file" = String, Query, description = "Zoo file protocol")
     ),
@@ -1794,7 +1794,7 @@ pub async fn resolve_zoo_file_protocol_handler(
 
 #[utoipa::path(
     delete,
-    path = "/v2/remove_tool",
+    path = "/v1/remove_tool",
     params(
         ("tool_key" = String, Query, description = "Key of the tool to remove")
     ),
@@ -1842,7 +1842,7 @@ pub async fn remove_tool_handler(
 
 #[utoipa::path(
     post,
-    path = "/v2/tool_asset",
+    path = "/v1/tool_asset",
     responses(
         (status = 200, description = "Successfully uploaded tool asset", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -1941,7 +1941,7 @@ pub async fn tool_asset_handler(
 
 #[utoipa::path(
     post,
-    path = "/v2/playground_file",
+    path = "/v1/playground_file",
     responses(
         (status = 200, description = "Successfully uploaded playground file", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -2040,7 +2040,7 @@ pub async fn playground_file_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/list_tool_asset",
+    path = "/v1/list_tool_asset",
     responses(
         (status = 200, description = "Successfully listed tool assets", body = Vec<String>),
         (status = 400, description = "Bad request", body = APIError),
@@ -2083,7 +2083,7 @@ pub async fn list_tool_asset_handler(
 
 #[utoipa::path(
     delete,
-    path = "/v2/tool_asset",
+    path = "/v1/tool_asset",
     params(
         ("file_name" = String, Query, description = "Name of the file to delete")
     ),
@@ -2142,7 +2142,7 @@ pub async fn delete_tool_asset_handler(
 
 #[utoipa::path(
     post,
-    path = "/v2/enable_all_tools",
+    path = "/v1/enable_all_tools",
     responses(
         (status = 200, description = "Successfully enabled all available tools", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -2179,7 +2179,7 @@ pub async fn enable_all_tools_handler(
 
 #[utoipa::path(
     post,
-    path = "/v2/disable_all_tools",
+    path = "/v1/disable_all_tools",
     responses(
         (status = 200, description = "Successfully disabled all tools", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -2216,7 +2216,7 @@ pub async fn disable_all_tools_handler(
 
 #[utoipa::path(
     post,
-    path = "/v2/duplicate_tool",
+    path = "/v1/duplicate_tool",
     responses(
         (status = 200, description = "Successfully duplicated tool", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -2267,7 +2267,7 @@ pub async fn duplicate_tool_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/tool_store_proxy/{tool_router_key}",
+    path = "/v1/tool_store_proxy/{tool_router_key}",
     params(
         ("tool_router_key" = String, Path, description = "Tool router key")
     ),
@@ -2320,7 +2320,7 @@ pub struct StandAlonePlaygroundRequest {
 
 #[utoipa::path(
     post,
-    path = "/v2/tools_standalone_playground",
+    path = "/v1/tools_standalone_playground",
     request_body = StandAlonePlaygroundRequest,
     responses(
         (status = 200, description = "Successfully created standalone playground", body = Value),
@@ -2375,7 +2375,7 @@ pub async fn standalone_playground_handler(
 
 #[utoipa::path(
     get,
-    path = "/v2/list_all_zoo_tools_versions",
+    path = "/v1/list_all_zoo_tools_versions",
     responses(
         (status = 200, description = "Successfully listed all Zoo tools with versions", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -2417,7 +2417,7 @@ pub struct SetToolEnabledRequest {
 
 #[utoipa::path(
     post,
-    path = "/v2/set_tool_enabled",
+    path = "/v1/set_tool_enabled",
     request_body = SetToolEnabledRequest,
     responses(
         (status = 200, description = "Successfully enabled/disabled tool", body = Value),
@@ -2465,7 +2465,7 @@ pub struct SetToolMcpEnabledRequest {
 
 #[utoipa::path(
     post,
-    path = "/v2/set_tool_mcp_enabled",
+    path = "/v1/set_tool_mcp_enabled",
     request_body = SetToolMcpEnabledRequest,
     responses(
         (status = 200, description = "Successfully mcp enabled/disabled tool", body = Value),
@@ -2513,7 +2513,7 @@ pub struct CopyToolAssetsRequest {
 }
 #[utoipa::path(
     get,
-    path = "/v2/tools_from_toolset",
+    path = "/v1/tools_from_toolset",
     params(
         ("tool_set_key" = String, Query, description = "The key of the toolset")
     ),
@@ -2586,7 +2586,7 @@ pub struct SetCommonToolSetConfigResponse {
 }
 #[utoipa::path(
     post,
-    path = "/v2/set_common_toolset_config",
+    path = "/v1/set_common_toolset_config",
     request_body = SetCommonToolSetConfigRequest,
     responses(
         (status = 200, description = "Successfully configured tools from toolset", body = SetCommonToolSetConfigResponse), // Updated body type
@@ -2636,7 +2636,7 @@ pub async fn set_common_toolset_config_handler(
 }
 #[utoipa::path(
     post,
-    path = "/v2/copy_tool_assets",
+    path = "/v1/copy_tool_assets",
     request_body = CopyToolAssetsRequest,
     responses(
         (status = 200, description = "Successfully copied tool assets", body = bool),
@@ -2687,7 +2687,7 @@ pub struct ToolCheckRequest {
 
 #[utoipa::path(
     post,
-    path = "/v2/tool_check",
+    path = "/v1/tool_check",
     request_body = ToolCheckRequest,
     responses(
         (status = 200, description = "Successfully checked tool", body = Value),
@@ -2795,7 +2795,7 @@ pub struct GetZooToolMetadataResponse {
 
 #[utoipa::path(
     get,
-    path = "/v2/get_zoo_tool_metadata",
+    path = "/v1/get_zoo_tool_metadata",
     params(
         ("tool_router_key" = String, Query, description = "Tool router key of the Zoo tool metadata to retrieve")
     ),

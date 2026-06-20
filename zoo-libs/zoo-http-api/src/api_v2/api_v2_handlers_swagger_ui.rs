@@ -19,12 +19,12 @@ use super::{
 
 pub fn swagger_ui_routes() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     let config = Arc::new(Config::new([
-        "/v2/openapi/general.json",
-        "/v2/openapi/jobs.json",
-        "/v2/openapi/vecfs.json",
-        "/v2/openapi/wallet.json",
-        "/v2/openapi/tools.json",
-        "/v2/openapi/ext_agent_offers.json",
+        "/v1/openapi/general.json",
+        "/v1/openapi/jobs.json",
+        "/v1/openapi/vecfs.json",
+        "/v1/openapi/wallet.json",
+        "/v1/openapi/tools.json",
+        "/v1/openapi/ext_agent_offers.json",
     ]));
 
     let general_schema_route = warp::path!("openapi" / "general.json")
@@ -77,8 +77,8 @@ async fn serve_swagger(
     tail: Tail,
     config: Arc<Config<'static>>,
 ) -> Result<Box<dyn Reply + 'static>, Rejection> {
-    if full_path.as_str() == "/v2/swagger-ui" {
-        return Ok(Box::new(warp::redirect::found(Uri::from_static("/v2/swagger-ui/"))));
+    if full_path.as_str() == "/v1/swagger-ui" {
+        return Ok(Box::new(warp::redirect::found(Uri::from_static("/v1/swagger-ui/"))));
     }
 
     let path = tail.as_str();
