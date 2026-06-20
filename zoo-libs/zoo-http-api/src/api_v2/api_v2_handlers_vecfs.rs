@@ -153,7 +153,7 @@ pub fn vecfs_routes(
 
 #[utoipa::path(
     post,
-    path = "/v1/retrieve_path_simplified",
+    path = "/v1/node/retrieve_path_simplified",
     request_body = APIVecFsRetrievePathSimplifiedJson,
     responses(
         (status = 200, description = "Successfully retrieved path", body = Value),
@@ -193,7 +193,7 @@ pub async fn retrieve_path_simplified_handler(
 
 #[utoipa::path(
     get,
-    path = "/v1/retrieve_vector_resource",
+    path = "/v1/node/retrieve_vector_resource",
     responses(
         (status = 200, description = "Successfully retrieved vector resource", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -231,7 +231,7 @@ pub async fn retrieve_vector_resource_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/create_folder",
+    path = "/v1/node/create_folder",
     request_body = APIVecFsCreateFolder,
     responses(
         (status = 200, description = "Successfully created folder", body = String),
@@ -270,7 +270,7 @@ pub async fn create_folder_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/move_item",
+    path = "/v1/node/move_item",
     request_body = APIVecFsMoveItem,
     responses(
         (status = 200, description = "Successfully moved item", body = String),
@@ -306,7 +306,7 @@ pub async fn move_item_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/copy_item",
+    path = "/v1/node/copy_item",
     request_body = APIVecFsCopyItem,
     responses(
         (status = 200, description = "Successfully copied item", body = String),
@@ -342,7 +342,7 @@ pub async fn copy_item_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/move_folder",
+    path = "/v1/node/move_folder",
     request_body = APIVecFsMoveFolder,
     responses(
         (status = 200, description = "Successfully moved folder", body = String),
@@ -378,7 +378,7 @@ pub async fn move_folder_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/copy_folder",
+    path = "/v1/node/copy_folder",
     request_body = APIVecFsCopyFolder,
     responses(
         (status = 200, description = "Successfully copied folder", body = String),
@@ -414,7 +414,7 @@ pub async fn copy_folder_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/delete_folder",
+    path = "/v1/node/delete_folder",
     request_body = APIVecFsDeleteFolder,
     responses(
         (status = 200, description = "Successfully deleted folder", body = String),
@@ -450,7 +450,7 @@ pub async fn delete_folder_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/delete_item",
+    path = "/v1/node/delete_item",
     request_body = APIVecFsDeleteItem,
     responses(
         (status = 200, description = "Successfully deleted item", body = String),
@@ -486,7 +486,7 @@ pub async fn delete_item_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/search_items",
+    path = "/v1/node/search_items",
     request_body = APIVecFsSearchItems,
     responses(
         (status = 200, description = "Successfully searched items", body = Vec<String>),
@@ -522,7 +522,7 @@ pub async fn search_items_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/upload_file_to_folder",
+    path = "/v1/node/upload_file_to_folder",
     request_body = AddFileToInboxRequest,
     responses(
         (status = 200, description = "Successfully uploaded file to folder", body = String),
@@ -687,7 +687,7 @@ pub async fn upload_file_to_folder_handler(
 
 #[utoipa::path(
     get,
-    path = "/v1/download_file",
+    path = "/v1/node/download_file",
     params(
         ("path" = String, Query, description = "Path to the file to download"),
         ("processed_file" = Option<bool>, Query, description = "If true, download the processed file instead of the original. Defaults to false.")
@@ -727,7 +727,7 @@ pub async fn retrieve_source_file_handler(
 
 #[utoipa::path(
     get,
-    path = "/v1/retrieve_files_for_job",
+    path = "/v1/node/retrieve_files_for_job",
     responses(
         (status = 200, description = "Successfully retrieved files for job", body = Value),
         (status = 400, description = "Bad request", body = APIError),
@@ -773,7 +773,7 @@ pub async fn retrieve_files_for_job_handler(
 
 #[utoipa::path(
     get,
-    path = "/v1/get_folder_name_for_job",
+    path = "/v1/node/get_folder_name_for_job",
     responses(
         (status = 200, description = "Successfully retrieved folder name for job", body = String),
         (status = 400, description = "Bad request", body = APIError),
@@ -819,7 +819,7 @@ pub async fn get_folder_name_for_job_handler(
 
 #[utoipa::path(
     post,
-    path = "/v1/upload_file_to_job",
+    path = "/v1/node/upload_file_to_job",
     request_body = AddFileToJob,
     responses(
         (status = 200, description = "Successfully uploaded file to job", body = String),
@@ -987,7 +987,7 @@ pub async fn upload_file_to_job_handler(
 
 #[utoipa::path(
     get,
-    path = "/v1/search_files_by_name",
+    path = "/v1/node/search_files_by_name",
     responses(
         (status = 200, description = "Successfully searched files by name", body = Value),
         (status = 400, description = "Bad request", body = APIError),
