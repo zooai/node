@@ -22,10 +22,24 @@
   },
   "precompiles": {
     "ai": true,
+    "inference": true,
+    "aivmbridge": true,
     "fhe": true,
     "pq": true,
     "dex": false,
     "zk": true
+  },
+  "ai": {
+    "tier1": {
+      "precompile": "0x0300000000000000000000000000000000000003",
+      "mode": "deterministic-int8",
+      "model": "zen-nano/Qwen3-0.6B"
+    },
+    "tier2": {
+      "precompile": "0x0300000000000000000000000000000000000004",
+      "settlement": "proof-of-thought",
+      "chain": "lux-a-chain-aivm"
+    }
   },
   "supply": {
     "total": "100000000000000000000000000",

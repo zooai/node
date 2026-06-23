@@ -1,0 +1,15 @@
+# Build + test + deploy — all logic lives in hanzoai/ci; config is in hanzo.yml.
+# Runs on our cloud arc pool by default. Replaces per-repo build logic.
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  cicd:
+    uses: hanzoai/ci/.github/workflows/build.yml@v1
+    secrets: inherit
