@@ -11,8 +11,9 @@
 # Proof-of-Thought to the Lux A-Chain (AIVM). The binary self-installs the
 # EVM + DEX + FHE VM plugins at startup.
 #
-# The production image is the root Dockerfile (cross-compiled via tonistiigi/xx,
-# CGO on for sr25519-donna + optimized crypto, multi-stage, -w -s).
+# The production image is the root Dockerfile: CGO-free (pure-Go dex + crypto,
+# deterministic for consensus), cross-compiled via BuildKit TARGETARCH on a
+# stock golang base, multi-stage, -w -s. No CUDA bundle needed.
 images:
   - name: node
     context: .
