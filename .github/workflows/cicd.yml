@@ -1,5 +1,5 @@
 # Build + test + deploy — all logic lives in hanzoai/ci; config is in hanzo.yml.
-# Runs on our cloud arc pool by default. Replaces per-repo build logic.
+# Replaces per-repo build logic.
 name: CI/CD
 
 on:
@@ -12,4 +12,12 @@ on:
 jobs:
   cicd:
     uses: hanzoai/ci/.github/workflows/build.yml@v1
+    # Run on the arm64 arc fleet (the canonical arcd host pool, e.g. spark/GB10).
+    # The image is still linux/amd64: the build cross-compiles via
+    # `buildx --platform linux/amd64`, and zood is CGO-free so the Go compile is
+    # native on arm64 with no qemu. (hanzoai/ci defaults to an amd64 runner label
+    # that the current arcd fleet does not advertise — this `with: runner`
+    # override is the sanctioned BYO-runner mechanism.)
+    with:
+      runner: '["self-hosted","linux","arm64"]'
     secrets: inherit
