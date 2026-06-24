@@ -30,9 +30,18 @@ ENV GONOSUMDB=*
 ENV GOPROXY=direct
 
 COPY go.mod go.sum ./
-# Strip luxfi checksums — luxfi tags get rewritten, causing go.sum drift.
-# GONOSUMCHECK=* + GONOSUMDB=* bypass sum verification for the luxfi graph.
-RUN sed -i '/luxfi\//d' go.sum && go mod download
+# Private modules (luxfi/dex, luxfi/precompile, zooai/*) are fetched over HTTPS
+# with a build-time token supplied as a BuildKit secret (`gh_token`). When the
+# secret is absent the rewrite is skipped and only public modules resolve — so
+# this is safe for public-only builds. GONOSUMCHECK=*/GONOSUMDB=* bypass sum
+# verification for the luxfi graph (tags get rewritten, causing go.sum drift).
+RUN --mount=type=secret,id=gh_token \
+    if [ -s /run/secrets/gh_token ]; then \
+      git config --global \
+        url."https://x-access-token:$(cat /run/secrets/gh_token)@github.com/".insteadOf \
+        "https://github.com/"; \
+    fi && \
+    sed -i '/luxfi\//d' go.sum && go mod download
 
 COPY . .
 RUN sed -i '/luxfi\//d' go.sum
