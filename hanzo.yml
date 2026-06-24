@@ -37,8 +37,12 @@ deploy:
     - name: zoo-chain
       image: node
 
-# KMS (kms.hanzo.ai, Universal Auth) supplies the GHCR push token and the
-# target kubeconfig at run time. KMS_WORKSPACE is a repo/org var.
+# KMS (kms.hanzo.ai, /v1/kms) supplies the cross-org GITHUB_TOKEN (to clone
+# private luxfi/dex + luxfi/precompile) and, on deploy, the kubeconfig. Auth is
+# the zoo-kms IAM client_credentials app (KMS_CLIENT_ID/SECRET repo secrets);
+# org-scoped reads at /v1/kms/orgs/zoo/secrets/deploy/<key>. GHCR push itself
+# uses the automatic workflow token, not KMS.
 kms:
+  org: zoo
   path: /deploy
   environment: prod
