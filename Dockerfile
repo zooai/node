@@ -29,22 +29,26 @@ ENV GONOSUMCHECK=*
 ENV GONOSUMDB=*
 ENV GOPROXY=direct
 
-COPY go.mod go.sum ./
-# Private modules (luxfi/dex, luxfi/precompile, zooai/*) are fetched over HTTPS
-# with a build-time token supplied as a BuildKit secret (`gh_token`). When the
-# secret is absent the rewrite is skipped and only public modules resolve — so
-# this is safe for public-only builds. GONOSUMCHECK=*/GONOSUMDB=* bypass sum
-# verification for the luxfi graph (tags get rewritten, causing go.sum drift).
-RUN --mount=type=secret,id=gh_token \
-    if [ -s /run/secrets/gh_token ]; then \
-      git config --global \
-        url."https://x-access-token:$(cat /run/secrets/gh_token)@github.com/".insteadOf \
-        "https://github.com/"; \
-    fi && \
-    sed -i '/luxfi\//d' go.sum && go mod download
-
 COPY . .
-RUN sed -i '/luxfi\//d' go.sum
+# Drift-proof builds: luxfi tags get rewritten, so a fresh `go mod download`
+# can pull tag content that differs from what was tested (e.g. luxfi/chains
+# v1.3.19 with forbidden.go present vs a drifted copy missing it → undefined
+# symbols). When `vendor/` is committed (the canonical, hermetic path) the build
+# uses it and touches the network for nothing. Fallback for a vendorless tree:
+# fetch over HTTPS with a build-time `gh_token` BuildKit secret (private
+# luxfi/dex, luxfi/precompile, zooai/*) and strip luxfi go.sum lines
+# (GONOSUMCHECK/GONOSUMDB bypass verification for the rewritten-tag graph).
+RUN --mount=type=secret,id=gh_token \
+    if [ -d vendor ]; then \
+      echo "vendored deps present — hermetic build, no download"; \
+    else \
+      if [ -s /run/secrets/gh_token ]; then \
+        git config --global \
+          url."https://x-access-token:$(cat /run/secrets/gh_token)@github.com/".insteadOf \
+          "https://github.com/"; \
+      fi && \
+      sed -i '/luxfi\//d' go.sum && go mod download; \
+    fi
 
 # Per SCALE_STANDARD.md §2 (https://github.com/hanzoai/hips/blob/main/docs/SCALE_STANDARD.md)
 # — every Go production Dockerfile that emits JSON to a client builds with
@@ -63,7 +67,8 @@ ARG TARGETARCH
 # 0x0304 aivmbridge), Zoo DEX, and Zoo FHE VMs as plugin subprocesses at startup
 # (see main.go installPlugin), so no plugin symlinks are needed here.
 RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH:-amd64} \
-    go build -mod=mod -trimpath -ldflags="-w -s" -o /build/zood .
+    go build -mod=$([ -d vendor ] && echo vendor || echo mod) \
+    -trimpath -ldflags="-w -s" -o /build/zood .
 
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && rm -rf /var/lib/apt/lists/*

@@ -126,3 +126,6 @@ storage_debug_relay
 # zood build outputs — built from source by make/Docker, never tracked
 /zood
 /zood-linux-amd64
+
+# Vendored deps are ~313M (luxd tree) — too large for git; build fetches via gh_token.
+/vendor/
