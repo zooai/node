@@ -1,0 +1,25 @@
+# Build + test + deploy — all logic lives in hanzoai/ci; config is in hanzo.yml.
+# Replaces per-repo build logic.
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  cicd:
+    # Pinned to the merged /v1/kms-migration commit for validation; promote to
+    # @v1 once a green build proves the canonical KMS path end-to-end.
+    uses: hanzoai/ci/.github/workflows/build.yml@2bc3b2e1a9a34e285bb24e6b0fb1c697f2c1cbfc
+    # Run on the arm64 arc fleet (the canonical arcd host pool, e.g. spark/GB10).
+    # The image is still linux/amd64: the build cross-compiles via
+    # `buildx --platform linux/amd64`, and zood is CGO-free so the Go compile is
+    # native on arm64 with no qemu. (hanzoai/ci defaults to an amd64 runner label
+    # that the current arcd fleet does not advertise — this `with: runner`
+    # override is the sanctioned BYO-runner mechanism.)
+    with:
+      runner: '["self-hosted","linux","arm64"]'
+    secrets: inherit

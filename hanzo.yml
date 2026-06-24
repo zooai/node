@@ -1,0 +1,48 @@
+# Canonical CI/CD config for zooai/node — read by both the hanzoai/ci
+# reusable workflow (.github/workflows/cicd.yml) and platform.hanzo.ai.
+# Replaces per-repo build logic; registry + cluster creds come from KMS at
+# run time (only KMS_CLIENT_ID / KMS_CLIENT_SECRET + KMS_WORKSPACE in GitHub).
+#
+# Builds `zood` — the Zoo Network node. A single Go binary that runs the Zoo
+# L2 EVM (chainId 200200) and powers the Beluga L3 thinking-chain
+# (evmChainId 420420, parent 200200): the Zoo EVM registers the AI/FHE/PQ/ZK
+# precompiles, including the deterministic in-consensus inference precompile
+# at 0x0303 (Tier-1) and the aivmbridge at 0x0304 that settles Tier-2
+# Proof-of-Thought to the Lux A-Chain (AIVM). The binary self-installs the
+# EVM + DEX + FHE VM plugins at startup.
+#
+# The production image is the root Dockerfile: CGO-free (pure-Go dex + crypto,
+# deterministic for consensus), cross-compiled via BuildKit TARGETARCH on a
+# stock golang base, multi-stage, -w -s. No CUDA bundle needed.
+images:
+  - name: node
+    context: .
+    dockerfile: Dockerfile
+    repo: ghcr.io/zooai/node
+    tag-suffix: node
+
+# No `test:` block: the Go test matrix (CGO crypto, luxd network harness) runs
+# in main.yaml; this file owns the image build + the Beluga L3 rollout.
+
+# Deploy: roll the freshly-built image onto the Zoo validator cluster, which
+# tracks the Beluga L3 (chainId 420420) and Zoo EVM (200200) via TRACK_CHAINS.
+# Fires only on `main` (and v* tags) and only when KMS hands back a kubeconfig,
+# so PRs and forks never deploy. The validators run in zoo-mainnet on
+# do-sfo3-zoo-k8s.
+deploy:
+  cluster: do-sfo3-zoo-k8s
+  namespace: zoo-mainnet
+  on: [main]
+  services:
+    - name: zoo-chain
+      image: node
+
+# KMS (kms.hanzo.ai, /v1/kms) supplies the cross-org GITHUB_TOKEN (to clone
+# private luxfi/dex + luxfi/precompile) and, on deploy, the kubeconfig. Auth is
+# the zoo-kms IAM client_credentials app (KMS_CLIENT_ID/SECRET repo secrets);
+# org-scoped reads at /v1/kms/orgs/zoo/secrets/deploy/<key>. GHCR push itself
+# uses the automatic workflow token, not KMS.
+kms:
+  org: zoo
+  path: /deploy
+  environment: prod

@@ -32,6 +32,11 @@ import (
 	// AI Mining (0x0300) — Proof of AI: GPU/CPU compute rewards, model hosting, data sharing
 	_ "github.com/luxfi/precompile/ai"
 
+	// AI inference (0x0303) — deterministic in-consensus int8 transformer (Tier-1)
+	_ "github.com/luxfi/precompile/inference"
+	// A-Chain inference bridge (0x0304) — Proof-of-Thought settlement to Lux AIVM (Tier-2)
+	_ "github.com/luxfi/precompile/aivmbridge"
+
 	// Post-quantum cryptography
 	_ "github.com/luxfi/precompile/blake3"
 	_ "github.com/luxfi/precompile/mldsa"

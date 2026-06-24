@@ -39,15 +39,20 @@
       "quorumNumerator": 67,
       "requirePrimaryNetworkSigners": false
     },
-    "aiConfig": {
-      "blockTimestamp": 0,
-      "inferenceEnabled": true,
-      "modelRegistryEnabled": true
+    "aiInferenceConfig": {
+      "blockTimestamp": 0
+    },
+    "aivmBridgeConfig": {
+      "blockTimestamp": 0
+    },
+    "aiMiningConfig": {
+      "blockTimestamp": 0
     },
     "fheConfig": {
-      "blockTimestamp": 0,
-      "enableCKKS": true,
-      "enableTFHE": true
+      "blockTimestamp": 0
+    },
+    "zkConfig": {
+      "blockTimestamp": 0
     }
   },
   "alloc": {
