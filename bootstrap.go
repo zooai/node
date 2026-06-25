@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -147,7 +148,7 @@ func runBootstrap(args []string) {
 	}
 
 	// Check balances across all chains.
-	luxAssetID := wallet.X().Builder().Context().XAssetID
+	luxAssetID := wallet.X().Builder().Context().UTXOAssetID
 
 	xBalance, err := wallet.X().Builder().GetFTBalance()
 	if err != nil {
@@ -354,8 +355,12 @@ func parseBootstrapFlags(args []string) bootstrapConfig {
 		NetworkName:       envOr("NETWORK_NAME", "Zoo"),
 		Mnemonic:          mnemonicFromEnv(),
 		PrivateKey:        os.Getenv("LUX_PRIVATE_KEY"),
-		CoinType:          60, // m/44'/60'/0'/0/{i} — Ethereum standard (same as lux CLI derive)
-		KeyIndex:          0,  // index 0 has genesis allocation
+		// P/X-Chain genesis allocations are derived at the canonical Lux BIP44
+		// path m/44'/9000'/0'/0/{i} (see luxfi/genesis keys.go LoadKeysFromMnemonic).
+		// Subnet/chain creation spends P-Chain UTXOs, so the funding key must use
+		// coin type 9000, not 60 (60 is the C-Chain/EVM path). Override with COIN_TYPE.
+		CoinType:          uint32(envIntOr("COIN_TYPE", 9000)),
+		KeyIndex:          uint32(envIntOr("KEY_INDEX", 0)), // index 0 has genesis allocation
 		ValidatorWeight:   20,
 		ValidatorDuration: 300 * 24 * time.Hour, // ~10 months
 	}
@@ -562,7 +567,7 @@ func fundPChain(ctx context.Context, cfg bootstrapConfig, wallet primary.Wallet,
 	log.Println("P-Chain balance insufficient. Checking X-Chain and C-Chain...")
 
 	// Check X-Chain balance first (genesis allocates to X-Chain)
-	xBal := wallet.X().Builder().Context().XAssetID
+	xBal := wallet.X().Builder().Context().UTXOAssetID
 	log.Printf("X-Chain asset ID: %s", xBal)
 
 	if wallet.C() == nil {
@@ -616,6 +621,16 @@ func waitForAcceptance(label string) {
 func envOr(key, fallback string) string {
 	if v := os.Getenv(key); v != "" {
 		return v
+	}
+	return fallback
+}
+
+// envIntOr returns the integer value of an env var, or fallback if unset/invalid.
+func envIntOr(key string, fallback int) int {
+	if v := os.Getenv(key); v != "" {
+		if n, err := strconv.Atoi(v); err == nil {
+			return n
+		}
 	}
 	return fallback
 }
