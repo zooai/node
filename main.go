@@ -9,9 +9,9 @@
 //	zood bootstrap          Bootstrap a new L1 (EVM + DEX) on Lux Network
 //	zood version            Print version info
 //
-// When invoked as a VM subprocess (LUX_VM_TRANSPORT set), it enters EVM
-// plugin mode — no subcommand needed. This lets a single binary serve as
-// both the node process and the EVM plugin.
+// When invoked as a VM subprocess (VM_TRANSPORT set by the node's rpcchainvm
+// factory), it enters EVM plugin mode — no subcommand needed. This lets a
+// single binary serve as both the node process and the EVM plugin.
 package main
 
 import (
@@ -29,6 +29,7 @@ import (
 
 	"github.com/luxfi/node/app"
 	"github.com/luxfi/node/config"
+	"github.com/luxfi/node/utils/perms"
 	nodeversion "github.com/luxfi/node/version"
 
 	"github.com/zooai/node/vm"
@@ -42,8 +43,14 @@ const header = `
 
 func main() {
 	// VM subprocess mode — the node launched us as a plugin.
-	// Detect which VM based on the executable name (symlink target).
-	if os.Getenv("LUX_VM_TRANSPORT") != "" {
+	// luxfi/node's rpcchainvm factory exports VM_TRANSPORT=zap into the plugin
+	// subprocess's environment (vms/rpcchainvm/factory.go) and the engine
+	// address as VM_RUNTIME_ENGINE_ADDR (legacy: LUX_VM_RUNTIME_ENGINE_ADDR).
+	// We key plugin-mode on those, mirroring the runtime's own legacy-key
+	// fallback. Detect which VM by the executable name (symlink target).
+	if os.Getenv("VM_TRANSPORT") != "" ||
+		os.Getenv("VM_RUNTIME_ENGINE_ADDR") != "" ||
+		os.Getenv("LUX_VM_RUNTIME_ENGINE_ADDR") != "" {
 		if vm.IsDEXPlugin() {
 			vm.RunDEXPlugin()
 		} else {
@@ -134,6 +141,19 @@ func runNode() {
 	if v.GetBool(config.VersionKey) {
 		fmt.Println(nodeversion.GetVersions().String())
 		os.Exit(0)
+	}
+
+	// luxfi/node's config loader auto-creates the plugin dir only when
+	// --plugin-dir is left at its default; an explicitly-set --plugin-dir must
+	// already exist or GetNodeConfig fails. zood owns the plugin dir — it
+	// self-installs the Zoo EVM/DEX/FHE VMs into it below — so create it here,
+	// before config validation runs.
+	if v.IsSet(config.PluginDirKey) {
+		pluginDir := os.ExpandEnv(v.GetString(config.PluginDirKey))
+		if err := os.MkdirAll(pluginDir, perms.ReadWriteExecute); err != nil {
+			fmt.Printf("couldn't create plugin dir %q: %s\n", pluginDir, err)
+			os.Exit(1)
+		}
 	}
 
 	nodeConfig, err := config.GetNodeConfig(v)

@@ -7,9 +7,9 @@
 //   - ZOO EVM: Lux EVM with 13+ precompiles (PQ crypto, threshold sigs, DEX, etc.)
 //   - ZOO DEX: High-performance CLOB + AMM orderbook engine
 //
-// When launched as a plugin subprocess (LUX_VM_TRANSPORT set), it enters
-// EVM plugin mode. The DEX VM is registered directly with the node's VM
-// manager and runs in-process (no subprocess needed).
+// When launched as a plugin subprocess (VM_TRANSPORT set by the node's
+// rpcchainvm factory), it enters EVM plugin mode. The DEX VM is registered
+// directly with the node's VM manager and runs in-process (no subprocess needed).
 package vm
 
 import (
@@ -102,7 +102,7 @@ func IsDEXPlugin() bool {
 }
 
 // RunPlugin runs this binary as an EVM subprocess (plugin mode).
-// Called when LUX_VM_TRANSPORT is set, indicating the node launched us
+// Called when VM_TRANSPORT is set, indicating the node launched us
 // as a child process for the EVM.
 func RunPlugin() {
 	versionStr := fmt.Sprintf("ZOO-EVM/%s [node=%s, rpcchainvm=%d]",
