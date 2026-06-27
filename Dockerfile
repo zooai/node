@@ -38,12 +38,19 @@ ENV GOEXPERIMENT=${GO_EXPERIMENT}
 # zood self-reports its luxfi/node patch level via -X version.VersionPatch
 # (otherwise GetVersions() prints the baked default, e.g. 1.30.6).
 ARG VERSION_PATCH=73
+# CGO default 0 → portable pure-Go binary: luxfi/dex/pkg/lx selects its `!cgo`
+# CPU matcher (the `cgo && linux` path needs the luxcpp CUDA pkg-config libs
+# lux-dex-amm-cuda / lux-dex-clob-cuda / lux-crypto-secp256k1, which are NOT in
+# this image), and luxfi/gpu uses its nocgo fallbacks. All precompiles incl the
+# 0x9999 DEX V4 settle are pure-Go, so this is fully functional (CPU, no GPU
+# accel). Build with CGO=1 ONLY inside an image that ships those luxcpp .pc libs.
+ARG CGO=0
 RUN --mount=type=secret,id=gh_token,required=false \
     if [ -s /run/secrets/gh_token ]; then \
         git config --global url."https://x-access-token:$(cat /run/secrets/gh_token)@github.com/".insteadOf "https://github.com/"; \
     fi && \
     xx-go --wrap && \
-    CGO_ENABLED=1 CGO_CFLAGS="-Wno-incompatible-pointer-types" \
+    CGO_ENABLED=${CGO} CGO_CFLAGS="-Wno-incompatible-pointer-types" \
     go build -mod=mod \
       -ldflags="-w -s -X github.com/luxfi/node/version.VersionPatch=${VERSION_PATCH}" \
       -o /build/zood .
