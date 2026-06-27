@@ -8,10 +8,83 @@ on:
 permissions:
   contents: read
   packages: write
+  id-token: write
 
+# Self-contained build (no reusable). The shared hanzoai/.github
+# docker-build.yml@main fails to resolve org-wide (422 "error parsing called
+# workflow", broken since 2026-06-19) — this mirrors lux/dex + lux/node's
+# proven inline pattern instead. One image: ghcr.io/zooai/node = the zood
+# sovereign-L1 node (CGO_ENABLED=1, ./Dockerfile).
+#
+# Cross-org HARD RULE: zooai/* builds run ONLY on the zoo-build ARC pool,
+# never on hanzo-build / lux-build. Cross-org runs-on queues silently and
+# cancels at the 24h timeout.
 jobs:
-  docker:
-    uses: hanzoai/.github/.github/workflows/docker-build.yml@main
-    with:
-      image: ghcr.io/zooai/node
-    secrets: inherit
+  build-amd64:
+    runs-on: zoo-build
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+          driver-opts: |
+            network=host
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/zooai/node
+          # Semver-only: v* tags publish; every push also gets sha-<sha7>.
+          # No floating tags (no :latest/:main).
+          flavor: |
+            latest=false
+          tags: |
+            type=ref,event=tag
+            type=sha,format=short,prefix=sha-
+
+      - name: Resolve cross-repo PAT for private luxfi/* + zooai/* deps
+        id: pat
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          UNIVERSE_PAT: ${{ secrets.UNIVERSE_PAT }}
+        run: |
+          tok="$GH_TOKEN"; src="GH_TOKEN"
+          if [ -z "$tok" ]; then tok="$UNIVERSE_PAT"; src="UNIVERSE_PAT"; fi
+          if [ -z "$tok" ]; then
+            echo "::error::Neither GH_TOKEN (org) nor UNIVERSE_PAT (repo) is set. Private luxfi/*/zooai/* deps cannot be resolved."
+            exit 1
+          fi
+          echo "Using secret: $src (length=${#tok})"
+          echo "::add-mask::$tok"
+          { echo "token<<EOF"; echo "$tok"; echo "EOF"; } >> "$GITHUB_OUTPUT"
+
+      - name: Build & push (amd64)
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64
+          push: true
+          # zood Dockerfile mounts secret id=gh_token for git url.insteadOf.
+          # CGO_ENABLED=1 is hardcoded in the Dockerfile (GPU/crypto bridges) —
+          # do NOT pass CGO_ENABLED=0 here.
+          secrets: |
+            gh_token=${{ steps.pat.outputs.token }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          provenance: false
+          cache-from: type=registry,ref=ghcr.io/zooai/node:buildcache-amd64
+          cache-to: type=registry,ref=ghcr.io/zooai/node:buildcache-amd64,mode=max
