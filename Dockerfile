@@ -58,5 +58,4 @@ RUN mkdir -p /zood/build/plugins
 COPY --from=builder /build/zood /zood/build/zood
 RUN ln -s /zood/build/zood /usr/local/bin/zood
 COPY genesis.json /etc/zoo/genesis.json
-COPY cmd/deploy-dex/genesis.json /etc/zoo/dex-genesis.json
 ENTRYPOINT ["zood"]
