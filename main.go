@@ -42,8 +42,17 @@ const header = `
 
 func main() {
 	// VM subprocess mode — the node launched us as a plugin.
-	// Detect which VM based on the executable name (symlink target).
-	if os.Getenv("LUX_VM_TRANSPORT") != "" {
+	// luxfi/node v1.30.x execs each chain VM (incl. the built-in C-Chain) as a
+	// subprocess and passes the runtime engine address via the env var
+	// VM_RUNTIME_ENGINE_ADDR (canonical, runtime.EngineAddressKey) or its legacy
+	// alias LUX_VM_RUNTIME_ENGINE_ADDR. luxfi/vm/rpc.Serve dials back on that
+	// same var. The old LUX_VM_TRANSPORT name no longer matches what the host
+	// sets — checking only it made every VM subprocess fall through to runNode()
+	// and re-boot as a full node, so the parent's rpcchainvm handshake timed out
+	// ("vm process not found"). Detect any of the three; we are then a plugin.
+	if os.Getenv("VM_RUNTIME_ENGINE_ADDR") != "" ||
+		os.Getenv("LUX_VM_RUNTIME_ENGINE_ADDR") != "" ||
+		os.Getenv("LUX_VM_TRANSPORT") != "" {
 		if vm.IsDEXPlugin() {
 			vm.RunDEXPlugin()
 		} else {
