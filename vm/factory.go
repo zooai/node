@@ -38,7 +38,9 @@ import (
 	_ "github.com/luxfi/precompile/blake3"
 	_ "github.com/luxfi/precompile/mldsa"
 	_ "github.com/luxfi/precompile/mlkem"
-	_ "github.com/luxfi/precompile/pqcrypto"
+	_ "github.com/luxfi/precompile/mldsa"
+	_ "github.com/luxfi/precompile/mlkem"
+	_ "github.com/luxfi/precompile/slhdsa"
 	_ "github.com/luxfi/precompile/slhdsa"
 
 	// Threshold signatures
