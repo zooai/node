@@ -71,6 +71,20 @@ make build    # produces ./zood
 make test     # run tests
 ```
 
+**Keep the Dockerfile's Go builder patch-pinned (`golang:1.26.5-bookworm`) and keep
+`ENV GOTOOLCHAIN=auto`.** The official `golang` images ship `GOTOOLCHAIN=local`, so
+a floating `golang:1.26` tag that lands one patch behind the `go` directive in
+go.mod fails the build outright (`go.mod requires go >= X (running go Y;
+GOTOOLCHAIN=local)`). The pin makes the build hermetic; `GOTOOLCHAIN=auto` means a
+future go.mod bump downloads its toolchain rather than hard-failing. Do not unpin.
+
+A plain `go build ./...` will NOT work here — `github.com/luxfi/precompile@v0.5.38`
+mismatches go.sum because luxfi tags get rewritten. That is why the Dockerfile does
+`sed -i '/luxfi\//d' go.sum` before `go mod download`. To reproduce the container
+build locally, strip those go.sum lines the same way and build with
+`GOFLAGS=-mod=mod GOSUMDB=off GOEXPERIMENT=jsonv2` — do not commit the stripped
+go.sum.
+
 ## L3 App-Chains
 
 Zoo supports L3 app-chains deployed on top:

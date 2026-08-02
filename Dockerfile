@@ -1,6 +1,10 @@
 FROM --platform=$BUILDPLATFORM tonistiigi/xx:1.6.1 AS xx
 
-FROM --platform=$BUILDPLATFORM golang:1.26-bookworm AS builder
+FROM --platform=$BUILDPLATFORM golang:1.26.5-bookworm AS builder
+# Pinned to the exact patch the go.mod directive needs, and GOTOOLCHAIN=auto so a
+# future go.mod bump downloads its toolchain instead of hard-failing under the
+# official image's GOTOOLCHAIN=local.
+ENV GOTOOLCHAIN=auto
 COPY --from=xx / /
 RUN apt-get update && apt-get install -y --no-install-recommends git clang lld && rm -rf /var/lib/apt/lists/*
 ARG TARGETPLATFORM
