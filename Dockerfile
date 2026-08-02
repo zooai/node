@@ -37,13 +37,16 @@ RUN xx-go --wrap && \
 
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /zood/build/plugins
-COPY --from=builder /build/zood /zood/build/zood
-RUN ln -s /zood/build/zood /usr/local/bin/zood
-RUN ln -s /zood/build/zood /zood/build/plugins/2n2njofjYvece8gZWCNnc1mqkcqfW6kbrhPRZPVzwxrSQrQ4gE && \
-    ln -s /zood/build/zood /zood/build/plugins/mDVT5EWMumBp3LCqvKwuyZQeY1VXr1jvjGNAt8nL4UFiXvqXr
+# zood is the Zoo Network node daemon — the name the Makefile builds (BINARY := zood).
+# No plugin symlinks are baked here: main.go installPlugin() symlinks the running
+# binary into nodeConfig.PluginDir for the EVM and DEX VM IDs at startup.
+COPY --from=builder /build/zood /usr/local/bin/zood
 
+# Genesis configs baked in for offline bootstrap.
+#   genesis.json        — Zoo L2 EVM (chainId 200200)
+#   beluga/genesis.json — Beluga L3 EVM (evmChainId 420420)
 COPY genesis.json /etc/zoo/genesis.json
-COPY cmd/deploy-dex/genesis.json /etc/zoo/dex-genesis.json
+COPY beluga/genesis.json /etc/zoo/beluga-genesis.json
+COPY beluga/config.json /etc/zoo/beluga-config.json
 
 ENTRYPOINT ["zood"]
