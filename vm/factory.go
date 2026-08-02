@@ -31,6 +31,8 @@ import (
 
 	// AI Mining (0x0300) — Proof of AI: GPU/CPU compute rewards, model hosting, data sharing
 	_ "github.com/luxfi/precompile/ai"
+	_ "github.com/luxfi/precompile/inference"     // 0x0300..03 deterministic int8 inference (Tier-1)
+	_ "github.com/luxfi/precompile/modelregistry" // ModelSpec registry
 
 	// Post-quantum cryptography
 	_ "github.com/luxfi/precompile/blake3"
