@@ -308,9 +308,9 @@ func runBootstrap(args []string) {
 		fmt.Printf("    Blockchain ID: %s\n", r.BlockchainID)
 		fmt.Printf("    VM ID:         %s\n", r.VMID)
 		fmt.Printf("    Alias:         %s\n", r.Alias)
-		fmt.Printf("    RPC:           %s/rpc  (internal: /ext/bc/%s/rpc)\n", cfg.NodeURI, r.BlockchainID)
-		fmt.Printf("    WS:            %s/ws   (internal: /ext/bc/%s/ws)\n", cfg.NodeURI, r.BlockchainID)
-		fmt.Printf("    ZAP:           %s/zap  (internal: /ext/bc/%s/zap)\n", cfg.NodeURI, r.BlockchainID)
+		fmt.Printf("    RPC:           %s/rpc  (internal: /v1/bc/%s/rpc)\n", cfg.NodeURI, r.BlockchainID)
+		fmt.Printf("    WS:            %s/ws   (internal: /v1/bc/%s/ws)\n", cfg.NodeURI, r.BlockchainID)
+		fmt.Printf("    ZAP:           %s/zap  (internal: /v1/bc/%s/zap)\n", cfg.NodeURI, r.BlockchainID)
 		fmt.Println()
 	}
 

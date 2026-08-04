@@ -184,7 +184,7 @@ func runNode() {
 	}
 
 	httpPort := nodeConfig.HTTPPort
-	evmRPCURL := fmt.Sprintf("http://127.0.0.1:%d/ext/bc/zooevm/rpc", httpPort)
+	evmRPCURL := fmt.Sprintf("http://127.0.0.1:%d/v1/bc/zooevm/rpc", httpPort)
 
 	zapLogger := slog.Default()
 	zapNode, zapErr := startZAP(zapPort, evmRPCURL, zapLogger)
