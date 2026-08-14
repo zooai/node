@@ -4,7 +4,7 @@ version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
 description = "Model Context Protocol implementation"
-license = { workspace = true }
+license = "Apache-2.0"
 repository = { workspace = true }
 homepage = { workspace = true }
 

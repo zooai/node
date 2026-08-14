@@ -3,6 +3,7 @@ name = "hanzo-sovereign"
 version = "1.1.19"
 edition = "2021"
 description = "Hanzo L1 sovereign blockchain with ML-KEM/ML-DSA"
+publish = false
 
 [dependencies]
 tokio = { version = "1.0", features = ["full"] }

@@ -4,6 +4,7 @@ version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
 description = "Migration tool for Hanzo Node - SQLite to LanceDB"
+publish = false
 
 [[bin]]
 name = "hanzo-migrate"

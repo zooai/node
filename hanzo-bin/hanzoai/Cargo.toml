@@ -5,6 +5,7 @@ edition = "2021"
 authors = ["Hanzo AI Team <team@hanzo.ai>"]
 description = "Hanzo AI Engine - High-performance LLM inference and model management"
 license = "Apache-2.0"
+publish = false
 
 [[bin]]
 name = "hanzoai"
