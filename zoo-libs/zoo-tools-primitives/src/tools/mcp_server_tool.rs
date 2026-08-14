@@ -9,7 +9,7 @@ use rmcp::model::{CallToolResult, Content};
 use serde_json::Value;
 use zoo_message_primitives::schemas::mcp_server::{MCPServer, MCPServerType};
 use zoo_message_primitives::schemas::tool_router_key::ToolRouterKey;
-use zoo_tools_runner::tools::run_result::RunResult;
+use crate::tools::run_result::RunResult;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]

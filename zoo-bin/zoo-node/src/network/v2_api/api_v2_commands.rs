@@ -3018,10 +3018,10 @@ impl Node {
     }
 
     pub async fn v2_api_docker_status(res: Sender<Result<serde_json::Value, APIError>>) -> Result<(), NodeError> {
-        let docker_status = match zoo_tools_runner::tools::container_utils::is_docker_available() {
-            zoo_tools_runner::tools::container_utils::DockerStatus::NotInstalled => "not-installed",
-            zoo_tools_runner::tools::container_utils::DockerStatus::NotRunning => "not-running",
-            zoo_tools_runner::tools::container_utils::DockerStatus::Running => "running",
+        let docker_status = match std::process::Command::new("docker").arg("info").output() {
+            Err(_) => "not-installed",
+            Ok(out) if out.status.success() => "running",
+            Ok(_) => "not-running",
         };
 
         let _ = res
