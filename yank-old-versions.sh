@@ -16,7 +16,6 @@ CRATES=(
     "hanzo_embedding"
     "hanzo_http_api"
     "hanzo_tools_primitives"
-    "hanzo_tools_runner"
     "hanzo_sqlite"
     "hanzo_db"
     "hanzo_hmm"

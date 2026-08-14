@@ -26,7 +26,6 @@ CRATES=(
   "hanzo-sheet"
   "hanzo-sqlite"
   "hanzo-tools-primitives"
-  "hanzo-tools-runner"
   "hanzo-wasm-runtime"
 )
 

@@ -30,7 +30,6 @@ declare -A RENAME_MAP=(
     ["hanzo-embedding"]="hanzo-embed"
     ["hanzo-http-api"]="hanzo-api"
     ["hanzo-tools-primitives"]="hanzo-tools"
-    ["hanzo-tools-runner"]="hanzo-runner"
     ["hanzo-sqlite"]="hanzo-db-sqlite"
     ["hanzo-db"]="hanzo-database"
     ["hanzo-hmm"]="hanzo-hmm"

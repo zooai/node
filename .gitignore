@@ -78,10 +78,7 @@ run_local_ai.sh
 subscriber.key
 hanzo-bin/hanzo-node/lance_db_tests
 storage_debug_serve_mode
-hanzo-tools-runner-resources
-hanzo-tools-runner-execution-storage
 hanzo-bin/hanzo-node/hanzo_db_tests
-hanzo-tools-runner-resources
 storage_debug_agent_provider
 agent_provider
 image_0.txt

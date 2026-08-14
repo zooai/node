@@ -23,14 +23,6 @@ features = [ "rt", "rt-multi-thread", "macros", "fs", "io-util", "net", "sync", 
 [dependencies.zoo-message-primitives]
 workspace = true
 
-# Use zoo-tools-runner from workspace (wraps hanzo-tools-runner)
-[dependencies.zoo-tools-runner]
-workspace = true
-
-# Also keep direct hanzo-tools-runner dependency for compatibility
-[dependencies.hanzo-tools-runner]
-workspace = true
-
 # Note: NOT using hanzo_mcp - it requires rmcp 0.8 which is incompatible with Zoo's current architecture
 # Zoo uses rmcp 0.8 now but has architectural changes needed to support it properly
 

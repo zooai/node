@@ -20,7 +20,6 @@ description = "Non-Rust code execution for Hanzo AI platform"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.117"
 tokio = { version = "1.36", features = ["rt", "rt-multi-thread", "macros", "fs", "io-util", "net", "sync", "time"] }
-hanzo_tools_runner = { version = "1.0.3", features = ["built-in-tools"] }
 tempfile = "3.8"
 hanzo_message_primitives = "1.1.10"
 log = "0.4.20"

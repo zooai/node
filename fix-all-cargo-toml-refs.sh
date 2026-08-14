@@ -19,7 +19,6 @@ hanzo-crypto-identities:hanzo-identity
 hanzo-libp2p-relayer:hanzo-libp2p
 hanzo-job-queue-manager:hanzo-jobs
 hanzo-tools-primitives:hanzo-tools
-hanzo-tools-runner:hanzo-runner
 hanzo-sqlite:hanzo-db-sqlite
 hanzo-non-rust-code:hanzo-runtime
 hanzo-model-discovery:hanzo-models

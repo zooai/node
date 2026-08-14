@@ -90,7 +90,6 @@ jobs:
       run: |
         mkdir files-to-r2
         cp target/release/hanzo-node${{ env.EXTENSION }} files-to-r2/hanzo-node${{ env.EXTENSION }}
-        cp -r target/release/hanzo-tools-runner-resources files-to-r2/
         cd ./files-to-r2
         7z a -tzip ${{ env.ZIP_FILE_NAME}} . -sdel
         cp ${{ env.ZIP_FILE_NAME}} latest.zip

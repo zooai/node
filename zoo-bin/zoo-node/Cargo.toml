@@ -9,7 +9,6 @@ license = "Apache-2.0"
 default-run = "zoo-node"
 
 [build-dependencies]
-# Removed zoo_tools_runner - build script tries to copy binaries we don't need
 # Runtime dependency in [dependencies] section is sufficient
 
 # Features
@@ -82,7 +81,6 @@ cron-parser = "0.8.1"
 dashmap = { workspace = true }
 async-lock = "2.4.0"
 governor = "0.6.3"
-zoo-tools-runner = { workspace = true, features = ["built-in-tools"] }
 console-subscriber = { version = "0.1", optional = true }
 downcast-rs = "1.2.1"
 bigdecimal = "0.2.2"

@@ -92,8 +92,6 @@ The workflows publish crates in this order:
 1. **Foundation** (no internal deps):
    - hanzo-messages
    - hanzo-embed
-   - hanzo-runner
-   - hanzo-tools-runner
    - hanzo-models
    - hanzo-model-discovery
 
