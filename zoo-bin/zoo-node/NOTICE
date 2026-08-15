@@ -1,4 +1,4 @@
-Zoo Node
+zoo-node
 Copyright (c) 2021-2026 Zoo Labs Foundation, Inc.
 
 This product includes software from Shinkai
@@ -7,4 +7,5 @@ Apache License, Version 2.0:
 
     Copyright 2024 Mariana Layer Labs (BVI), LTD
 
-Files from that project have been modified.
+Derived from shinkai-node. Files from that project have been
+modified, including renaming the project's identifiers.
