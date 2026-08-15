@@ -123,3 +123,7 @@ storage_debug_relay
 # Compiled node daemon — build artifacts, never tracked.
 /zood
 /build/zood
+
+# Vendored deps are ~313M (the luxd module tree) — too large for git.
+# The build fetches them; `go mod vendor` output stays local.
+/vendor/
