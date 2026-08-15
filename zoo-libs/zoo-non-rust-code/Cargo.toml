@@ -4,7 +4,8 @@ version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
 description = "Wallet, x402 payment and document parsing functions for the Zoo node"
-license = "MIT"
+license = "Apache-2.0"
+publish = false
 repository = "https://github.com/zooai/node"
 homepage = "https://zoo.ngo"
 
