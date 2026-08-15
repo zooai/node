@@ -50,6 +50,8 @@ func TestParseBootstrapFlags_Defaults(t *testing.T) {
 	t.Setenv("CHAINS", "")
 	t.Setenv("EVM_CHAIN_NAME", "")
 	t.Setenv("DEX_CHAIN_NAME", "")
+	t.Setenv("COIN_TYPE", "")
+	t.Setenv("KEY_INDEX", "")
 	// Must provide at least one key source to avoid log.Fatal.
 	t.Setenv("LUX_MNEMONIC", "light light light light light light light light light light light energy")
 	t.Setenv("LUX_PRIVATE_KEY", "")
@@ -62,8 +64,10 @@ func TestParseBootstrapFlags_Defaults(t *testing.T) {
 	if cfg.NetworkName != "Zoo" {
 		t.Errorf("NetworkName: got %q, want %q", cfg.NetworkName, "Zoo")
 	}
-	if cfg.CoinType != 60 {
-		t.Errorf("CoinType: got %d, want %d", cfg.CoinType, 60)
+	// Canonical Lux BIP44 coin type: P/X-Chain genesis allocations derive at
+	// m/44'/9000'/0'/0/i, and chain creation spends P-Chain UTXOs.
+	if cfg.CoinType != 9000 {
+		t.Errorf("CoinType: got %d, want %d", cfg.CoinType, 9000)
 	}
 	if cfg.KeyIndex != 0 {
 		t.Errorf("KeyIndex: got %d, want %d", cfg.KeyIndex, 0)
@@ -119,6 +123,38 @@ func TestParseBootstrapFlags_EnvVars(t *testing.T) {
 	}
 	if cfg.Chains[0].GenesisFile != "/tmp/custom-genesis.json" {
 		t.Errorf("Chain[0].GenesisFile: got %q, want %q", cfg.Chains[0].GenesisFile, "/tmp/custom-genesis.json")
+	}
+}
+
+func TestParseBootstrapFlags_DerivationOverrides(t *testing.T) {
+	t.Setenv("LUX_MNEMONIC", "light light light light light light light light light light light energy")
+	t.Setenv("LUX_PRIVATE_KEY", "")
+	t.Setenv("COIN_TYPE", "60")
+	t.Setenv("KEY_INDEX", "3")
+
+	cfg := parseBootstrapFlags(nil)
+
+	if cfg.CoinType != 60 {
+		t.Errorf("CoinType: got %d, want %d", cfg.CoinType, 60)
+	}
+	if cfg.KeyIndex != 3 {
+		t.Errorf("KeyIndex: got %d, want %d", cfg.KeyIndex, 3)
+	}
+}
+
+func TestParseBootstrapFlags_DerivationOverridesIgnoreGarbage(t *testing.T) {
+	t.Setenv("LUX_MNEMONIC", "light light light light light light light light light light light energy")
+	t.Setenv("LUX_PRIVATE_KEY", "")
+	t.Setenv("COIN_TYPE", "not-a-number")
+	t.Setenv("KEY_INDEX", "")
+
+	cfg := parseBootstrapFlags(nil)
+
+	if cfg.CoinType != 9000 {
+		t.Errorf("CoinType: got %d, want %d", cfg.CoinType, 9000)
+	}
+	if cfg.KeyIndex != 0 {
+		t.Errorf("KeyIndex: got %d, want %d", cfg.KeyIndex, 0)
 	}
 }
 
