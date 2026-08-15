@@ -13,7 +13,7 @@ export async function zooDownloadPages(input: {urls: any[]}): Promise<{
     markdowns: string[];
 }> {
 
-    const _url = `${Deno.env.get('ZOO_NODE_LOCATION')}/v2/tool_execution`;
+    const _url = `${Deno.env.get('ZOO_NODE_LOCATION')}/v1/node/tool_execution`;
     const data = {
         tool_router_key: 'local:::zoo_tool_download_pages:::zoo__download_pages',
         tool_type: 'deno',
@@ -191,7 +191,7 @@ pub fn generate_typescript_definition(
         typescript_output.push_str(" {\n");
         typescript_output.push_str(&format!(
             "
-    const _url = `${{Deno.env.get('ZOO_NODE_LOCATION')}}/v2/tool_execution`;
+    const _url = `${{Deno.env.get('ZOO_NODE_LOCATION')}}/v1/node/tool_execution`;
     const data = {{
         tool_router_key: '{}',
         tool_type: '{}',

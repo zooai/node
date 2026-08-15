@@ -407,8 +407,8 @@ async fn handle_serve(
     let app = Router::new()
         .route("/", get(health_handler))
         .route("/health", get(health_handler))
-        .route("/v2/health", get(health_handler))
-        .route("/v2/health_check", get(health_handler))
+        .route("/v1/health", get(health_handler))
+        .route("/v1/health_check", get(health_handler))
         .layer(CorsLayer::permissive())
         .with_state(state);
 
@@ -428,7 +428,7 @@ async fn handle_serve(
     println!();
     println!("  GET /           health check");
     println!("  GET /health     health check");
-    println!("  GET /v2/health  health check (v2 API)");
+    println!("  GET /v1/health  health check");
     println!();
 
     axum::serve(listener, app)

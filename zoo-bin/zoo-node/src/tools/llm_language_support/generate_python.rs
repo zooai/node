@@ -24,7 +24,7 @@ async def zoo_download_pages(input: Dict[str, Any]) -> Dict[str, Any]:
             markdowns: List[str]
         }
     """
-    _url = os.environ.get('ZOO_NODE_LOCATION', '') + '/v2/tool_execution'
+    _url = os.environ.get('ZOO_NODE_LOCATION', '') + '/v1/node/tool_execution'
     data = {
         'tool_router_key': 'local:::zoo_tool_download_pages:::zoo__download_pages',
         'tool_type': 'deno',
@@ -213,7 +213,7 @@ pub fn generate_python_definition(
         // Add the implementation
         python_output.push_str(
             r#"
-    _url = os.environ.get('ZOO_NODE_LOCATION', '') + '/v2/tool_execution'
+    _url = os.environ.get('ZOO_NODE_LOCATION', '') + '/v1/node/tool_execution'
     data = {
         'tool_router_key': '"#,
         );
