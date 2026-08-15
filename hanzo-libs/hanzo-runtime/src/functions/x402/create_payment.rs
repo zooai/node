@@ -1,8 +1,12 @@
-use serde::{Deserialize, Serialize};
-use serde_json::json;
-use hanzo_messages::schemas::x402_types::PaymentRequirements;
+//! Pay for a resource: sign an authorization for one of the offered terms and
+//! encode it for the payment header.
 
-use crate::{NonRustCodeRunnerFactory, NonRustRuntime, RunError};
+use hanzo_messages::schemas::x402_types::PaymentRequirements;
+use serde::{Deserialize, Serialize};
+
+use super::exact;
+use crate::functions::ethers_wallet;
+use crate::RunError;
 
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -19,43 +23,114 @@ pub struct Output {
 }
 
 pub async fn create_payment(input: Input) -> Result<Output, RunError> {
-    let code = include_str!("createPaymentDenoImpl.ts");
-    let runner = NonRustCodeRunnerFactory::new("create_payment", code, vec![])
-        .with_runtime(NonRustRuntime::Deno)
-        .create_runner(json!({}));
-    runner.run::<_, Output>(input, None).await
+    let key = ethers_wallet::key(&input.private_key)?;
+
+    // `exact` is the scheme this node pays under. Nothing here can honour a
+    // different one, so say so rather than signing an authorization the payee
+    // will not recognise.
+    let chosen = input
+        .accepts
+        .iter()
+        .find(|requirements| requirements.scheme == "exact")
+        .ok_or_else(|| {
+            RunError::SerializeParamsError(format!(
+                "none of the {} accepted terms use the exact scheme",
+                input.accepts.len()
+            ))
+        })?;
+
+    Ok(Output {
+        payment: exact::encode(&exact::sign(&key, chosen, input.x402_version)?)?,
+    })
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use hanzo_messages::schemas::x402_types::Network;
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::functions::x402::exact;
+    use hanzo_messages::schemas::x402_types::Network;
+    use serde_json::json;
 
-//     use super::*;
-//     use crate::test_utils::testing_create_tempdir_and_set_env_var;
+    const KEY: &str = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+    const PAYER: &str = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
-//     #[tokio::test]
-//     async fn test_create_payment() {
-//         let _dir = testing_create_tempdir_and_set_env_var();
-//         let price_in_raw_usd = 0.001;
-//         let input = Input {
-//             accepts: vec![PaymentRequirements {
-//                 scheme: "exact".to_string(),
-//                 description: "Test payment".to_string(),
-//                 network: Network::BaseSepolia,
-//                 max_amount_required: (price_in_raw_usd * 1000000.0).to_string(),
-//                 resource: "https://hanzo.ai".to_string(),
-//                 mime_type: "".to_string(),
-//                 pay_to: std::env::var("X402_PAY_TO").expect("X402_PAY_TO must be set"),
-//                 max_timeout_seconds: 300,
-//                 asset: "0x6e7907fbcEe166bd4000a22e0eBaA63B2c977534".to_string(),
-//                 output_schema: Some(json!({})),
-//                 extra: Some(json!({})),
-//             }],
-//             x402_version: 1,
-//             private_key: std::env::var("X402_PRIVATE_KEY").expect("X402_PRIVATE_KEY must be set"),
-//         };
+    fn terms(scheme: &str, network: Network) -> PaymentRequirements {
+        PaymentRequirements {
+            scheme: scheme.to_string(),
+            description: "Test payment".to_string(),
+            network,
+            max_amount_required: "1000".to_string(),
+            resource: "https://hanzo.ai".to_string(),
+            mime_type: String::new(),
+            pay_to: "0x9858EfFD232B4033E47d90003D41EC34EcaEda94".to_string(),
+            max_timeout_seconds: 300,
+            asset: "0x036CbD53842c5426634e7929541eC2318f3dCF7e".to_string(),
+            output_schema: Some(json!({})),
+            extra: Some(json!({ "name": "USDC", "version": "2" })),
+        }
+    }
 
-//         let output = create_payment(input).await.unwrap();
-//         assert!(!output.payment.is_empty());
-//     }
-// }
+    #[tokio::test]
+    async fn test_create_payment() {
+        let requirements = terms("exact", Network::BaseSepolia);
+        let output = create_payment(Input {
+            accepts: vec![requirements.clone()],
+            x402_version: 1,
+            private_key: KEY.to_string(),
+        })
+        .await
+        .unwrap();
+        assert!(!output.payment.is_empty());
+
+        // The header must decode to an authorization signed by the key we
+        // handed in, for the terms we handed in.
+        let payment = exact::decode(&output.payment).unwrap();
+        assert_eq!(payment.payload.authorization.from, PAYER);
+        assert_eq!(payment.payload.authorization.to, requirements.pay_to);
+        assert_eq!(payment.payload.authorization.value, "1000");
+        assert_eq!(payment.x402_version, 1);
+        assert_eq!(
+            exact::payer(&payment, &requirements).unwrap().to_checksum(None),
+            PAYER
+        );
+    }
+
+    #[tokio::test]
+    async fn picks_the_exact_terms_out_of_the_offer() {
+        let output = create_payment(Input {
+            accepts: vec![terms("upto", Network::Base), terms("exact", Network::BaseSepolia)],
+            x402_version: 1,
+            private_key: KEY.to_string(),
+        })
+        .await
+        .unwrap();
+        assert_eq!(exact::decode(&output.payment).unwrap().network, Network::BaseSepolia);
+    }
+
+    #[tokio::test]
+    async fn refuses_terms_it_cannot_honour() {
+        let refused = create_payment(Input {
+            accepts: vec![terms("upto", Network::Base)],
+            x402_version: 1,
+            private_key: KEY.to_string(),
+        })
+        .await;
+        assert!(refused.is_err(), "a scheme we cannot sign must not produce a payment");
+
+        assert!(create_payment(Input {
+            accepts: vec![],
+            x402_version: 1,
+            private_key: KEY.to_string(),
+        })
+        .await
+        .is_err());
+
+        assert!(create_payment(Input {
+            accepts: vec![terms("exact", Network::BaseSepolia)],
+            x402_version: 1,
+            private_key: "not-a-key".to_string(),
+        })
+        .await
+        .is_err());
+    }
+}

@@ -36,6 +36,7 @@ members = [
   "hanzo-libs/hanzo-tools",
   "hanzo-libs/hanzo-wasm",
   "hanzo-libs/hanzo-wasm-runtime",
+  "zoo-libs/zoo-non-rust-code",
   "hanzo-test-framework",  # Required by hanzo-node
   "hanzo-test-macro",      # Required by hanzo-node
   "hanzo-bin/hanzo-node",
@@ -86,6 +87,7 @@ hanzo-tools = { path = "./hanzo-libs/hanzo-tools", version = "1.1.21" }
 hanzo-wasm = { path = "./hanzo-libs/hanzo-wasm", version = "0.1.1" }
 hanzo-vm = { path = "./hanzo-libs/hanzo-vm", version = "1.1.19" }
 hanzo-wasm-runtime = { path = "./hanzo-libs/hanzo-wasm-runtime", version = "1.1.19" }
+zoo-non-rust-code = { path = "./zoo-libs/zoo-non-rust-code", version = "1.1.21" }
 
 
 
@@ -165,6 +167,20 @@ libp2p = { version = "0.55.0", features = [
   "tokio",
   "macros",
 ] }
+
+# Ethereum: keys, ABI coding, EIP-712. Used by hanzo-runtime's wallet and x402
+# functions, which speak BIP-39/BIP-32, EIP-55, EIP-712 and EIP-3009 directly.
+alloy-primitives = { version = "1.6", features = ["k256"] }
+alloy-sol-types = "1.6"
+alloy-dyn-abi = "1.6"
+alloy-json-abi = "1.6"
+k256 = { version = "0.13", features = ["ecdsa"] }
+coins-bip39 = "0.12"
+
+# Document parsing
+calamine = "0.36"
+pdf-extract = "0.12"
+docx-rs = "0.4"
 
 # Dev dependencies
 criterion = "0.5"
