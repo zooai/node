@@ -1,8 +1,11 @@
+//! Collect a verified payment: hand the authorization to a facilitator, which
+//! submits it on chain.
+
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 
-use crate::{NonRustCodeRunnerFactory, NonRustRuntime, RunError};
+use crate::RunError;
 
+use super::{exact, facilitator};
 use hanzo_messages::schemas::x402_types::{FacilitatorConfig, PaymentPayload, PaymentRequirements};
 
 #[derive(Debug, Serialize)]
@@ -33,84 +36,125 @@ pub struct Output {
     pub valid: Option<ValidOutput>,
 }
 
-pub async fn settle_payment(input: Input) -> Result<Output, RunError> {
-    let code = include_str!("settlePaymentDenoImpl.ts");
-    let runner = NonRustCodeRunnerFactory::new("settle_payment", code, vec![])
-        .with_runtime(NonRustRuntime::Deno)
-        .create_runner(json!({}));
-    runner.run::<_, Output>(input, None).await
+impl Output {
+    fn refused(error: impl Into<String>, accepts: Vec<PaymentRequirements>, x402_version: u32) -> Self {
+        Output {
+            invalid: Some(InvalidOutput {
+                error: error.into(),
+                accepts,
+                x402_version,
+            }),
+            valid: None,
+        }
+    }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use hanzo_messages::schemas::x402_types::{Network, Price};
+pub async fn settle_payment(input: Input) -> Result<Output, RunError> {
+    let version = input.payment.x402_version;
 
-//     use super::*;
-//     use crate::{
-//         functions::x402::{create_payment, verify_payment}, test_utils::testing_create_tempdir_and_set_env_var
-//     };
+    let Some(selected) = exact::matching(&input.accepts, &input.payment) else {
+        return Ok(Output::refused(
+            "Unable to find matching payment requirements",
+            input.accepts,
+            version,
+        ));
+    };
 
-//     #[tokio::test]
-//     async fn test_settle_payment() {
-//         let _dir = testing_create_tempdir_and_set_env_var();
-//         let price_in_raw_usd = 0.1;
+    let reply = match facilitator::settle(&input.facilitator, &input.payment, selected).await {
+        Ok(reply) => reply,
+        Err(error) => {
+            return Ok(Output::refused(
+                format!("Failed to settle payment - error: {error}"),
+                input.accepts,
+                version,
+            ))
+        }
+    };
 
-//         let pay_to = std::env::var("X402_PAY_TO").expect("X402_PAY_TO must be set");
-//         let private_key = std::env::var("X402_PRIVATE_KEY").expect("X402_PRIVATE_KEY must be set");
+    if !facilitator::verdict(&reply, "success") {
+        return Ok(Output::refused(
+            format!(
+                "Failed to settle payment - error: {}",
+                facilitator::reason(&reply, "errorReason")
+            ),
+            input.accepts,
+            version,
+        ));
+    }
 
-//         // First verify with no payment to get accepts
-//         let verify_input = verify_payment::Input {
-//             price: Price::Money(price_in_raw_usd),
-//             network: Network::BaseSepolia,
-//             pay_to: pay_to.clone(),
-//             payment: None,
-//             x402_version: 1,
-//             facilitator: FacilitatorConfig::default(),
-//         };
+    // The receipt travels back to the caller the same way a payment travels in.
+    Ok(Output {
+        invalid: None,
+        valid: Some(ValidOutput {
+            payment_response: exact::receipt(&reply)?,
+        }),
+    })
+}
 
-//         let verify_output = verify_payment::verify_payment(verify_input.clone()).await.unwrap();
-//         assert!(verify_output.invalid.is_some());
-//         let invalid_verify = verify_output.invalid.unwrap();
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::functions::ethers_wallet;
+    use crate::functions::x402::payment_requirements::quote;
+    use crate::functions::x402::verify_payment;
+    use hanzo_messages::schemas::x402_types::{Network, Price};
 
-//         // Create payment using the accepts from verify
-//         let create_input = create_payment::Input {
-//             accepts: invalid_verify.accepts.clone(),
-//             x402_version: invalid_verify.x402_version,
-//             private_key,
-//         };
+    fn terms(network: Network) -> Vec<PaymentRequirements> {
+        quote(&verify_payment::Input {
+            price: Price::Money(0.1),
+            network,
+            pay_to: "0x9858EfFD232B4033E47d90003D41EC34EcaEda94".to_string(),
+            payment: None,
+            x402_version: 1,
+            facilitator: FacilitatorConfig::default(),
+        })
+        .unwrap()
+    }
 
-//         let payment = create_payment::create_payment(create_input).await.unwrap().payment;
-//         assert!(!payment.is_empty());
+    fn payment(network: Network) -> PaymentPayload {
+        let key =
+            ethers_wallet::key("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80").unwrap();
+        exact::sign(&key, &terms(network)[0], 1).unwrap()
+    }
 
-//         // Verify the created payment
-//         let mut verify_input = verify_input.clone();
-//         verify_input.payment = Some(payment.clone());
+    /// A payment nobody offered terms for is refused without contacting a
+    /// facilitator.
+    #[tokio::test]
+    async fn a_payment_with_no_matching_terms_is_refused() {
+        let output = settle_payment(Input {
+            payment: payment(Network::Base),
+            accepts: terms(Network::BaseSepolia),
+            facilitator: FacilitatorConfig::default(),
+        })
+        .await
+        .unwrap();
 
-//         let verify_output = verify_payment::verify_payment(verify_input).await.unwrap();
+        assert!(output.valid.is_none());
+        let invalid = output.invalid.unwrap();
+        assert_eq!(invalid.error, "Unable to find matching payment requirements");
+        assert_eq!(invalid.x402_version, 1);
+        assert!(!invalid.accepts.is_empty());
+    }
 
-//         // Check for insufficient funds error
-//         if let Some(invalid) = &verify_output.invalid {
-//             if invalid.error == "Invalid payment - insufficient_funds" {
-//                 let payment_req = &invalid.accepts[0];
-//                 panic!(
-//                     "Insufficient funds error detected: Required {} {} on {:?} network",
-//                     payment_req.max_amount_required, payment_req.asset, payment_req.network
-//                 );
-//             }
-//         }
+    /// An unreachable facilitator is reported as a refusal carrying the terms,
+    /// never as a settled payment.
+    #[tokio::test]
+    async fn an_unreachable_facilitator_never_reads_as_settled() {
+        let output = settle_payment(Input {
+            payment: payment(Network::BaseSepolia),
+            accepts: terms(Network::BaseSepolia),
+            facilitator: FacilitatorConfig {
+                // Reserved for documentation, so it cannot answer.
+                url: "http://192.0.2.1:9".to_string(),
+            },
+        })
+        .await
+        .unwrap();
 
-//         assert!(verify_output.valid.is_some());
-//         let decoded_payment = verify_output.valid.unwrap().decoded_payment;
-
-//         // Finally settle the payment
-//         let settle_input = Input {
-//             payment: decoded_payment,
-//             accepts: invalid_verify.accepts,
-//             facilitator: FacilitatorConfig::default(),
-//         };
-
-//         let settle_output = settle_payment(settle_input).await.unwrap();
-//         assert!(settle_output.valid.is_some());
-//         assert!(!settle_output.valid.unwrap().payment_response.is_empty());
-//     }
-// }
+        assert!(output.valid.is_none());
+        assert!(
+            output.invalid.unwrap().error.starts_with("Failed to settle payment"),
+            "an unreachable facilitator must refuse, not settle"
+        );
+    }
+}

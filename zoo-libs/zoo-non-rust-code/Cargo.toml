@@ -3,16 +3,10 @@ name = "zoo-non-rust-code"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
-description = "Model Context Protocol implementation"
-license = "Apache-2.0"
-repository = { workspace = true }
-homepage = { workspace = true }
+description = "Wallet, x402 payment and document parsing functions for the Zoo node"
+license = "MIT"
+repository = "https://github.com/zooai/node"
+homepage = "https://zoo.ngo"
 
 [dependencies]
-serde = { workspace = true }
-serde_json = { workspace = true }
-tokio = { workspace = true }
-# Remove hanzo_non_rust_code dependency - not needed since we're wrapping functionality
-tempfile = { workspace = true }
-zoo-message-primitives = { workspace = true }
-log = { workspace = true }
+hanzo-runtime = { workspace = true }
