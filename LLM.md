@@ -125,10 +125,10 @@ with `git merge`/`git pull`. Cross-repo transfer is a *feature port* driven by a
 explicit token rename map (`hanzo`↔`zoo`), copy → fix imports → build → commit.
 
 ### `zoo-libs/` is legacy
-`zoo-libs/*`, `zoo-bin/zoo-node`, `zoo-test-framework`, `zoo-test-macro` predate
-the fork that added the AI mining protocol and the rest of what this node does
-now. They are **not** workspace members and no `hanzo-*` crate depends on them.
-Retained for reference, slated for removal (tracked for human review).
+`zoo-libs/*`, `zoo-bin/zoo-node`, `zoo-test-framework`, `zoo-test-macro` are the
+pre-rename Shinkai-lineage originals. They are **not** workspace members and no
+`hanzo-*` crate depends on them. They are retained for reference and slated for
+removal once the rename is finalized (tracked for human review).
 
 ### Release order
 `ml → engine → node` (the leaf is `hanzoai/ml`; `hanzoai/engine` depends on `ml`;
