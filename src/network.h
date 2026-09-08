@@ -3,13 +3,19 @@
 //
 // The networks this node runs, and the two numbers each one is.
 //
-// TWO NUMBERS, BECAUSE THERE ARE TWO QUESTIONS. A validator joins a NETWORK,
-// and the network id is what peers greet each other under: it is the same
-// number for every chain the network's validator set carries. A transaction is
-// signed against a CHAIN, and the chain id is what an EVM signature is bound
-// to. Collapsing them into one number would make a wallet and a validator
-// disagree about what they are on, and the disagreement is only visible after a
-// transaction has been signed for the wrong thing.
+// ONE NUMBER PER NETWORK PER ENVIRONMENT, because Zoo is a sovereign L1.
+//
+// A validator joins a NETWORK and a transaction is signed against a CHAIN, and
+// on a network carrying many chains those are two questions with two answers.
+// Zoo's primary network carries one: its EVM. So the two numbers were free to
+// differ, and differing is what went wrong — mainnet greeted under id 1, which
+// is what Lux mainnet greets under, and so did Hanzo's. Three sovereign
+// networks introducing themselves by the same number is an ambiguity a wallet
+// cannot see through and a staking-key derivation path cannot be unique under.
+//
+// So the primary network id IS the EVM chain id. One number per environment,
+// globally unique, and a peer greeting under 200200 is on Zoo mainnet and
+// nowhere else.
 //
 // These three are the whole set. A network that is not here is not one this
 // binary can be pointed at by name — which is the point of compiling them in
@@ -33,11 +39,11 @@ struct Network {
 };
 
 // The settlement network.
-inline constexpr Network kMainnet{"mainnet", 1, 200200};
+inline constexpr Network kMainnet{"mainnet", 200200, 200200};
 // The network that carries release candidates.
-inline constexpr Network kTestnet{"testnet", 2, 200201};
+inline constexpr Network kTestnet{"testnet", 200201, 200201};
 // The network the protocol itself is developed against.
-inline constexpr Network kDevnet{"devnet", 3, 200202};
+inline constexpr Network kDevnet{"devnet", 200202, 200202};
 
 // Every network this binary knows, in the order it lists them.
 inline constexpr Network kAll[]{kMainnet, kTestnet, kDevnet};
