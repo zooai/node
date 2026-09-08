@@ -1,14 +1,15 @@
 // Copyright (C) 2026, Zoo Labs Foundation. All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause-Eco
 //
-// The networks this node runs, and what each one is called by number.
+// The networks this node runs, and the two numbers each one is.
 //
-// A sovereign network is named by ONE number. It is the network id peers greet
-// each other with and it is the EVM chain id a transaction is signed against,
-// and they are the same number on purpose: two numbers for one network is a way
-// for a wallet and a validator to disagree about which network they are on, and
-// the disagreement is only visible after a transaction has been signed for the
-// wrong one.
+// TWO NUMBERS, BECAUSE THERE ARE TWO QUESTIONS. A validator joins a NETWORK,
+// and the network id is what peers greet each other under: it is the same
+// number for every chain the network's validator set carries. A transaction is
+// signed against a CHAIN, and the chain id is what an EVM signature is bound
+// to. Collapsing them into one number would make a wallet and a validator
+// disagree about what they are on, and the disagreement is only visible after a
+// transaction has been signed for the wrong thing.
 //
 // These three are the whole set. A network that is not here is not one this
 // binary can be pointed at by name — which is the point of compiling them in
@@ -18,24 +19,25 @@
 
 #include <cstdint>
 #include <optional>
-#include <span>
 #include <string>
 #include <string_view>
 
 namespace zoo {
 
-// One network: what it is called, and the number it is.
+// One network: what it is called, the number its validators greet under, and
+// the chain this node serves on it.
 struct Network {
-    std::string_view name;  // the name a person uses
-    std::uint64_t    id;    // network id and EVM chain id, one value
+    std::string_view name;   // the name a person uses
+    std::uint32_t    id;     // what peers greet each other under
+    std::uint64_t    chain;  // what a transaction on it is signed against
 };
 
 // The settlement network.
-inline constexpr Network kMainnet{"mainnet", 200200};
+inline constexpr Network kMainnet{"mainnet", 1, 200200};
 // The network that carries release candidates.
-inline constexpr Network kTestnet{"testnet", 200201};
+inline constexpr Network kTestnet{"testnet", 2, 200201};
 // The network the protocol itself is developed against.
-inline constexpr Network kDevnet{"devnet", 200202};
+inline constexpr Network kDevnet{"devnet", 3, 200202};
 
 // Every network this binary knows, in the order it lists them.
 inline constexpr Network kAll[]{kMainnet, kTestnet, kDevnet};

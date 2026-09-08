@@ -4,8 +4,8 @@
 // zood — the Zoo network node.
 //
 // It answers the questions a node is asked before it can do anything: which
-// network this is and what number that network is, where its files live, and
-// what it binds. Given a genesis document it also answers whether that document
+// network this is, what number that network is and what number the chain on it
+// is, where its files live, and what it binds. Given a genesis document it also answers whether that document
 // is this network's — because a node that started on someone else's genesis
 // would produce blocks nobody else accepts, and would look like it had started
 // correctly.
@@ -111,7 +111,8 @@ int main(int argc, char** argv) {
 
     std::cout << "zood " << kVersion << "\n"
               << "network    " << net->name << "\n"
-              << "id         " << net->id << "\n"
+              << "network id " << net->id << "\n"
+              << "chain id   " << net->chain << "\n"
               << "data       " << data << "\n"
               << "rpc        " << rpc << "\n"
               << "mesh       " << mesh << "\n";
@@ -121,7 +122,7 @@ int main(int argc, char** argv) {
             const zoo::Genesis g = zoo::read_genesis(*path);
             g.agrees_with(*net);
             std::cout << "genesis    " << *path << "\n"
-                      << "states     " << g.id << "\n"
+                      << "states     " << g.chain << "\n"
                       << "allocates  " << plural(g.accounts, "account") << "\n";
         } catch (const std::exception& e) {
             std::cerr << "zood: " << *path << ": " << e.what() << "\n";

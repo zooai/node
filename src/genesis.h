@@ -8,22 +8,30 @@
 // present and unreadable is an error, never a default. A document that fell
 // back to zero for a number it could not parse would agree with nothing and
 // look like it had been checked.
+//
+// WHAT IS CHECKED IS THE TWO NUMBERS. The chain id must be this network's
+// chain, because it is what every transaction is signed against. The network
+// id, when the document states one, must be this network, because a chain
+// document carried inside another network's genesis belongs to that network.
 
 #pragma once
 
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 #include <string>
 
 #include "network.h"
 
 namespace zoo {
 
-// What a genesis document says about which network it is for.
+// What a genesis document says about which network and chain it is for.
 struct Genesis {
-    // The number the document states — its EVM chain id, and for a sovereign
-    // network its network id too.
-    std::uint64_t id;
+    // The chain id the document states — what a transaction on it is signed
+    // against.
+    std::uint64_t chain;
+    // The network the document names, when it names one.
+    std::optional<std::uint64_t> network;
     // How many accounts it allocates.
     std::size_t accounts;
 

@@ -44,10 +44,20 @@ const Json* chain_document(const Json& doc, Json& held, int depth) {
 }  // namespace
 
 void Genesis::agrees_with(const Network& net) const {
-    if (id == net.id) return;
-    std::ostringstream why;
-    why << "this genesis is network " << id << ", not " << net.name << " (" << net.id << ")";
-    throw std::runtime_error(why.str());
+    if (chain != net.chain) {
+        std::ostringstream why;
+        why << "this genesis is chain " << chain << ", not " << net.name << "'s chain "
+            << net.chain;
+        throw std::runtime_error(why.str());
+    }
+    // A chain document carried inside another network's genesis is that
+    // network's, whatever its chain id says.
+    if (network && *network != net.id) {
+        std::ostringstream why;
+        why << "this genesis is network " << *network << ", not " << net.name << " ("
+            << net.id << ")";
+        throw std::runtime_error(why.str());
+    }
 }
 
 Genesis read_genesis(const std::string& path) {
@@ -59,34 +69,26 @@ Genesis read_genesis(const std::string& path) {
     if (!doc.is_object()) throw std::runtime_error("not a genesis document");
 
     Json held;
-    const Json& chain = *chain_document(doc, held, 0);
-    if (!chain.is_object()) throw std::runtime_error("cChainGenesis is not a document");
+    const Json& inner = *chain_document(doc, held, 0);
+    if (!inner.is_object()) throw std::runtime_error("cChainGenesis is not a document");
 
-    const auto config = chain.find("config");
-    if (config == chain.end() || !config->is_object())
+    const auto config = inner.find("config");
+    if (config == inner.end() || !config->is_object())
         throw std::runtime_error("no config");
-    const std::uint64_t id = number(*config, "chainId");
+    const std::uint64_t chain = number(*config, "chainId");
 
-    // A whole-network document states the number twice. Both must be the same
-    // number: a document whose two halves name different networks is one half
-    // of two genesis files, and whichever this node believed would be wrong
-    // somewhere else.
-    const auto stated = doc.find("networkID");
-    if (stated != doc.end()) {
-        const std::uint64_t network = number(doc, "networkID");
-        if (network != id) {
-            std::ostringstream why;
-            why << "it is network " << network << " carrying chain " << id;
-            throw std::runtime_error(why.str());
-        }
-    }
+    // The network the document names, when it names one. Read here and judged
+    // in agrees_with, so this function answers what the document says and the
+    // other answers whether it is ours.
+    std::optional<std::uint64_t> network;
+    if (doc.find("networkID") != doc.end()) network = number(doc, "networkID");
 
     std::size_t accounts = 0;
-    if (const auto alloc = chain.find("alloc"); alloc != chain.end()) {
+    if (const auto alloc = inner.find("alloc"); alloc != inner.end()) {
         if (!alloc->is_object()) throw std::runtime_error("alloc is not a set of accounts");
         accounts = alloc->size();
     }
-    return Genesis{id, accounts};
+    return Genesis{chain, network, accounts};
 }
 
 }  // namespace zoo

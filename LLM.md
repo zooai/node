@@ -5,11 +5,18 @@
 ## What this repository is
 
 The Zoo network's identity, as a program. A node is asked which network this
-is, what number that network is, where its files live, what it binds, and
+is, what numbers that network is, where its files live, what it binds, and
 whether a genesis document is this network's — and this answers those.
 
 The answers are compiled in. A node that read its own identity from somewhere
 editable is a node that can be pointed at a fork by editing it.
+
+The Zoo chain is carried by a validator set that also carries other chains, so
+the host a validator runs on is shared and the identity is not. This repository
+is the identity half. The host half is a C++ package that does not yet install,
+export a target, or resolve its own dependencies as packages, so nothing here
+depends on it: `zood` binds no mesh and decides no block. What it does state, it
+states correctly, and every claim below is a case in `test/check.cpp`.
 
 ## Layout
 
@@ -23,14 +30,18 @@ editable is a node that can be pointed at a fork by editing it.
 Each answers one question. `network` knows nothing about documents; `genesis`
 states no identity of its own — it is handed the network to check against.
 
-## The identity
+## Two numbers, not one
 
-`networkID == evmChainID`, per env, per LP-018. One number, because two numbers
-for one network is a way for a wallet and a validator to disagree about which
-network they are on, and the disagreement is only visible after a transaction
-has been signed for the wrong one.
+A validator joins a NETWORK. A transaction is signed against a CHAIN. They are
+different numbers, and collapsing them is how a wallet and a validator come to
+disagree about what they are on — visible only after something has been signed
+for the wrong thing.
 
-    mainnet 200200    testnet 200201    devnet 200202
+    network id    1 mainnet     2 testnet     3 devnet
+    chain id      200200        200201        200202
+
+The chain ids are LP-018's canonical map for this brand. The network ids are the
+network whose validator set carries the chain.
 
 Ports are 9630 (RPC) and 9631 (mesh) — what the deployed nodes bind. The data
 directory is `~/.zood`.
@@ -42,9 +53,9 @@ Refusal is the interesting half. Every one of these has a case in
 
 - A network name that is not one of the three. Never a default: a default would
   join the wrong network on a typo and look like it had started correctly.
-- A genesis stating another network's number.
-- A whole-network document whose `networkID` and `config.chainId` name
-  different networks.
+- A genesis whose chain is not this network's chain.
+- A genesis that names a network, when that is not this network. A chain
+  document carried inside another network's genesis belongs to that network.
 - A field that is present and unreadable — a quoted chain id, a negative one.
   Never a zero.
 - A document with no `config`, or a `config` with no chain id.

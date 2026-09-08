@@ -2,20 +2,25 @@
 
 `zood` — the Zoo network node.
 
-It resolves the network it runs and checks a genesis document against that
+It resolves the network it runs, and checks a genesis document against that
 network.
 
 ## Networks
 
-| network | number |
-| ------- | ------ |
-| mainnet | 200200 |
-| testnet | 200201 |
-| devnet  | 200202 |
+| network | network id | chain id |
+| ------- | ---------- | -------- |
+| mainnet | 1          | 200200   |
+| testnet | 2          | 200201   |
+| devnet  | 3          | 200202   |
 
-One number per network: it is the network id peers greet each other with and
-the EVM chain id a transaction is signed against. The three are compiled in. A
-name that is not one of them is an error, never a default.
+Two numbers, because there are two questions. The network id is what validators
+greet each other under. The chain id is what a transaction is signed against.
+Collapsing them into one number is how a wallet and a validator come to disagree
+about what they are on, and the disagreement is only visible after a transaction
+has been signed for the wrong thing.
+
+The three are compiled in. A name that is not one of them is an error, never a
+default.
 
 ## Build
 
@@ -35,32 +40,31 @@ zood --network testnet --data ./n0 --genesis genesis.json
 ```
 zood 0.1.0
 network    testnet
-id         200201
+network id 2
+chain id   200201
 data       ./n0
 rpc        127.0.0.1:9630
 mesh       127.0.0.1:9631
 genesis    genesis.json
 states     200201
-allocates  3 accounts
+allocates  2 accounts
 ```
 
 ## What is refused
 
-A genesis is checked, not trusted. It must state the number of the network it
-was named with:
+A genesis is checked, not trusted. Its chain must be this network's chain:
 
 ```
-$ zood --network mainnet --genesis genesis.json
-zood: genesis.json: this genesis is network 200201, not mainnet (200200)
+$ zood --network mainnet --data ./n0 --genesis genesis.json
+zood: genesis.json: this genesis is chain 200201, not mainnet's chain 200200
 ```
 
-A whole-network document states that number twice, and both must be the same
-number — a document whose two halves name different networks is one half of two
-genesis files, and whichever the node believed would be wrong somewhere else:
+And when a document names a network, it must name this one — a chain document
+carried inside another network's genesis belongs to that network:
 
 ```
-$ zood --network mainnet --genesis split.json
-zood: split.json: it is network 200200 carrying chain 200201
+$ zood --network testnet --data ./n0 --genesis deployed.json
+zood: deployed.json: this genesis is network 200201, not testnet (2)
 ```
 
 A name that is not a network is an error rather than a default, because a
