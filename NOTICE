@@ -1,0 +1,11 @@
+node
+Copyright (c) 2026 Zoo Labs Foundation
+
+This product builds on the following third-party component, which remains
+under its own terms.
+
+--------------------------------------------------------------------------------
+JSON for Modern C++ — https://github.com/nlohmann/json
+Copyright (c) 2013-2025 Niels Lohmann
+Licensed under the MIT License. A genesis document is read with it, because a
+hand-written parser at a boundary is a vulnerability with a schedule.
