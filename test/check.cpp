@@ -75,12 +75,9 @@ int main() {
             ok(zoo::kAll[i].id != zoo::kAll[j].id, "no two networks share a network id");
             ok(zoo::kAll[i].chain != zoo::kAll[j].chain, "no two networks share a chain id");
         }
-    // Zoo's primary network carries one chain, so it introduces itself by that
-    // chain's number. The mistake this replaces: mainnet greeting under 1, which
-    // Lux mainnet and Hanzo mainnet also greeted under — three networks, one
-    // number, and a wallet with no way to tell which it reached.
+    // The mistake this table exists to prevent: one number doing both jobs.
     for (const zoo::Network& n : zoo::kAll)
-        ok(n.id == n.chain, std::string(n.name) + " greets under its own chain");
+        ok(n.id != n.chain, std::string(n.name) + " does not name itself twice");
 
     // ── a genesis that is this network's ────────────────────────────────────
     const std::string mine = wrote("mine", R"({"config":{"chainId":200200},
@@ -95,10 +92,10 @@ int main() {
 
     // ── the shapes a genesis is written in ──────────────────────────────────
     const std::string wrapped = wrote("wrapped",
-        R"({"networkID":200201,"cChainGenesis":{"config":{"chainId":200201}}})");
+        R"({"networkID":2,"cChainGenesis":{"config":{"chainId":200201}}})");
     ok(accepted(wrapped, zoo::kTestnet), "a whole-network document is read");
     const std::string embedded = wrote("embedded",
-        R"({"networkID":200202,"cChainGenesis":"{\"config\":{\"chainId\":200202}}"})");
+        R"({"networkID":3,"cChainGenesis":"{\"config\":{\"chainId\":200202}}"})");
     ok(accepted(embedded, zoo::kDevnet), "and one carrying the chain as a string");
     ok(accepted(mine, zoo::kMainnet), "and a chain document that names no network");
 
@@ -110,10 +107,10 @@ int main() {
     ok(!accepted(elsewhere, zoo::kMainnet), "a document naming another network is refused");
     // And the network is this one while the chain is not.
     const std::string crossed = wrote("crossed",
-        R"({"networkID":200200,"cChainGenesis":{"config":{"chainId":200201}}})");
+        R"({"networkID":1,"cChainGenesis":{"config":{"chainId":200201}}})");
     ok(!accepted(crossed, zoo::kMainnet), "and so is one carrying another chain");
     ok(refused(wrote("quotednet",
-        R"({"networkID":"200200","cChainGenesis":{"config":{"chainId":200200}}})")),
+        R"({"networkID":"1","cChainGenesis":{"config":{"chainId":200200}}})")),
        "a quoted network id is refused, not read as a number");
     ok(refused(wrote("torn", R"({"config":{"chainId":200200)")), "truncated JSON is refused");
     ok(refused(wrote("empty", "")), "an empty file is refused");
