@@ -12,7 +12,6 @@ WORKDIR /zoo
 COPY CMakeLists.txt ./
 COPY src src
 COPY test test
-COPY genesis genesis
 
 # The host's own build left its dependency locations in place, so this resolves
 # them rather than restating them.
