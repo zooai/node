@@ -4,7 +4,7 @@
 # zood — the Zoo network node.
 
 cmake_minimum_required(VERSION 3.24)
-project(zood VERSION 0.1.0 LANGUAGES CXX)
+project(zood VERSION 0.1.0 LANGUAGES C CXX ASM)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -23,6 +23,18 @@ FetchContent_Declare(nlohmann_json
   FIND_PACKAGE_ARGS 3)
 FetchContent_MakeAvailable(nlohmann_json)
 
+# The node this one is. Identity, the validator mesh and its post-quantum
+# handshake, the block engine, the EVM (cevm) and the JSON-RPC server all come
+# from here, at a tag: two nodes on one network resolve the same tag or they do
+# not agree about what a block means. A second copy of any of it in this
+# repository would be a second implementation of the thing every peer has to
+# match — which is what this repository had, and why it served nothing.
+FetchContent_Declare(lux_node
+  GIT_REPOSITORY https://github.com/lux-cpp/node.git
+  GIT_TAG        main
+  FIND_PACKAGE_ARGS)
+FetchContent_MakeAvailable(lux_node)
+
 # The network's identity and the documents checked against it. A library rather
 # than loose sources, so the tests exercise exactly what the daemon runs.
 add_library(network STATIC src/network.cpp src/genesis.cpp)
@@ -31,7 +43,7 @@ target_link_libraries(network PUBLIC nlohmann_json::nlohmann_json)
 target_compile_options(network PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 add_executable(zood src/main.cpp)
-target_link_libraries(zood PRIVATE network)
+target_link_libraries(zood PRIVATE network node)
 target_compile_options(zood PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 enable_testing()
