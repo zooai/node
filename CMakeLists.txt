@@ -36,12 +36,14 @@ set(LUX_NODE_DIR "" CACHE PATH "a lux-cpp/node checkout to build against")
 if(LUX_NODE_DIR)
   message(STATUS "zood: node = ${LUX_NODE_DIR}")
   add_subdirectory(${LUX_NODE_DIR} ${CMAKE_BINARY_DIR}/lux-node EXCLUDE_FROM_ALL)
+  set(LUX_NODE_SRC ${LUX_NODE_DIR})
 else()
   FetchContent_Declare(lux_node
     GIT_REPOSITORY https://github.com/lux-cpp/node.git
     GIT_TAG        main
     FIND_PACKAGE_ARGS)
   FetchContent_MakeAvailable(lux_node)
+  set(LUX_NODE_SRC ${lux_node_SOURCE_DIR})
 endif()
 
 # The network's identity and the documents checked against it. A library rather
@@ -51,9 +53,20 @@ target_include_directories(network PUBLIC src)
 target_link_libraries(network PUBLIC nlohmann_json::nlohmann_json)
 target_compile_options(network PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
-add_executable(zood src/main.cpp)
-target_link_libraries(zood PRIVATE network node)
-target_compile_options(zood PRIVATE -Wall -Wextra -Wpedantic -Werror)
+# zood IS the host's daemon, under Zoo's name and number. The host takes all
+# three from whoever builds it (see LUX_NODE_BRAND in its noded.cpp) precisely so
+# a downstream network does not write a second node; a wrapper that only forwards
+# a chain id would be that second node, and it would drift.
+#
+# Zoo mainnet is 200200, so a plain `zood` is Zoo mainnet. testnet and devnet are
+# the same daemon at 200201 and 200202, named by --chain-id like every other
+# chain — one selector, not a name that has to be mapped to a number.
+add_executable(zood ${LUX_NODE_SRC}/src/noded.cpp)
+target_link_libraries(zood PRIVATE node)
+target_compile_definitions(zood PRIVATE
+  LUX_NODE_BRAND="zooai/zood"
+  LUX_NODE_ENDPOINT="https://api.zoo.ngo"
+  LUX_NODE_DEFAULT_CHAIN_ID=200200)
 
 enable_testing()
 add_executable(check test/check.cpp)
