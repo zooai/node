@@ -29,11 +29,20 @@ FetchContent_MakeAvailable(nlohmann_json)
 # not agree about what a block means. A second copy of any of it in this
 # repository would be a second implementation of the thing every peer has to
 # match — which is what this repository had, and why it served nothing.
-FetchContent_Declare(lux_node
-  GIT_REPOSITORY https://github.com/lux-cpp/node.git
-  GIT_TAG        main
-  FIND_PACKAGE_ARGS)
-FetchContent_MakeAvailable(lux_node)
+# A checkout beside this one is used when given, and fetched at the pinned tag
+# when it is not, so the image build (which already carries the host it was
+# built on) and a bare clone resolve the same node either way.
+set(LUX_NODE_DIR "" CACHE PATH "a lux-cpp/node checkout to build against")
+if(LUX_NODE_DIR)
+  message(STATUS "zood: node = ${LUX_NODE_DIR}")
+  add_subdirectory(${LUX_NODE_DIR} ${CMAKE_BINARY_DIR}/lux-node EXCLUDE_FROM_ALL)
+else()
+  FetchContent_Declare(lux_node
+    GIT_REPOSITORY https://github.com/lux-cpp/node.git
+    GIT_TAG        main
+    FIND_PACKAGE_ARGS)
+  FetchContent_MakeAvailable(lux_node)
+endif()
 
 # The network's identity and the documents checked against it. A library rather
 # than loose sources, so the tests exercise exactly what the daemon runs.

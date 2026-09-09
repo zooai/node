@@ -1,0 +1,65 @@
+name: image
+
+# zood, as an image, for both architectures.
+#
+# Built ON ghcr.io/lux-cpp/node's builder stage, which carries libnode.a, the
+# headers, and the consensus, cevm and aws-lc trees they were compiled against.
+# One job per architecture on a runner of that architecture: a C++ node under
+# emulation takes hours and proves less.
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: image-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  image:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            pool: linux-amd64
+          - arch: arm64
+            pool: linux-arm64
+    runs-on: ['${{ matrix.pool }}']
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push this architecture
+        run: |
+          set -euo pipefail
+          img=ghcr.io/zooai/node
+          docker build --build-arg HOST=ghcr.io/lux-cpp/node:main-dev \
+            -t "$img:${GITHUB_SHA::7}-${{ matrix.arch }}" .
+          docker push "$img:${GITHUB_SHA::7}-${{ matrix.arch }}"
+
+  merge:
+    needs: image
+    runs-on: [linux-amd64]
+    steps:
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # A manifest list with one entry pulls fine on the arch that built it and
+      # fails everywhere else, so the release name is written once, from both.
+      - name: One name, both architectures
+        run: |
+          set -euo pipefail
+          img=ghcr.io/zooai/node
+          docker buildx imagetools create -t "$img:${GITHUB_SHA::7}" -t "$img:main" \
+            "$img:${GITHUB_SHA::7}-amd64" "$img:${GITHUB_SHA::7}-arm64"
+          docker buildx imagetools inspect "$img:${GITHUB_SHA::7}" \
+            --format '{{range .Manifest.Manifests}}{{.Platform.OS}}/{{.Platform.Architecture}} {{end}}'
