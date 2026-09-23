@@ -38,8 +38,9 @@
 # branch reaches any more and ones that only exist in a fork.
 
 # a node answers for the chains its own network owns, so zood serves
-# /v1/chain/zoo and /v1/chain/200200 and 404s /v1/chain/c.
-ARG LUX_CPP_NODE=5e718314f09ee6fddd77ef30f704a464e9d8212a
+# /v1/chain/zoo and /v1/chain/200200 and 404s /v1/chain/c. It binds --rpc-host
+# (127.0.0.1 unless told otherwise), so a pod passes --rpc-host 0.0.0.0.
+ARG LUX_CPP_NODE=1b925fd6cb4e8556baa583eba09c3cba7619f185
 ARG LUX_CPP_CONSENSUS=9928599fc95d92c54b759468a351af907ab29aed
 # cevm main, the tree lux-cpp/node's tests pass on and its own image builds
 # against. Not the integrate/fixes/fix-* branches: those are unmerged GPU-EVM
