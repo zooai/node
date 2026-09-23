@@ -2,8 +2,8 @@ name: image
 
 # zood, as an image, for both architectures.
 #
-# Built ON ghcr.io/lux-cpp/node's builder stage, which carries libnode.a, the
-# headers, and the consensus, cevm and aws-lc trees they were compiled against.
+# Compiled from source by the Dockerfile, from the commits it pins. The private
+# ones are read with the GH_READ_TOKEN build secret, which never reaches a layer.
 # One job per architecture on a runner of that architecture: a C++ node under
 # emulation takes hours and proves less.
 
@@ -37,10 +37,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push this architecture
+        env:
+          GH_READ_TOKEN: ${{ secrets.GH_READ_TOKEN }}
         run: |
           set -euo pipefail
           img=ghcr.io/zooai/node
-          docker build --build-arg HOST=ghcr.io/lux-cpp/node:main-dev \
+          docker build --secret id=GH_READ_TOKEN,env=GH_READ_TOKEN \
             -t "$img:${GITHUB_SHA::7}-${{ matrix.arch }}" .
           docker push "$img:${GITHUB_SHA::7}-${{ matrix.arch }}"
 
