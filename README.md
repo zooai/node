@@ -27,19 +27,24 @@ default.
 The image, `ghcr.io/zooai/node`, is compiled from source by the
 [Dockerfile](Dockerfile) alone: luxfi/crypto's post-quantum archive, AWS-LC,
 cevm's Conan dependencies, the consensus engine and lux-cpp/node, then `zood`
-into `gcr.io/distroless/cc-debian12:nonroot`. Every input is a full commit SHA
-in an `ARG` at the top of that file, so one commit here names one binary.
+into `gcr.io/distroless/cc-debian12:nonroot`. Every source repository is a full
+commit SHA in an `ARG` at the top of that file, and each is checked to be on the
+branch or tag it is pinned from. Debian's packages, Conan's Python dependencies
+and ConanCenter's packages still resolve when the image is built.
 
 Some of those repositories are private. The build reads them with the BuildKit
 secret `GH_READ_TOKEN`, a GitHub token that can read lux-cpp, lux-gpu and luxfi,
-and stops with that name when it is missing. The token is never an `ARG` and
-never written to a file, and each step that holds it fails if it did.
+and stops with that name when it is missing. Only the two steps that fetch see
+it, and they run git alone. It is never an `ARG` or a file, and each of those
+steps fails if it finds the token in what it leaves.
 
-On the Hanzo platform, both architectures, each built natively, under one tag:
+On the Hanzo platform, both architectures, each built natively, under one tag.
+The build runs as the zoo org: that is what may push `ghcr.io/zooai/*`, and
+what the platform hands `GH_READ_TOKEN` to.
 
 ```
-hanzo platform runner --repo https://github.com/zooai/node --sha <commit> \
-  --dockerfile Dockerfile --image ghcr.io/zooai/node:<commit>
+hanzo platform runner --as zoo --repo https://github.com/zooai/node \
+  --sha <commit> --dockerfile Dockerfile --image ghcr.io/zooai/node:<commit>
 ```
 
 The binary is `/usr/local/bin/zood`. The Dockerfile's last `cmake` step is the
