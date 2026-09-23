@@ -40,7 +40,8 @@ steps fails if it finds the token in what it leaves.
 
 On the Hanzo platform, both architectures, each built natively, under one tag.
 The build runs as the zoo org: that is what may push `ghcr.io/zooai/*`, and
-what the platform hands `GH_READ_TOKEN` to.
+what the platform hands `GH_READ_TOKEN` to, from hanzo-inc/cloud 29a6be33f on,
+out of the `gh-read` Secret in the build namespace.
 
 ```
 hanzo platform runner --as zoo --repo https://github.com/zooai/node \

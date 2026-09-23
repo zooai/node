@@ -21,8 +21,9 @@
 # token that can read them. It is never an ARG and never a file. Only the two
 # steps that fetch mount it, and they run git and nothing else: git takes it as
 # configuration from their environment, and each fails if the token is anywhere
-# in the filesystem it leaves. The build steps that run other people's code,
-# Conan's above all, never see it.
+# in the filesystem it leaves. The steps that run other people's code, Conan's
+# above all, do not mount it; that keeps it from them only where the builder
+# isolates one step's processes from the daemon that holds the secret.
 #
 # Every Debian here is 12, the runtime's. A binary carries the glibc symbol
 # versions it was linked against; linked against a newer glibc it builds, it
@@ -33,7 +34,7 @@
 
 # ── pins ────────────────────────────────────────────────────────────────────
 # Full commit SHAs, each checked to be on the branch or tag its fetch line
-# names. GitHub serves any commit it still holds by SHA, including ones no
+# names, spelled in full: a bare `main` would also match a tag called main. GitHub serves any commit it still holds by SHA, including ones no
 # branch reaches any more and ones that only exist in a fork.
 
 # a node answers for the chains its own network owns, so zood serves
@@ -92,14 +93,14 @@ auth() {
 }
 
 # sealed: refuses the layer if the token, bare or as the header, is in any file
-# on this filesystem. A file that cannot be read refuses it too: unread is not
-# clean.
+# on this filesystem, /run/secrets aside, where the secret itself is mounted. A
+# file that cannot be read refuses it too: unread is not clean.
 sealed() {
   set --
-  for d in /*; do
+  for d in /* /.[!.]* /run/*; do
     case $d in
-      /proc | /sys | /dev | /run) ;;
-      *) [ -L "$d" ] || set -- "$@" "$d" ;;
+      /proc | /sys | /dev | /run | /run/secrets) ;;
+      *) [ -e "$d" ] && [ ! -L "$d" ] && set -- "$@" "$d" ;;
     esac
   done
   found=0
@@ -113,15 +114,21 @@ sealed() {
   esac
 }
 
-# fetch <owner/repo> <branch or tag> <sha> <dir>: the one commit, by its full
-# SHA, with no history, after proving it is on <branch or tag>. The proof reads
-# commits only, in a repository of its own that is then removed.
+# fetch <owner/repo> <refs/heads/… or refs/tags/…> <sha> <dir>: the one
+# commit, by its full SHA, with no history, after proving it is on that branch
+# or tag. The proof reads commits only, in a repository of its own that is then
+# removed.
 fetch() {
   repo=$1 ref=$2 sha=$3 dir=$4
   if ! printf '%s' "$sha" | grep -Eqx '[0-9a-f]{40}'; then
     echo "zood: $repo is pinned to '$sha', which is not a full commit SHA." >&2
     exit 1
   fi
+  case $ref in
+    refs/heads/?* | refs/tags/?*) ;;
+    *) echo "zood: $repo is checked against '$ref', which is not a full branch or tag ref." >&2
+       exit 1 ;;
+  esac
   log=$(mktemp -d)
   git init -q --bare "$log"
   git -C "$log" remote add origin "https://github.com/$repo"
@@ -148,7 +155,7 @@ ARG LUXFI_CRYPTO
 RUN <<'EOF'
 set -eu
 . /usr/local/lib/fetch.sh
-fetch luxfi/crypto main "$LUXFI_CRYPTO" /src/lux/crypto
+fetch luxfi/crypto refs/heads/main "$LUXFI_CRYPTO" /src/lux/crypto
 cd /src/lux/crypto
 go mod download github.com/luxfi/accel
 make dist
@@ -174,7 +181,7 @@ ARG AWS_LC
 RUN <<'EOF'
 set -eu
 . /usr/local/lib/fetch.sh
-fetch aws/aws-lc v1.65.0 "$AWS_LC" /src/aws-lc
+fetch aws/aws-lc refs/tags/v1.65.0 "$AWS_LC" /src/aws-lc
 cmake -S /src/aws-lc -B /src/aws-lc-build -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTING=OFF
 cmake --build /src/aws-lc-build --target ssl crypto
@@ -192,29 +199,29 @@ RUN --mount=type=secret,id=GH_READ_TOKEN <<'EOF'
 set -eu
 . /usr/local/lib/fetch.sh
 auth
-fetch lux-cpp/cevm             main    "$LUX_CPP_CEVM"             /src/luxcpp/cevm
-fetch lux-cpp/evmc             main    "$LUX_CPP_EVMC"             /src/luxcpp/cevm/evmc
-fetch lux-cpp/crypto           main    "$LUX_CPP_CRYPTO"           /src/luxcpp/crypto
-fetch lux-cpp/blst             main    "$LUX_CPP_BLST"             /src/luxcpp/blst
-fetch lux-cpp/zap-cpp-core     main    "$LUX_CPP_ZAP"              /src/luxcpp/zap-cpp-core
-fetch lux-cpp/intx             v0.15.0 "$LUX_CPP_INTX"             /src/deps/luxcpp_intx
-fetch lux-cpp/evmmax           v0.21.0 "$LUX_CPP_EVMMAX"           /src/deps/luxcpp_evmmax
-fetch lux-cpp/pqclean          v1.0.0  "$LUX_CPP_PQCLEAN"          /src/deps/luxcpp_pqclean
-fetch lux-cpp/ed25519-donna    v1.0.0  "$LUX_CPP_ED25519_DONNA"    /src/deps/luxcpp_ed25519_donna
-fetch lux-cpp/blake3-reference v1.5.0  "$LUX_CPP_BLAKE3_REFERENCE" /src/deps/luxcpp_blake3_reference
-fetch luxfi/c-kzg-4844         v2.1.7  "$LUXFI_C_KZG_4844"         /src/deps/luxfi_c_kzg_4844
-fetch luxfi/sr25519-crust      v0.2.0  "$LUXFI_SR25519_CRUST"      /src/deps/sr25519_crust
+fetch lux-cpp/cevm             refs/heads/main    "$LUX_CPP_CEVM"             /src/luxcpp/cevm
+fetch lux-cpp/evmc             refs/heads/main    "$LUX_CPP_EVMC"             /src/luxcpp/cevm/evmc
+fetch lux-cpp/crypto           refs/heads/main    "$LUX_CPP_CRYPTO"           /src/luxcpp/crypto
+fetch lux-cpp/blst             refs/heads/main    "$LUX_CPP_BLST"             /src/luxcpp/blst
+fetch lux-cpp/zap-cpp-core     refs/heads/main    "$LUX_CPP_ZAP"              /src/luxcpp/zap-cpp-core
+fetch lux-cpp/intx             refs/tags/v0.15.0 "$LUX_CPP_INTX"             /src/deps/luxcpp_intx
+fetch lux-cpp/evmmax           refs/tags/v0.21.0 "$LUX_CPP_EVMMAX"           /src/deps/luxcpp_evmmax
+fetch lux-cpp/pqclean          refs/tags/v1.0.0  "$LUX_CPP_PQCLEAN"          /src/deps/luxcpp_pqclean
+fetch lux-cpp/ed25519-donna    refs/tags/v1.0.0  "$LUX_CPP_ED25519_DONNA"    /src/deps/luxcpp_ed25519_donna
+fetch lux-cpp/blake3-reference refs/tags/v1.5.0  "$LUX_CPP_BLAKE3_REFERENCE" /src/deps/luxcpp_blake3_reference
+fetch luxfi/c-kzg-4844         refs/tags/v2.1.7  "$LUXFI_C_KZG_4844"         /src/deps/luxfi_c_kzg_4844
+fetch luxfi/sr25519-crust      refs/tags/v0.2.0  "$LUXFI_SR25519_CRUST"      /src/deps/sr25519_crust
 sealed
 EOF
 
 # cevm's dependencies, with no token. The lux packages are on no Conan remote,
 # so they are exported from their checkouts first. FetchContent takes each
 # dependency from /src/deps (FETCHCONTENT_SOURCE_DIR_<NAME>) instead of cloning
-# it. blst is built portable, choosing ADX at run time, so the binary does not
+# it, and a dependency not fetched there fails rather than being cloned. blst is built portable, choosing ADX at run time, so the binary does not
 # depend on the CPU of the node that happened to build it.
 RUN <<'EOF'
 set -eu
-deps=
+deps="'FETCHCONTENT_FULLY_DISCONNECTED': {'value': 'ON', 'cache': True, 'type': 'BOOL'}, "
 for d in /src/deps/*; do
   n=$(basename "$d" | tr '[:lower:]' '[:upper:]')
   deps="$deps'FETCHCONTENT_SOURCE_DIR_$n': '$d', "
@@ -240,9 +247,9 @@ RUN --mount=type=secret,id=GH_READ_TOKEN <<'EOF'
 set -eu
 . /usr/local/lib/fetch.sh
 auth
-fetch lux-cpp/consensus   main "$LUX_CPP_CONSENSUS" /src/lux-cpp/consensus
-fetch lux-gpu/gpu-kernels main "$LUX_GPU_KERNELS"   /src/lux-private/gpu-kernels
-fetch lux-cpp/node        main "$LUX_CPP_NODE"      /src/lux-cpp/node
+fetch lux-cpp/consensus   refs/heads/main "$LUX_CPP_CONSENSUS" /src/lux-cpp/consensus
+fetch lux-gpu/gpu-kernels refs/heads/main "$LUX_GPU_KERNELS"   /src/lux-private/gpu-kernels
+fetch lux-cpp/node        refs/heads/main "$LUX_CPP_NODE"      /src/lux-cpp/node
 sealed
 EOF
 
