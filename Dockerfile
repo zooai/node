@@ -307,8 +307,9 @@ EOF
 
 # ── accept ──────────────────────────────────────────────────────────────────
 # Zoo mainnet's history through the door a client uses (`--target accept`).
-# Four validators import luxfi/state's export of it, and test/accept.py holds
-# what they serve to the export's own hashes and the Go archive's.
+# One validator alone and then four import luxfi/state's export of it, and
+# test/accept.py holds what each serves to the export's own hashes and the Go
+# archive's.
 FROM builder AS accept
 ARG LUXFI_STATE=671e4d6328487e7160f08005dac8590d217bb953
 RUN --mount=type=secret,id=GH_READ_TOKEN <<'EOF'
@@ -336,6 +337,18 @@ z=/src/build/zood
 # The EVM alone first: the plugin replays the export against the genesis zood
 # compiles in, so a refusal is named here rather than behind a validator.
 /out/libexec/lux/cevm import /src/zooai/node/genesis/mainnet.json /src/zoo-mainnet.rlp
+# One validator alone, the shape an archive runs in: it imports and serves,
+# and decides nothing, since one key certifies no height.
+"$z" --data /tmp/one --publish > /tmp/one.committee
+"$z" --data /tmp/one --committee /tmp/one.committee --peers 127.0.0.1:19621 \
+  --rpc-port 19620 --import-chain-data /src/zoo-mainnet.rlp \
+  --vm /out/libexec/lux/cevm > /tmp/one.log 2>&1 &
+one=$!
+rc=0
+python3 /usr/local/lib/accept.py 127.0.0.1:19620 /tmp/one.log || rc=$?
+kill "$one" 2>/dev/null || true
+if [ "$rc" -ne 0 ]; then tail -n 30 /tmp/one.log; exit "$rc"; fi
+# Four, a committee that can decide.
 : > /tmp/committee
 for i in 0 1 2 3; do "$z" --data /tmp/v$i --publish >> /tmp/committee; done
 peers=127.0.0.1:19631,127.0.0.1:19641,127.0.0.1:19651,127.0.0.1:19661
@@ -344,7 +357,6 @@ for i in 0 1 2 3; do
     --rpc-port $((19630 + 10 * i)) --import-chain-data /src/zoo-mainnet.rlp \
     --vm /out/libexec/lux/cevm > /tmp/v$i.log 2>&1 &
 done
-rc=0
 python3 /usr/local/lib/accept.py 127.0.0.1:19630 /tmp/v0.log /tmp/v1.log /tmp/v2.log /tmp/v3.log || rc=$?
 kill $(jobs -p) 2>/dev/null || true
 if [ "$rc" -ne 0 ]; then tail -n 30 /tmp/v*.log; fi
