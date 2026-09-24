@@ -40,14 +40,13 @@
 # run(spec) and the EVM run as a plugin. zood serves /v1/chain/zoo and
 # /v1/chain/200200, 404s /v1/chain/c, and binds --rpc-host (127.0.0.1 unless
 # told otherwise), so a pod passes --rpc-host 0.0.0.0.
-ARG LUX_CPP_NODE=8768a2d108845014721a5fe6d99cdf0ec975e113
+ARG LUX_CPP_NODE=73c6b072cfa7055959c0a62208ffea87949fede1
 ARG LUX_CPP_CONSENSUS=9928599fc95d92c54b759468a351af907ab29aed
 # cevm main, the tree lux-cpp/node's tests pass on and its own image builds
 # against. Not the integrate/fixes/fix-* branches: those are unmerged GPU-EVM
 # work, and this is the CPU build.
-ARG LUX_CPP_CEVM=1c7e94f0afc61cf39c7afb411360f9a0b460de9e
-# cevm's submodule names evmc 2b50c2f, which evmc's rewritten history no longer
-# reaches. This is the commit on its main with the same tree, 27c285d.
+ARG LUX_CPP_CEVM=223db480c97fc812e6875f3f0fb367617f66b067
+# The evmc commit cevm's submodule names, fetched where the submodule goes.
 ARG LUX_CPP_EVMC=7cb4b0ca30df7b036d1a582196af5e9a1455a47d
 # The tree lux-cpp/node's last green image built. The commit after it on main
 # adds bcc to CMake's algorithm list and not to the Conan recipe's exports, so
@@ -304,6 +303,52 @@ k=$(mktemp -d)
 "$z" --data "$k" --publish > "$k.line"
 test -s "$k.line"
 rm -rf "$k" "$k.line"
+EOF
+
+# ── accept ──────────────────────────────────────────────────────────────────
+# Zoo mainnet's history through the door a client uses (`--target accept`).
+# Four validators import luxfi/state's export of it, and test/accept.py holds
+# what they serve to the export's own hashes and the Go archive's.
+FROM builder AS accept
+ARG LUXFI_STATE=671e4d6328487e7160f08005dac8590d217bb953
+RUN --mount=type=secret,id=GH_READ_TOKEN <<'EOF'
+set -eu
+. /usr/local/lib/fetch.sh
+auth
+# luxfi/state holds every chain's archive, so only this file's blob is fetched:
+# the commit and its trees, then the one blob, checked against the tree.
+d=$(mktemp -d)
+git init -q "$d"
+git -C "$d" remote add origin https://github.com/luxfi/state
+git -C "$d" fetch -q --filter=tree:0 origin refs/heads/main
+git -C "$d" rev-list FETCH_HEAD | grep -qx "$LUXFI_STATE"
+git -C "$d" fetch -q --depth 1 --filter=blob:none origin "$LUXFI_STATE"
+path=rlp/zoo-mainnet/zoo-mainnet-200200.rlp
+git -C "$d" cat-file blob "$LUXFI_STATE:$path" > /src/zoo-mainnet.rlp
+test "$(git hash-object /src/zoo-mainnet.rlp)" = "$(git -C "$d" rev-parse "$LUXFI_STATE:$path")"
+rm -rf "$d"
+sealed
+EOF
+COPY test/accept.py /usr/local/lib/accept.py
+RUN <<'EOF'
+set -eu
+z=/src/build/zood
+# The EVM alone first: the plugin replays the export against the genesis zood
+# compiles in, so a refusal is named here rather than behind a validator.
+/out/libexec/lux/cevm import /src/zooai/node/genesis/mainnet.json /src/zoo-mainnet.rlp
+: > /tmp/committee
+for i in 0 1 2 3; do "$z" --data /tmp/v$i --publish >> /tmp/committee; done
+peers=127.0.0.1:19631,127.0.0.1:19641,127.0.0.1:19651,127.0.0.1:19661
+for i in 0 1 2 3; do
+  "$z" --data /tmp/v$i --committee /tmp/committee --peers "$peers" \
+    --rpc-port $((19630 + 10 * i)) --import-chain-data /src/zoo-mainnet.rlp \
+    --vm /out/libexec/lux/cevm > /tmp/v$i.log 2>&1 &
+done
+rc=0
+python3 /usr/local/lib/accept.py 127.0.0.1:19630 /tmp/v0.log /tmp/v1.log /tmp/v2.log /tmp/v3.log || rc=$?
+kill $(jobs -p) 2>/dev/null || true
+if [ "$rc" -ne 0 ]; then tail -n 30 /tmp/v*.log; fi
+exit "$rc"
 EOF
 
 # ── runtime ─────────────────────────────────────────────────────────────────
