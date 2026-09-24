@@ -40,7 +40,7 @@
 # run(spec) and the EVM run as a plugin. zood serves /v1/chain/zoo and
 # /v1/chain/200200, 404s /v1/chain/c, and binds --rpc-host (127.0.0.1 unless
 # told otherwise), so a pod passes --rpc-host 0.0.0.0.
-ARG LUX_CPP_NODE=73c6b072cfa7055959c0a62208ffea87949fede1
+ARG LUX_CPP_NODE=6556623439b8ceded2385a9e496047c98593100b
 ARG LUX_CPP_CONSENSUS=9928599fc95d92c54b759468a351af907ab29aed
 # cevm main, the tree lux-cpp/node's tests pass on and its own image builds
 # against. Not the integrate/fixes/fix-* branches: those are unmerged GPU-EVM
@@ -286,7 +286,7 @@ cmake --build /src/build --target zood
 z=/src/build/zood
 mkdir -p /out/libexec/lux
 strip -o /out/libexec/lux/cevm "$(find /src/build -type f -name cevm -perm -u+x | head -n1)"
-if ! grep -qF 'zooai/zood/v0.1.0' "$z"; then
+if ! grep -qF 'zooai/zood/v' "$z"; then
   echo "zood: the binary does not answer as zooai/zood; Zoo's spec did not reach it." >&2
   exit 1
 fi
@@ -339,8 +339,9 @@ z=/src/build/zood
 /out/libexec/lux/cevm import /src/zooai/node/genesis/mainnet.json /src/zoo-mainnet.rlp
 # One validator alone, the shape an archive runs in: it imports and serves,
 # and decides nothing, since one key certifies no height.
-"$z" --data /tmp/one --publish > /tmp/one.committee
-"$z" --data /tmp/one --committee /tmp/one.committee --peers 127.0.0.1:19621 \
+# As a pod with no shell runs it: publish, then read the line it left.
+"$z" --data /tmp/one --publish > /dev/null
+"$z" --data /tmp/one --committee /tmp/one/published --peers 127.0.0.1:19621 \
   --rpc-port 19620 --import-chain-data /src/zoo-mainnet.rlp \
   --vm /out/libexec/lux/cevm > /tmp/one.log 2>&1 &
 one=$!

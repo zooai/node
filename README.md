@@ -25,8 +25,10 @@ zood [--network NAME] --committee FILE --peers a:p,b:p,... [--data DIR]
      [--rpc-host H] [--rpc-port R] [--import-chain-data PATH] [--vm PATH]
 ```
 
-`--publish` prints this validator's committee line; `--committee` names every
-validator of the network, and `--peers` their mesh addresses in the same order.
+`--publish` prints this validator's committee line and writes it to
+`DIR/published`; `--committee` names every validator of the network, and
+`--peers` their mesh addresses in the same order. An archive is a committee of
+itself: `--committee DIR/published --peers 127.0.0.1:9631`.
 In a pod, `--rpc-host 0.0.0.0 --rpc-port 9630 --data /data`. The chain's RPC is
 `/v1/chain/zoo/rpc` (and `/v1/chain/200200/rpc`); `/v1/chain/c` is a 404.
 
