@@ -40,7 +40,7 @@
 # run(spec) and the EVM run as a plugin. zood serves /v1/chain/zoo and
 # /v1/chain/200200, 404s /v1/chain/c, and binds --rpc-host (127.0.0.1 unless
 # told otherwise), so a pod passes --rpc-host 0.0.0.0.
-ARG LUX_CPP_NODE=6556623439b8ceded2385a9e496047c98593100b
+ARG LUX_CPP_NODE=17f62cde5758b142bacc38b6e757e64ad00f8181
 ARG LUX_CPP_CONSENSUS=9928599fc95d92c54b759468a351af907ab29aed
 # cevm main, the tree lux-cpp/node's tests pass on and its own image builds
 # against. Not the integrate/fixes/fix-* branches: those are unmerged GPU-EVM
@@ -306,27 +306,30 @@ rm -rf "$k" "$k.line"
 EOF
 
 # ── accept ──────────────────────────────────────────────────────────────────
-# Zoo mainnet's history through the door a client uses (`--target accept`).
-# One validator alone and then four import luxfi/state's export of it, and
-# test/accept.py holds what each serves to the export's own hashes and the Go
-# archive's.
+# Zoo's history through the door a client uses (`--target accept`). A validator
+# alone, as an archive runs, imports mainnet's export and then testnet's, and
+# four import mainnet's; test/accept.py holds what each serves to the export's
+# own hashes and the Go archive's, and a validator alone to refusing
+# transactions it could never land.
 FROM builder AS accept
 ARG LUXFI_STATE=671e4d6328487e7160f08005dac8590d217bb953
 RUN --mount=type=secret,id=GH_READ_TOKEN <<'EOF'
 set -eu
 . /usr/local/lib/fetch.sh
 auth
-# luxfi/state holds every chain's archive, so only this file's blob is fetched:
-# the commit and its trees, then the one blob, checked against the tree.
+# luxfi/state holds every chain's archive, so only these files' blobs are
+# fetched: the commit and its trees, then each blob, checked against the tree.
 d=$(mktemp -d)
 git init -q "$d"
 git -C "$d" remote add origin https://github.com/luxfi/state
 git -C "$d" fetch -q --filter=tree:0 origin refs/heads/main
 git -C "$d" rev-list FETCH_HEAD | grep -qx "$LUXFI_STATE"
 git -C "$d" fetch -q --depth 1 --filter=blob:none origin "$LUXFI_STATE"
-path=rlp/zoo-mainnet/zoo-mainnet-200200.rlp
-git -C "$d" cat-file blob "$LUXFI_STATE:$path" > /src/zoo-mainnet.rlp
-test "$(git hash-object /src/zoo-mainnet.rlp)" = "$(git -C "$d" rev-parse "$LUXFI_STATE:$path")"
+for net in mainnet-200200 testnet-200201; do
+  path=rlp/zoo-${net%-*}/zoo-$net.rlp
+  git -C "$d" cat-file blob "$LUXFI_STATE:$path" > /src/zoo-${net%-*}.rlp
+  test "$(git hash-object /src/zoo-${net%-*}.rlp)" = "$(git -C "$d" rev-parse "$LUXFI_STATE:$path")"
+done
 rm -rf "$d"
 sealed
 EOF
@@ -334,21 +337,26 @@ COPY test/accept.py /usr/local/lib/accept.py
 RUN <<'EOF'
 set -eu
 z=/src/build/zood
-# The EVM alone first: the plugin replays the export against the genesis zood
+vm=/out/libexec/lux/cevm
+# The EVM alone first: the plugin replays each export against the genesis zood
 # compiles in, so a refusal is named here rather than behind a validator.
-/out/libexec/lux/cevm import /src/zooai/node/genesis/mainnet.json /src/zoo-mainnet.rlp
-# One validator alone, the shape an archive runs in: it imports and serves,
-# and decides nothing, since one key certifies no height.
-# As a pod with no shell runs it: publish, then read the line it left.
-"$z" --data /tmp/one --publish > /dev/null
-"$z" --data /tmp/one --committee /tmp/one/published --peers 127.0.0.1:19621 \
-  --rpc-port 19620 --import-chain-data /src/zoo-mainnet.rlp \
-  --vm /out/libexec/lux/cevm > /tmp/one.log 2>&1 &
-one=$!
-rc=0
-python3 /usr/local/lib/accept.py 127.0.0.1:19620 /tmp/one.log || rc=$?
-kill "$one" 2>/dev/null || true
-if [ "$rc" -ne 0 ]; then tail -n 30 /tmp/one.log; exit "$rc"; fi
+"$vm" import /src/zooai/node/genesis/mainnet.json /src/zoo-mainnet.rlp
+"$vm" import /src/zooai/node/genesis/testnet.json /src/zoo-testnet.rlp
+# alone NETWORK PORT: a validator alone, as a pod with no shell runs it —
+# publish, then read the line it left — checked, then stopped.
+alone() {
+  "$z" --network "$1" --data /tmp/$1 --publish > /dev/null
+  "$z" --network "$1" --data /tmp/$1 --committee /tmp/$1/published \
+    --peers 127.0.0.1:$(($2 + 1)) --rpc-port "$2" --import-chain-data /src/zoo-$1.rlp \
+    --vm "$vm" > /tmp/$1.log 2>&1 &
+  pid=$!
+  rc=0
+  python3 /usr/local/lib/accept.py "$1" 127.0.0.1:"$2" --alone /tmp/$1.log || rc=$?
+  kill "$pid" 2>/dev/null || true
+  if [ "$rc" -ne 0 ]; then tail -n 30 /tmp/$1.log; exit "$rc"; fi
+}
+alone mainnet 19620
+alone testnet 19610
 # Four, a committee that can decide.
 : > /tmp/committee
 for i in 0 1 2 3; do "$z" --data /tmp/v$i --publish >> /tmp/committee; done
@@ -356,9 +364,10 @@ peers=127.0.0.1:19631,127.0.0.1:19641,127.0.0.1:19651,127.0.0.1:19661
 for i in 0 1 2 3; do
   "$z" --data /tmp/v$i --committee /tmp/committee --peers "$peers" \
     --rpc-port $((19630 + 10 * i)) --import-chain-data /src/zoo-mainnet.rlp \
-    --vm /out/libexec/lux/cevm > /tmp/v$i.log 2>&1 &
+    --vm "$vm" > /tmp/v$i.log 2>&1 &
 done
-python3 /usr/local/lib/accept.py 127.0.0.1:19630 /tmp/v0.log /tmp/v1.log /tmp/v2.log /tmp/v3.log || rc=$?
+rc=0
+python3 /usr/local/lib/accept.py mainnet 127.0.0.1:19630 /tmp/v0.log /tmp/v1.log /tmp/v2.log /tmp/v3.log || rc=$?
 kill $(jobs -p) 2>/dev/null || true
 if [ "$rc" -ne 0 ]; then tail -n 30 /tmp/v*.log; fi
 exit "$rc"

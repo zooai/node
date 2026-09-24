@@ -1,13 +1,13 @@
 # Copyright (C) 2026, Zoo Labs Foundation. All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause-Eco
 #
-# Zoo mainnet's history, asked for through the door a client uses.
+# A Zoo network's history, asked for through the door a client uses.
 #
-#   python3 accept.py HOST:PORT [VALIDATOR_LOG...]
+#   python3 accept.py NETWORK HOST:PORT [--alone] [VALIDATOR_LOG...]
 #
 # Waits for the node to reach the export's tip, then checks what luxfi/state's
-# zoo-mainnet-200200.rlp and the Go archive say: the block hashes, the
-# transactions, the chain id, and that the chain is Zoo's and not the C-Chain.
+# export and the Go archive say: the block hashes, the transactions, the chain
+# id, and that the chain is Zoo's and not the C-Chain.
 
 import json
 import sys
@@ -15,15 +15,34 @@ import time
 import urllib.error
 import urllib.request
 
-HOST = sys.argv[1]
-LOGS = sys.argv[2:]
-TIP = 799
-WANT = {
-    0: "0x7c548af47de27560779ccc67dda32a540944accc71dac3343da3b9cd18f14933",
-    400: "0xa8f981809d9f9f5d3f4e381b68af76f384a5d023a1b8f3f7b52726c14f242585",
-    799: "0xd6f92941bb2ac91dfd2443f32b0d93f2730e6cc81ddb2edd3f35720a9e1f72b8",
+# What each network's export and its Go archive say.
+NETWORKS = {
+    "mainnet": {
+        "number": "200200", "chain": "0x30e08", "tip": 799, "txs": 811,
+        "blocks": {
+            0: "0x7c548af47de27560779ccc67dda32a540944accc71dac3343da3b9cd18f14933",
+            400: "0xa8f981809d9f9f5d3f4e381b68af76f384a5d023a1b8f3f7b52726c14f242585",
+            799: "0xd6f92941bb2ac91dfd2443f32b0d93f2730e6cc81ddb2edd3f35720a9e1f72b8",
+        },
+    },
+    "testnet": {
+        "number": "200201", "chain": "0x30e09", "tip": 84, "txs": 84,
+        "blocks": {
+            0: "0x0652fb2fde1460544a5893e5eba5095ff566861cbc87fcb1c73be2b81d6d1979",
+            42: "0x8aa48eac58059ddd70133c507fbe2c9573ece034f255cba087394a78706cdf81",
+            84: "0x7077c4e52ace2a56dd1189b2aaf91ba9ec338d86c5b4530b0ac98a8ff6d8ba0c",
+        },
+    },
 }
-TXS = 811
+
+args = sys.argv[1:]
+NET = NETWORKS[args.pop(0)]
+HOST = args.pop(0)
+ALONE = "--alone" in args  # a committee of one: it must refuse transactions
+LOGS = [a for a in args if a != "--alone"]
+TIP = NET["tip"]
+WANT = NET["blocks"]
+TXS = NET["txs"]
 
 failed = 0
 
@@ -65,7 +84,7 @@ while True:
 
 print(f"zood at block {TIP} on {HOST}")
 status, body = call(rpc, "eth_chainId", [])
-check(status == 200 and body.get("result") == "0x30e08", "eth_chainId is 0x30e08 (200200)")
+check(status == 200 and body.get("result") == NET["chain"], f"eth_chainId is {NET['chain']}")
 for n, h in WANT.items():
     status, body = call(rpc, "eth_getBlockByNumber", [hex(n), False])
     got = (body or {}).get("result") or {}
@@ -77,12 +96,19 @@ for n in range(1, TIP + 1):
     txs += len(((body or {}).get("result") or {}).get("transactions") or [])
 check(txs == TXS, f"blocks 1..{TIP} carry {TXS} transactions (got {txs})")
 
-status, body = call("/v1/chain/200200/rpc", "eth_chainId", [])
-check(status == 200 and body.get("result") == "0x30e08", "/v1/chain/200200 is the same chain")
+status, body = call(f"/v1/chain/{NET['number']}/rpc", "eth_chainId", [])
+check(status == 200 and body.get("result") == NET["chain"],
+      f"/v1/chain/{NET['number']} is the same chain")
 status, _ = call("/v1/chain/c/rpc", "eth_chainId", [])
 check(status == 404, f"/v1/chain/c is not Zoo's (got {status})")
 _, body = call(rpc, "admin_importChain", ["/nonexistent"])
 check(((body or {}).get("error") or {}).get("code") == -32601, "admin_* is off")
+
+if ALONE:
+    # A committee of one certifies nothing, so it takes nothing it cannot land.
+    _, body = call(rpc, "eth_sendRawTransaction", ["0x00"])
+    msg = (((body or {}).get("error") or {}).get("message") or "")
+    check("accepts no transactions" in msg, "a transaction is refused, with the reason")
 
 print("PASS" if failed == 0 else "FAIL", flush=True)
 sys.exit(1 if failed else 0)
