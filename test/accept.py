@@ -91,10 +91,14 @@ for n, h in WANT.items():
     check(got.get("hash") == h, f"block {n} is {h[:12]}… (got {str(got.get('hash'))[:12]}…)")
 
 txs = 0
+receipts = 0
 for n in range(1, TIP + 1):
     _, body = call(rpc, "eth_getBlockByNumber", [hex(n), False])
     txs += len(((body or {}).get("result") or {}).get("transactions") or [])
+    _, body = call(rpc, "eth_getBlockReceipts", [hex(n)])
+    receipts += len((body or {}).get("result") or [])
 check(txs == TXS, f"blocks 1..{TIP} carry {TXS} transactions (got {txs})")
+check(receipts == TXS, f"and eth_getBlockReceipts answers {TXS} receipts for them (got {receipts})")
 
 status, body = call(f"/v1/chain/{NET['number']}/rpc", "eth_chainId", [])
 check(status == 200 and body.get("result") == NET["chain"],
@@ -103,6 +107,8 @@ status, _ = call("/v1/chain/c/rpc", "eth_chainId", [])
 check(status == 404, f"/v1/chain/c is not Zoo's (got {status})")
 _, body = call(rpc, "admin_importChain", ["/nonexistent"])
 check(((body or {}).get("error") or {}).get("code") == -32601, "admin_* is off")
+_, body = call(rpc, "debug_traceTransaction", ["0x" + "00" * 32, {"tracer": "callTracer"}])
+check(((body or {}).get("error") or {}).get("code") == -32601, "debug_* is off")
 
 if ALONE:
     # A committee of one certifies nothing, so it takes nothing it cannot land.
