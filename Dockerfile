@@ -40,7 +40,7 @@
 # run(spec) and the EVM run as a plugin. zood serves /v1/chain/zoo and
 # /v1/chain/200200, 404s /v1/chain/c, and binds --rpc-host (127.0.0.1 unless
 # told otherwise), so a pod passes --rpc-host 0.0.0.0.
-ARG LUX_CPP_NODE=1030ab79cd911e15cc6eb4524effcc7e2a6a09db
+ARG LUX_CPP_NODE=e5f44d164a04656ef8590f4cf5f2ddc805cb6749
 ARG LUX_CPP_CONSENSUS=9928599fc95d92c54b759468a351af907ab29aed
 # cevm main, the tree lux-cpp/node's tests pass on and its own image builds
 # against. Not the integrate/fixes/fix-* branches: those are unmerged GPU-EVM

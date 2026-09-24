@@ -13,7 +13,7 @@
 
 namespace {
 
-constexpr const char* kClient   = "zooai/zood/v0.1.5";
+constexpr const char* kClient   = "zooai/zood/v0.1.6";
 constexpr const char* kEndpoint = "https://api.zoo.ngo";
 constexpr const char* kVm       = "/usr/local/libexec/lux/cevm";
 
