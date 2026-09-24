@@ -22,15 +22,24 @@ genesis that names another chain.
 ```
 zood [--network NAME] --data DIR --publish
 zood [--network NAME] --committee FILE --peers a:p,b:p,... [--data DIR]
-     [--rpc-host H] [--rpc-port R] [--import-chain-data PATH] [--vm PATH]
+     [--rpc-host H] [--rpc-port R] [--mesh-host H] [--produce MS]
+     [--import-chain-data PATH] [--vm PATH]
 ```
 
 `--publish` prints this validator's committee line and writes it to
 `DIR/published`; `--committee` names every validator of the network, and
 `--peers` their mesh addresses in the same order. An archive is a committee of
 itself: `--committee DIR/published --peers 127.0.0.1:9631`.
-In a pod, `--rpc-host 0.0.0.0 --rpc-port 9630 --data /data`. The chain's RPC is
-`/v1/chain/zoo/rpc` (and `/v1/chain/200200/rpc`); `/v1/chain/c` is a 404.
+In a pod, `--rpc-host 0.0.0.0 --rpc-port 9630 --mesh-host 0.0.0.0 --data /data`:
+the mesh listens on every interface, and `--peers` names each seat by Service
+address or name (`zood-0.zood:9631,…`), resolved at every dial. The chain's RPC is `/v1/chain/zoo/rpc` (and
+`/v1/chain/200200/rpc`); `/v1/chain/c` is a 404.
+
+A network that continues Zoo's history: every validator is started with
+`--import-chain-data zoo-mainnet-200200.rlp`. Each signs one anchor on the tip it
+read (799, `0xd6f92941…`); four of five on the same tip lift every gate, and 800
+is built on it. A validator that was down takes the anchor from its peers when it
+comes back. `test/live.sh ZOOD CEVM EXPORT` runs it as five processes.
 
 ## Build
 

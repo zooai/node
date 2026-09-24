@@ -310,7 +310,8 @@ EOF
 # alone, as an archive runs, imports mainnet's export and then testnet's, and
 # four import mainnet's; test/accept.py holds what each serves to the export's
 # own hashes and the Go archive's, and a validator alone to refusing
-# transactions it could never land.
+# transactions it could never land. Then test/live.sh: five validators import
+# mainnet and anchor its tip, so the network can build 800 on it.
 FROM builder AS accept
 ARG LUXFI_STATE=671e4d6328487e7160f08005dac8590d217bb953
 RUN --mount=type=secret,id=GH_READ_TOKEN <<'EOF'
@@ -334,6 +335,7 @@ rm -rf "$d"
 sealed
 EOF
 COPY test/accept.py /usr/local/lib/accept.py
+COPY test/live.sh /usr/local/lib/live.sh
 RUN <<'EOF'
 set -eu
 z=/src/build/zood
@@ -369,8 +371,10 @@ done
 rc=0
 python3 /usr/local/lib/accept.py mainnet 127.0.0.1:19630 /tmp/v0.log /tmp/v1.log /tmp/v2.log /tmp/v3.log || rc=$?
 kill $(jobs -p) 2>/dev/null || true
-if [ "$rc" -ne 0 ]; then tail -n 30 /tmp/v*.log; fi
-exit "$rc"
+if [ "$rc" -ne 0 ]; then tail -n 30 /tmp/v*.log; exit "$rc"; fi
+# Five, each importing mainnet, and the anchor that lets them continue it: all
+# five, one down and back, and one that imported another tip.
+bash /usr/local/lib/live.sh "$z" "$vm" /src/zoo-mainnet.rlp
 EOF
 
 # ── runtime ─────────────────────────────────────────────────────────────────
