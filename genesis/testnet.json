@@ -1,0 +1,34 @@
+{
+  "alloc": {
+    "0200000000000000000000000000000000000005": {
+      "balance": "0x0",
+      "code": "0x01",
+      "nonce": "0x1"
+    },
+    "9011E888251AB053B7bD1cdB598Db4f9DEd94714": {
+      "balance": "0x193e5939a08ce9dbd480000000"
+    }
+  },
+  "baseFeePerGas": "0x5d21dba00",
+  "config": {
+    "chainId": 200201,
+    "durangoTimestamp": 0,
+    "quasarTimestamp": 253399622400,
+    "evmTimestamp": 0,
+    "feeConfig": {
+      "baseFeeChangeDenominator": 36,
+      "blockGasCostStep": 200000,
+      "gasLimit": 12000000,
+      "maxBlockGasCost": 1000000,
+      "minBaseFee": 25000000000,
+      "minBlockGasCost": 0,
+      "targetBlockRate": 2,
+      "targetGas": 15000000
+    },
+    "fortunaTimestamp": 253399622400,
+    "graniteTimestamp": 253399622400
+  },
+  "difficulty": "0x0",
+  "gasLimit": "0xb71b00",
+  "timestamp": "0x6727ea31"
+}

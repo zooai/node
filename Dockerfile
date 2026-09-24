@@ -2,15 +2,15 @@
 #
 # zood — the Zoo network node, compiled from source.
 #
-# zood is lux-cpp/node's own daemon, src/noded.cpp, built under Zoo's name,
-# endpoint and chain id 200200 (CMakeLists.txt). Every source it compiles is
-# fetched here at a commit pinned below:
+# zood is lux-cpp/node run on Zoo's specs (src/zood.cpp, genesis/), and cevm
+# is the EVM plugin its chain runs in. Every source it compiles is fetched here
+# at a commit pinned below:
 #
 #   luxcrypto  luxfi/crypto `make dist`: libluxcrypto.a, the ML-DSA-65 and
 #              ML-KEM-768 of the post-quantum peer handshake, as a Go c-archive
 #   builder    AWS-LC, cevm's Conan dependencies, the consensus engine, cevm and
-#              lux-cpp/node, then zood
-#   runtime    gcr.io/distroless/cc-debian12:nonroot and the one binary
+#              lux-cpp/node, then zood and cevm
+#   runtime    gcr.io/distroless/cc-debian12:nonroot and the two binaries
 #
 # What is not pinned by commit resolves when the image is built: Debian's
 # packages, Conan's Python dependencies, the intx, nlohmann_json and cmake
@@ -37,10 +37,10 @@
 # names, spelled in full: a bare `main` would also match a tag called main. GitHub serves any commit it still holds by SHA, including ones no
 # branch reaches any more and ones that only exist in a fork.
 
-# a node answers for the chains its own network owns, so zood serves
-# /v1/chain/zoo and /v1/chain/200200 and 404s /v1/chain/c. It binds --rpc-host
-# (127.0.0.1 unless told otherwise), so a pod passes --rpc-host 0.0.0.0.
-ARG LUX_CPP_NODE=1b925fd6cb4e8556baa583eba09c3cba7619f185
+# run(spec) and the EVM run as a plugin. zood serves /v1/chain/zoo and
+# /v1/chain/200200, 404s /v1/chain/c, and binds --rpc-host (127.0.0.1 unless
+# told otherwise), so a pod passes --rpc-host 0.0.0.0.
+ARG LUX_CPP_NODE=8768a2d108845014721a5fe6d99cdf0ec975e113
 ARG LUX_CPP_CONSENSUS=9928599fc95d92c54b759468a351af907ab29aed
 # cevm main, the tree lux-cpp/node's tests pass on and its own image builds
 # against. Not the integrate/fixes/fix-* branches: those are unmerged GPU-EVM
@@ -260,7 +260,7 @@ COPY --from=luxcrypto /src/lux/crypto/dist /src/lux/crypto/dist
 
 COPY CMakeLists.txt /src/zooai/node/
 COPY src /src/zooai/node/src
-COPY test /src/zooai/node/test
+COPY genesis /src/zooai/node/genesis
 
 # Release, stripped at link time. Then three checks before anything ships: the
 # binary carries Zoo's name rather than the host's default; it needs no library
@@ -285,17 +285,21 @@ cmake -S /src/zooai/node -B /src/build -G Ninja \
   -DBLST_ISA=portable
 cmake --build /src/build --target zood
 z=/src/build/zood
+mkdir -p /out/libexec/lux
+strip -o /out/libexec/lux/cevm "$(find /src/build -type f -name cevm -perm -u+x | head -n1)"
 if ! grep -qF 'zooai/zood/v0.1.0' "$z"; then
-  echo "zood: the binary does not answer as zooai/zood; the brand did not reach noded.cpp." >&2
+  echo "zood: the binary does not answer as zooai/zood; Zoo's spec did not reach it." >&2
   exit 1
 fi
-needs=$(readelf -d "$z" | sed -n 's/.*(NEEDED).*\[\(.*\)\]$/\1/p')
-test -n "$needs"
-extra=$(printf '%s\n' "$needs" | grep -Evx 'lib(c|m|pthread|dl|rt|resolv|gcc_s|stdc\+\+|gomp)\.so\.[0-9]+|ld-linux-(x86-64|aarch64)\.so\.[0-9]+' || true)
-if [ -n "$extra" ]; then
-  echo "zood: links $extra, which gcr.io/distroless/cc-debian12 does not carry." >&2
-  exit 1
-fi
+for b in "$z" /out/libexec/lux/cevm; do
+  needs=$(readelf -d "$b" | sed -n 's/.*(NEEDED).*\[\(.*\)\]$/\1/p')
+  test -n "$needs"
+  extra=$(printf '%s\n' "$needs" | grep -Evx 'lib(c|m|pthread|dl|rt|resolv|gcc_s|stdc\+\+|gomp)\.so\.[0-9]+|ld-linux-(x86-64|aarch64)\.so\.[0-9]+' || true)
+  if [ -n "$extra" ]; then
+    echo "zood: $b links $extra, which gcr.io/distroless/cc-debian12 does not carry." >&2
+    exit 1
+  fi
+done
 k=$(mktemp -d)
 "$z" --data "$k" --publish > "$k.line"
 test -s "$k.line"
@@ -308,6 +312,7 @@ EOF
 # can be told to fetch and run.
 FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f
 COPY --from=builder /src/build/zood /usr/local/bin/zood
+COPY --from=builder /out/libexec/lux/cevm /usr/local/libexec/lux/cevm
 # The JSON-RPC and the validator mesh. A validator is named by the key it proves
 # on every link, so the mesh port is not an admin surface and needs no gate.
 EXPOSE 9630 9631
