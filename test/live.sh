@@ -110,6 +110,10 @@ sleep 10
 ! grep -q "ANCHORED" "$TMP/s3/node4.log"; check "[3] the seat that imported 798 blocks anchored nothing" "$(( $? == 0 ))"
 [[ "$(height 4)" == "0x31e" ]]; check "[3] and is still at its own tip, 798" "$(( $? == 0 ))"
 grep -q "height 798: the tip" "$TMP/s3/node4.log"; check "[3] it offered its own anchor, at 798" "$(( $? == 0 ))"
+health="$(curl -s --max-time 5 "http://127.0.0.1:$((RPC + 4))/v1/health")"
+echo "$health" | grep -q '"gated":true'; check "[3] and /v1/health says it is gated" "$(( $? == 0 ))"
+health="$(curl -s --max-time 5 "http://127.0.0.1:$((RPC + 0))/v1/health")"
+echo "$health" | grep -q '"gated":false'; check "[3] while seat 0's says it is not" "$(( $? == 0 ))"
 stop_all
 
 echo
