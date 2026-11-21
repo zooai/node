@@ -1,5 +1,7 @@
 # node
 
+[![Open in Hanzo](https://hanzo.app/badges/open-in-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/zooai/node&ref=main&action=open) [![Edit with Hanzo](https://hanzo.app/badges/edit-with-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/zooai/node&ref=main&action=edit) [![Deploy with Hanzo](https://hanzo.app/badges/deploy-with-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/zooai/node&ref=main&action=deploy)
+
 `zood` — the Zoo network node: lux-cpp/node run on Zoo's specs
 ([src/zood.cpp](src/zood.cpp)), with cevm as the EVM plugin its chain runs in.
 
